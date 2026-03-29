@@ -226,6 +226,7 @@ All finalist frameworks will be evaluated under the same benchmark rules unless 
 
 - Use the same model family/provider across finalists where feasible
 - Use the same task definitions and success criteria
+- Use the same rubric definitions and scoring scale
 - Use the same budget envelope per task
 - Use the same allowed tool envelope per task
 - Run each task three times per framework to reduce one-off variance
@@ -304,6 +305,25 @@ The benchmark will use a balanced scorecard with fixed weights:
 | Runtime speed | 10% |
 | Cost efficiency | 10% |
 
+### Rubric Structure
+
+Each benchmark task will have a dedicated rubric YAML file, plus one shared rubric contract that defines the common scoring scale and evaluator rules.
+
+Rubric requirements:
+
+- Use a `0-5` scoring scale for every criterion
+- Include clear anchors for weak, acceptable, and strong performance
+- Define hard gating checks separately from weighted quality criteria
+- Keep task-level criterion weights normalized to `100`
+- Map task-level criteria back to the benchmark-level scorecard dimensions
+
+Evaluator rules:
+
+- A failed hard gate caps the run at `partial` or `fail` regardless of weighted score
+- Missing required artifacts score `0` on the affected criteria
+- Scores must be evidence-backed with notes tied to outputs, logs, or produced artifacts
+- Repeated runs must use the same rubric version
+
 Scoring guidance:
 
 - Use a consistent numerical scale for all criteria across all frameworks
@@ -330,6 +350,7 @@ The benchmark effort should eventually produce:
 - A shortlisted set of three frameworks
 - Benchmark task specifications for the five tasks
 - YAML task definitions in the `tasks/` directory
+- YAML rubric definitions in the `rubrics/` directory
 - Per-run Markdown summaries
 - Per-run JSON result files
 - An aggregate comparison report with final recommendation

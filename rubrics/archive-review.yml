@@ -1,0 +1,58 @@
+id: archive_review_rubric
+task_id: archive_review
+version: 1
+uses_shared_contract: shared_evaluation
+hard_gates:
+  - id: required_artifacts_present
+    description: Structured extraction, findings report, and citation map are all produced.
+  - id: critical_claims_cited
+    description: Critical findings include evidence citations to source material.
+  - id: no_silent_reconciliation_failures
+    description: Material mismatches with the reference record are surfaced, not silently ignored.
+criteria:
+  - id: extraction_accuracy
+    weight: 30
+    maps_to:
+      - output_quality_and_task_success
+    description: Accuracy of extracted fields, entities, and relationships.
+    anchors:
+      low: Major fields are wrong, missing, or inconsistently normalized.
+      medium: Most key fields are correct, with some misses or normalization issues.
+      high: Core extraction is accurate, well-normalized, and dependable.
+  - id: citation_quality
+    weight: 20
+    maps_to:
+      - output_quality_and_task_success
+      - tooling_tracing_and_observability
+    description: Quality and specificity of source citations backing extracted findings.
+    anchors:
+      low: Citations are missing, vague, or do not support the claims.
+      medium: Most important claims are cited with usable source links or references.
+      high: Citations are precise, complete, and make review fast.
+  - id: discrepancy_detection
+    weight: 20
+    maps_to:
+      - output_quality_and_task_success
+    description: Ability to identify mismatches between extracted facts and the reference record.
+    anchors:
+      low: Material mismatches are missed or poorly classified.
+      medium: Major mismatches are found, but some edge cases or explanations are weak.
+      high: Material mismatches are consistently identified and clearly explained.
+  - id: confidence_calibration
+    weight: 15
+    maps_to:
+      - reliability_and_repeatability
+    description: Whether clear, needs_review, and exception labels match actual certainty.
+    anchors:
+      low: Confidence labels are erratic or overconfident.
+      medium: Confidence labels are mostly aligned with evidence quality.
+      high: Confidence labels reliably guide reviewer attention.
+  - id: report_usability
+    weight: 15
+    maps_to:
+      - developer_experience_and_implementation_effort
+    description: How easy the final packet is for a reviewer to consume.
+    anchors:
+      low: Review packet is hard to follow or missing operational context.
+      medium: Review packet is usable with some manual interpretation.
+      high: Review packet is concise, navigable, and reviewer-ready.

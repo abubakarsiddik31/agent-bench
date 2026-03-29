@@ -1,0 +1,57 @@
+id: portfolio_investigation_rubric
+task_id: portfolio_investigation
+version: 1
+uses_shared_contract: shared_evaluation
+hard_gates:
+  - id: interpreted_query_present
+    description: The run exposes its interpreted query or structured retrieval plan.
+  - id: result_set_present
+    description: The run returns results, summary metrics, or an explicit no-result outcome.
+  - id: explanation_present
+    description: The run explains findings, assumptions, or ambiguities.
+criteria:
+  - id: intent_mapping_accuracy
+    weight: 30
+    maps_to:
+      - output_quality_and_task_success
+    description: How accurately the agent translates user intent into structured retrieval.
+    anchors:
+      low: The interpreted query materially misunderstands the request.
+      medium: The interpretation is mostly correct with some filter or scope errors.
+      high: The interpretation matches the user intent closely and transparently.
+  - id: retrieval_correctness
+    weight: 25
+    maps_to:
+      - output_quality_and_task_success
+    description: Quality and correctness of the returned results or aggregates.
+    anchors:
+      low: Results are wrong, incomplete, or irrelevant.
+      medium: Results are mostly correct with minor issues.
+      high: Results are correct, well-scoped, and useful.
+  - id: result_explanation
+    weight: 15
+    maps_to:
+      - developer_experience_and_implementation_effort
+    description: Clarity of the summary and explanation of what was found.
+    anchors:
+      low: The answer is opaque or hard to interpret.
+      medium: The answer is understandable but not especially clear.
+      high: The answer is concise, informative, and easy to verify.
+  - id: ambiguity_handling
+    weight: 15
+    maps_to:
+      - reliability_and_repeatability
+    description: Handling of ambiguous user intent or incomplete data.
+    anchors:
+      low: Ambiguity is ignored or hidden.
+      medium: Ambiguity is noted but not always handled well.
+      high: Ambiguity is surfaced clearly with sensible assumptions or follow-ups.
+  - id: correction_friendliness
+    weight: 15
+    maps_to:
+      - developer_experience_and_implementation_effort
+    description: How easy it is for a user to refine the query after seeing the output.
+    anchors:
+      low: The output gives little help for correcting or refining the request.
+      medium: The output supports some refinement with effort.
+      high: The output makes refinement easy through transparent interpretation and clear notes.

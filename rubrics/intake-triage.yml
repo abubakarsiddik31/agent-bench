@@ -1,0 +1,58 @@
+id: intake_triage_rubric
+task_id: intake_triage
+version: 1
+uses_shared_contract: shared_evaluation
+hard_gates:
+  - id: disposition_present
+    description: The run returns a final disposition recommendation.
+  - id: candidate_matches_present
+    description: Candidate matches or explicit no-match evidence are included.
+  - id: gap_analysis_present
+    description: Missing information is identified and categorized.
+criteria:
+  - id: matching_accuracy
+    weight: 30
+    maps_to:
+      - output_quality_and_task_success
+    description: Accuracy of candidate ranking and final disposition.
+    anchors:
+      low: Disposition is wrong or candidate ranking is not credible.
+      medium: Final disposition is usually correct with some ranking weakness.
+      high: Disposition and ranking are accurate and well-supported.
+  - id: explanation_quality
+    weight: 20
+    maps_to:
+      - output_quality_and_task_success
+      - developer_experience_and_implementation_effort
+    description: Clarity and evidence quality of the rationale behind the decision.
+    anchors:
+      low: Rationale is vague, missing, or unsupported.
+      medium: Rationale is understandable but incomplete or uneven.
+      high: Rationale is concise, evidence-based, and decision-ready.
+  - id: gap_prioritization
+    weight: 20
+    maps_to:
+      - output_quality_and_task_success
+    description: Correct prioritization of must-have, later-required, and optional gaps.
+    anchors:
+      low: Missing data is misclassified or not prioritized.
+      medium: Major priorities are right, but some gap severity is off.
+      high: Gaps are prioritized correctly and operationally.
+  - id: actionability
+    weight: 15
+    maps_to:
+      - developer_experience_and_implementation_effort
+    description: Usefulness of the next-step recommendation for an operator.
+    anchors:
+      low: Next steps are missing or too vague to execute.
+      medium: Next steps are usable with some manual interpretation.
+      high: Next steps are specific, ordered, and easy to act on.
+  - id: confidence_calibration
+    weight: 15
+    maps_to:
+      - reliability_and_repeatability
+    description: Whether confidence matches the strength of the evidence.
+    anchors:
+      low: Confidence is over- or under-stated in obvious ways.
+      medium: Confidence is generally sensible with some inconsistencies.
+      high: Confidence is well-calibrated and helpful.

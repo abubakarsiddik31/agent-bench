@@ -34,6 +34,13 @@ This repo is still early, but the intended structure is:
 │   ├── packet-drafting.yml
 │   ├── portfolio-investigation.yml
 │   └── verification-sweep.yml
+├── rubrics/
+│   ├── shared-evaluation.yml
+│   ├── archive-review.yml
+│   ├── intake-triage.yml
+│   ├── packet-drafting.yml
+│   ├── portfolio-investigation.yml
+│   └── verification-sweep.yml
 ├── benchmarks/   # TBD
 └── results/      # TBD
 ```
@@ -55,6 +62,7 @@ Project initialized. The first PRD for benchmark design is now in place. Benchma
 - Complete Stage 1 longlist research and scoring
 - Select the final three frameworks for hands-on benchmarking
 - Define the concrete prompt packs and datasets for the five task specs in `tasks/`
+- Implement evaluators that apply the rubric definitions in `rubrics/`
 - Add the benchmark harness and result collection structure
 
 ## License

@@ -1,0 +1,58 @@
+id: packet_drafting_rubric
+task_id: packet_drafting
+version: 1
+uses_shared_contract: shared_evaluation
+hard_gates:
+  - id: draft_exists
+    description: A complete draft artifact is produced.
+  - id: mandatory_sections_present
+    description: Required sections are included in the draft.
+  - id: qa_summary_present
+    description: A separate QA or preflight review artifact is produced.
+criteria:
+  - id: draft_completeness
+    weight: 25
+    maps_to:
+      - output_quality_and_task_success
+    description: Completeness and readiness of the generated draft.
+    anchors:
+      low: Draft is skeletal, fragmented, or missing major content.
+      medium: Draft is mostly complete but still needs meaningful fill-in work.
+      high: Draft is near-final and ready for reviewer approval.
+  - id: policy_compliance
+    weight: 25
+    maps_to:
+      - output_quality_and_task_success
+    description: Adherence to policy rules, required clauses, and structural constraints.
+    anchors:
+      low: Policy violations are frequent or serious.
+      medium: Most policy rules are handled correctly, with minor misses.
+      high: Policy handling is consistent and reliable.
+  - id: qa_precision
+    weight: 20
+    maps_to:
+      - reliability_and_repeatability
+      - output_quality_and_task_success
+    description: Quality of the preflight review in catching mechanical and consistency issues.
+    anchors:
+      low: QA misses obvious issues or raises noisy, unhelpful findings.
+      medium: QA catches major issues but misses some details or adds mild noise.
+      high: QA catches meaningful issues with strong signal and low noise.
+  - id: uncertainty_handling
+    weight: 15
+    maps_to:
+      - reliability_and_repeatability
+    description: How honestly and clearly the agent flags uncertain or missing content.
+    anchors:
+      low: Agent guesses through missing data or hides uncertainty.
+      medium: Most uncertainty is surfaced, though not always clearly.
+      high: Uncertainty is explicit, well-scoped, and easy to review.
+  - id: reviewer_handoff_quality
+    weight: 15
+    maps_to:
+      - developer_experience_and_implementation_effort
+    description: Clarity of the approval summary and remediation guidance.
+    anchors:
+      low: Reviewer must reconstruct what is wrong or unfinished.
+      medium: Handoff is understandable but requires extra interpretation.
+      high: Handoff makes approval and remediation straightforward.

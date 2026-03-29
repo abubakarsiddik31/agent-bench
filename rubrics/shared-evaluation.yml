@@ -1,0 +1,64 @@
+id: shared_evaluation
+name: Shared Evaluation Contract
+version: 1
+applies_to:
+  - archive_review
+  - packet_drafting
+  - intake_triage
+  - portfolio_investigation
+  - verification_sweep
+score_scale:
+  min: 0
+  max: 5
+  interpretation:
+    0: Missing, failed, or unusable.
+    1: Major deficiencies; reviewer cannot rely on the output.
+    2: Partially useful but materially flawed.
+    3: Acceptable baseline with noticeable issues.
+    4: Strong execution with minor issues.
+    5: Excellent, reliable, and reviewer-ready.
+run_outcome_rules:
+  pass:
+    requirements:
+      - All hard gates pass.
+      - Weighted total score is at least 3.5 out of 5.
+      - No critical deliverable is missing.
+  partial:
+    requirements:
+      - Some useful work was completed.
+      - At least one hard gate failed, or weighted total score is between 2.0 and 3.49.
+  fail:
+    requirements:
+      - The run is unusable, unsafe, or materially incomplete.
+      - Weighted total score is below 2.0, or most hard gates fail.
+hard_gate_policy:
+  description: >
+    Hard gates are binary checks that determine whether the output is safe to
+    treat as a serious benchmark attempt. A failed hard gate prevents a pass.
+  evaluator_action:
+    - Record the failed gate explicitly in notes.
+    - Cap the run outcome at partial unless the run is broadly unusable, then fail it.
+evidence_policy:
+  required_sources:
+    - final_artifacts
+    - intermediate_logs_or_trace
+    - tool_outputs_when_relevant
+  requirements:
+    - Every subscore must be justified with observable evidence.
+    - Unsupported evaluator impressions are not valid scoring evidence.
+repeatability_policy:
+  - Use the same prompt pack version, rubric version, and dataset split for repeated runs.
+  - Record environment differences that could affect timing or cost.
+overall_scorecard_mapping:
+  output_quality_and_task_success:
+    weight_percent: 35
+  reliability_and_repeatability:
+    weight_percent: 20
+  developer_experience_and_implementation_effort:
+    weight_percent: 15
+  tooling_tracing_and_observability:
+    weight_percent: 10
+  runtime_speed:
+    weight_percent: 10
+  cost_efficiency:
+    weight_percent: 10

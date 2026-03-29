@@ -1,0 +1,59 @@
+id: verification_sweep_rubric
+task_id: verification_sweep
+version: 1
+uses_shared_contract: shared_evaluation
+hard_gates:
+  - id: required_checks_attempted
+    description: All required verifications are attempted for applicable records.
+  - id: audit_artifacts_present
+    description: Verification results, exceptions queue, and workflow updates are produced.
+  - id: escalation_policy_applied
+    description: Exceptions are routed according to policy rather than arbitrarily.
+criteria:
+  - id: orchestration_correctness
+    weight: 30
+    maps_to:
+      - output_quality_and_task_success
+    description: Correct execution of the queue, trigger logic, and required checks.
+    anchors:
+      low: Checks are skipped, misapplied, or run on the wrong records.
+      medium: Most orchestration is correct, with some misfires or omissions.
+      high: Queue handling and check application are consistently correct.
+  - id: retry_discipline
+    weight: 20
+    maps_to:
+      - reliability_and_repeatability
+    description: Quality of retry behavior under transient failures or rate limits.
+    anchors:
+      low: Retries are missing, excessive, or policy-breaking.
+      medium: Retry behavior is mostly sensible with some inefficiency or inconsistency.
+      high: Retries are policy-aligned, efficient, and well-documented.
+  - id: exception_precision
+    weight: 20
+    maps_to:
+      - output_quality_and_task_success
+      - reliability_and_repeatability
+    description: Precision of escalation decisions and exception routing.
+    anchors:
+      low: Noise is over-escalated or real exceptions are missed.
+      medium: Major exceptions are handled correctly with some noise.
+      high: Escalation is precise, low-noise, and trustworthy.
+  - id: audit_quality
+    weight: 15
+    maps_to:
+      - tooling_tracing_and_observability
+    description: Quality of logs, audit trail, and final summary artifacts.
+    anchors:
+      low: Audit trail is incomplete or hard to reconstruct.
+      medium: Audit trail is usable but missing some clarity or detail.
+      high: Audit trail is complete, clear, and review-friendly.
+  - id: state_consistency
+    weight: 15
+    maps_to:
+      - output_quality_and_task_success
+      - developer_experience_and_implementation_effort
+    description: Consistency between observed outcomes, exceptions, and state updates.
+    anchors:
+      low: Final state is inconsistent with observed verification outcomes.
+      medium: State is mostly consistent with minor mismatches.
+      high: State updates are consistent, reliable, and easy to trust.
