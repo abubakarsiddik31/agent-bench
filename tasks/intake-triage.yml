@@ -1,0 +1,49 @@
+id: intake_triage
+name: Intake Triage, Matching, and Gap Analysis
+task_type: intake_decisioning
+difficulty: medium_high
+objective: >
+  Analyze an inbound intake packet, compare it with an existing portfolio,
+  decide the most likely disposition, identify missing information, and
+  recommend the next action with a confidence-backed rationale.
+why_this_task_exists:
+  - Tests record matching, operational reasoning, and gap analysis in one pass.
+  - Measures whether a framework can support explainable decisioning rather than only extraction.
+inputs:
+  - intake_packet: semi-structured inbound record with possible inconsistencies
+  - existing_portfolio: current records and historical metadata
+  - matching_policy: weighted signals and disposition rules
+  - required_fields_matrix: must_have, later_required, and optional fields
+allowed_tools:
+  - file_system
+  - local_search
+  - record_matching
+  - structured_output_validation
+workflow:
+  - Parse the intake packet into normalized fields.
+  - Search the portfolio for exact and fuzzy candidate matches.
+  - Rank candidate matches and decide new_record, update, transfer, or duplicate_review.
+  - Explain the rationale using the strongest matching evidence.
+  - Identify missing fields and group them by severity.
+  - Produce a triage recommendation with action items and confidence.
+deliverables:
+  - triage_decision_json
+  - candidate_match_table_json
+  - gap_analysis_md
+  - next_actions_md
+success_criteria:
+  - The disposition is correct on benchmark fixtures.
+  - Candidate ranking is explainable and evidence-based.
+  - Missing information is prioritized correctly.
+  - The action list is operationally usable.
+scoring_focus:
+  - matching_accuracy
+  - explanation_quality
+  - gap_prioritization
+  - actionability
+  - confidence_calibration
+agentic_requirements:
+  - Must combine exact and fuzzy evidence, not rely on a single key.
+  - Must make a final disposition decision.
+  - Must justify that decision in plain language.
+  - Must turn the analysis into an actionable handoff.

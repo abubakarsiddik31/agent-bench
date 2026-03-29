@@ -10,12 +10,12 @@ This repository exists to compare agent frameworks in a structured way instead o
 
 - Research a longlist of candidate agent frameworks
 - Shortlist three frameworks for hands-on evaluation
-- Benchmark those finalists across coding, tool use, and research tasks
+- Benchmark those finalists across five end-to-end agent tasks
 - Produce Markdown and JSON outputs that make results easy to review and reproduce
 
 ## Benchmark Approach
 
-The benchmark will begin with desk research across a longlist of frameworks and then narrow to three finalists. Those finalists will be compared on the same task categories, with shared success criteria and repeat runs where feasible.
+The benchmark will begin with desk research across a longlist of frameworks and then narrow to three finalists. Those finalists will be compared on the same benchmark tasks, with shared success criteria and repeat runs where feasible.
 
 The detailed benchmark plan lives in [.plans/agent-framework-benchmark-prd.md](.plans/agent-framework-benchmark-prd.md).
 
@@ -28,6 +28,12 @@ This repo is still early, but the intended structure is:
 ├── .plans/
 │   └── agent-framework-benchmark-prd.md
 ├── README.md
+├── tasks/
+│   ├── archive-review.yml
+│   ├── intake-triage.yml
+│   ├── packet-drafting.yml
+│   ├── portfolio-investigation.yml
+│   └── verification-sweep.yml
 ├── benchmarks/   # TBD
 └── results/      # TBD
 ```
@@ -48,7 +54,7 @@ Project initialized. The first PRD for benchmark design is now in place. Benchma
 
 - Complete Stage 1 longlist research and scoring
 - Select the final three frameworks for hands-on benchmarking
-- Define the concrete benchmark prompts for coding, tool use, and research
+- Define the concrete prompt packs and datasets for the five task specs in `tasks/`
 - Add the benchmark harness and result collection structure
 
 ## License

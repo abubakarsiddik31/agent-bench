@@ -1,0 +1,49 @@
+id: portfolio_investigation
+name: Natural-Language Portfolio Investigation
+task_type: natural_language_analytics
+difficulty: medium_high
+objective: >
+  Convert a natural-language operational question into structured retrieval
+  steps, investigate the dataset, return the result set, and explain the
+  interpretation, assumptions, and limitations.
+why_this_task_exists:
+  - Tests whether a framework can bridge open-ended user intent to structured analysis.
+  - Measures both retrieval correctness and the quality of the explanation layer.
+inputs:
+  - user_question: natural-language query from an operator or manager
+  - portfolio_dataset: cases, statuses, dates, entities, and metrics
+  - query_schema: supported filters, groupings, and ranking options
+  - display_policy: how the interpreted query and results should be shown
+allowed_tools:
+  - file_system
+  - query_execution
+  - local_search
+  - structured_output_validation
+workflow:
+  - Interpret the user question and identify target entities, filters, and time windows.
+  - Translate the request into structured retrieval steps.
+  - Execute the search or aggregation against the dataset.
+  - Display the interpreted query in human-readable form.
+  - Return the matching records, summary metrics, or ranked findings.
+  - Explain ambiguities, assumptions, and follow-up refinements.
+deliverables:
+  - interpreted_query_json
+  - result_set_json
+  - analyst_summary_md
+  - ambiguity_notes_md
+success_criteria:
+  - The interpreted query matches the user intent.
+  - Retrieved results are materially correct.
+  - The explanation is clear enough for refinement when interpretation is imperfect.
+  - The final output balances detail and usability.
+scoring_focus:
+  - intent_mapping_accuracy
+  - retrieval_correctness
+  - result_explanation
+  - ambiguity_handling
+  - final_output_usability
+agentic_requirements:
+  - Must translate natural language into structured operations.
+  - Must execute and inspect intermediate retrieval results.
+  - Must expose its interpretation to the user.
+  - Must support correction-friendly output rather than opaque answers.

@@ -1,0 +1,50 @@
+id: archive_review
+name: Archive Review and Structured Findings
+task_type: document_intelligence
+difficulty: high
+objective: >
+  Review a large mixed-quality document bundle, extract structured facts,
+  reconcile them against a reference record, classify issues by confidence,
+  and prepare a reviewer-ready findings packet with citations.
+why_this_task_exists:
+  - Tests document ingestion, extraction, grounding, and reviewer packaging in one flow.
+  - Measures whether a framework can sustain long-context reasoning with tool use and structured outputs.
+inputs:
+  - document_bundle: mixed PDFs, scans, images, and text files
+  - reference_record: normalized system-of-record data for the same case or asset
+  - extraction_schema: target fields, relationships, and finding classes
+  - review_policy: rules for clear, needs_review, and exception classification
+allowed_tools:
+  - file_system
+  - ocr_or_text_extraction
+  - structured_output_validation
+  - local_search
+workflow:
+  - Ingest the bundle and inventory every source file.
+  - Extract text and segment content into meaningful sections.
+  - Identify entities, dates, amounts, relationships, and supporting evidence.
+  - Normalize extracted data into the provided schema.
+  - Cross-check extracted facts against the reference record.
+  - Classify each finding as clear, needs_review, or exception.
+  - Produce a reviewer summary with source citations.
+deliverables:
+  - structured_extraction_json
+  - findings_report_md
+  - citation_map_json
+  - run_notes_md
+success_criteria:
+  - High field-level extraction accuracy on the gold dataset.
+  - Every critical finding includes an evidence citation.
+  - Discrepancies with the reference record are surfaced, not silently ignored.
+  - The final report is reviewable without reopening every source file.
+scoring_focus:
+  - extraction_accuracy
+  - citation_quality
+  - discrepancy_detection
+  - confidence_calibration
+  - final_report_usability
+agentic_requirements:
+  - Must plan the extraction sequence.
+  - Must use tools to inspect and transform source material.
+  - Must make intermediate classification decisions.
+  - Must produce both structured and narrative outputs.

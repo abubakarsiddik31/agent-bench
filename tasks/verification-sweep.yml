@@ -1,0 +1,49 @@
+id: verification_sweep
+name: Triggered Verification Sweep and Exception Routing
+task_type: workflow_orchestration
+difficulty: high
+objective: >
+  Process a queue of records that require triggered checks, interact with
+  external mock systems, handle retries and failures, route only true
+  exceptions for review, and leave behind a clean audit trail.
+why_this_task_exists:
+  - Tests multi-record orchestration rather than single-item reasoning.
+  - Measures tool reliability, retry behavior, and exception discipline.
+inputs:
+  - work_queue: records awaiting verification
+  - trigger_rules: when and why each record requires a check
+  - external_system_contracts: mock APIs, forms, or CLI tools
+  - retry_policy: retry windows, backoff, and escalation rules
+allowed_tools:
+  - file_system
+  - api_or_mock_service_calls
+  - browser_or_form_automation
+  - local_state_updates
+workflow:
+  - Read the queue and determine which checks apply to each record.
+  - Execute the required verifications against external systems.
+  - Handle transient failures, retries, and rate limits within policy.
+  - Record routine clear outcomes automatically.
+  - Escalate positive hits, uncertain responses, and exhausted retries.
+  - Update workflow state and produce an audit summary.
+deliverables:
+  - verification_results_json
+  - exceptions_queue_json
+  - audit_log_md
+  - workflow_updates_json
+success_criteria:
+  - Required checks are run for the right records.
+  - Retry policy is followed without over-escalating noise.
+  - Only true exceptions are routed for review.
+  - Final state updates are consistent with observed outcomes.
+scoring_focus:
+  - orchestration_correctness
+  - retry_discipline
+  - exception_precision
+  - audit_quality
+  - state_consistency
+agentic_requirements:
+  - Must manage state across multiple records and tool calls.
+  - Must make escalation decisions based on policy and observed outcomes.
+  - Must recover from partial failures when possible.
+  - Must leave behind machine-readable and reviewer-readable artifacts.

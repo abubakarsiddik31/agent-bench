@@ -2,9 +2,9 @@
 
 ## Summary
 
-This project will benchmark agent frameworks to choose the best-fit framework for this repository's future work. The benchmark will start with a researched longlist of eight frameworks, narrow that set to three finalists through desk research, and then evaluate the finalists across three task categories: coding, tool use, and research.
+This project will benchmark agent frameworks to choose the best-fit framework for this repository's future work. The benchmark will start with a researched longlist of eight frameworks, narrow that set to three finalists through desk research, and then evaluate the finalists across five benchmark tasks.
 
-This PRD defines the benchmark program, decision criteria, scoring model, and output contract. It does not define the full benchmark harness implementation or the concrete prompts for each task category.
+This PRD defines the benchmark program, decision criteria, task suite, scoring model, and output contract. It does not define the full benchmark harness implementation or the final prompt packs for each task.
 
 ## Problem
 
@@ -12,7 +12,7 @@ The agent ecosystem is moving quickly, and framework selection based on populari
 
 ## Goal
 
-Choose the most suitable general-purpose agent framework for this repo by benchmarking a shortlist of three frameworks on practical tasks with transparent, repeatable evaluation.
+Choose the most suitable general-purpose agent framework for this repo by benchmarking a shortlist of three frameworks on practical, end-to-end agent workflows with transparent, repeatable evaluation.
 
 ## Non-Goals
 
@@ -32,6 +32,17 @@ Choose the most suitable general-purpose agent framework for this repo by benchm
 The benchmark will answer one decision:
 
 Which agent framework is the best overall fit for this repo's general-purpose agent use cases when balancing output quality, reliability, developer experience, observability, speed, and cost?
+
+## Task Design Principles
+
+The benchmark task suite should reflect realistic end-to-end operational workflows and remain reusable across frameworks.
+
+Rules for task design:
+
+- Use domain-neutral operational scenarios that generalize well across frameworks
+- Preserve the same reasoning shape, tool demands, review gates, and end-to-end flow across repeated runs
+- Keep evaluation difficulty anchored to realistic workflow complexity, not simplified toy tasks
+- Ensure every benchmark task is fully agentic, meaning the agent must plan, use tools, transform data, make intermediate decisions, and produce a reviewable final artifact
 
 ## Candidate Longlist
 
@@ -84,40 +95,128 @@ Rules for Stage 2:
 
 ## Benchmark Scope
 
-The benchmark will evaluate three task categories. This PRD intentionally defines categories rather than concrete prompts.
+The benchmark will evaluate five fully agentic benchmark tasks.
 
-### 1. Coding
+### Task Types Covered
 
-A repo-scoped implementation or debugging task that requires file edits and some form of validation.
+The five-task suite intentionally expands beyond the original coding, tool use, and research framing. The benchmark should now cover:
 
-The task should test:
+- Document intelligence
+- Draft generation and QA
+- Intake decisioning
+- Natural-language analytics
+- Workflow orchestration and exception handling
 
-- Ability to understand repo context
-- Ability to make correct code changes
-- Ability to use tools or checks during implementation
-- Ability to produce a complete, reviewable outcome
+### Task 1: Archive Review and Structured Findings
 
-### 2. Tool Use
+**Task type:** document intelligence
 
-A multi-step workflow that requires tool invocation, environment interaction, and structured completion.
+The agent receives a large, messy document bundle plus a small reference record. It must ingest the bundle, extract structured facts, reconcile them against the reference data, identify discrepancies, assign confidence, and produce a review packet with source citations.
 
-The task should test:
+End-to-end flow:
 
-- Tool invocation reliability
-- State handling across multiple steps
-- Correct sequencing of operations
-- Clear final reporting
+1. Read the inbound bundle and reference record
+2. Extract text or structured content from mixed-quality source files
+3. Segment the content into meaningful sections
+4. Extract key entities and relationships into a normalized schema
+5. Cross-check extracted facts against the reference record
+6. Classify findings as clear, needs review, or exception
+7. Produce a final structured report and reviewer summary with citations
 
-### 3. Research
+What it tests:
 
-A grounded synthesis task that requires collecting evidence and producing sourced conclusions.
+- Multi-step document understanding
+- Evidence-grounded extraction
+- Entity resolution across noisy inputs
+- Confidence scoring and human-review packaging
 
-The task should test:
+### Task 2: Policy-Aware Packet Drafting and Preflight Review
 
-- Source quality and grounding
-- Accuracy of synthesis
-- Clarity of final output
-- Ability to stay within task constraints
+**Task type:** draft generation and QA
+
+The agent receives structured case data, policy rules, and a template/style guide. It must assemble a near-final output document, verify it against rule requirements, flag uncertain sections, and produce both the draft and a preflight QA summary.
+
+End-to-end flow:
+
+1. Gather required structured inputs and rule constraints
+2. Select the correct output format and style variant
+3. Generate a complete draft, not a partial template fill
+4. Run a self-check for completeness, consistency, and rule coverage
+5. Highlight uncertain or missing sections
+6. Produce a final draft plus QA findings for human approval
+
+What it tests:
+
+- Controlled generation under constraints
+- Use of templates, policies, and structured inputs
+- Secondary review reasoning before handoff
+- Ability to separate mechanical checks from human judgment
+
+### Task 3: Intake Triage, Matching, and Gap Analysis
+
+**Task type:** intake decisioning
+
+The agent receives an inbound intake packet and access to an existing portfolio of records. It must decide whether the packet represents a new record, an update to an existing record, or a likely duplicate; explain why; identify missing data; and recommend the next operational action.
+
+End-to-end flow:
+
+1. Parse the inbound packet into structured fields
+2. Search existing records using multiple matching signals
+3. Rank candidate matches and decide the most likely disposition
+4. Explain the rationale for the disposition
+5. Identify missing required and non-blocking fields
+6. Produce a triage recommendation, confidence score, and action list
+
+What it tests:
+
+- Multi-signal matching and reasoning
+- Decision support with explainability
+- Gap detection and prioritization
+- Operational handoff quality
+
+### Task 4: Natural-Language Portfolio Investigation
+
+**Task type:** natural-language analytics
+
+The agent receives a user question about a portfolio or dataset and must translate that request into structured retrieval steps, execute the investigation, validate the interpretation, and return an actionable result set with explanation.
+
+End-to-end flow:
+
+1. Interpret the user's natural-language question
+2. Translate it into structured filters, aggregations, or retrieval steps
+3. Execute the search or analysis over the provided dataset
+4. Show the interpreted query in human-readable form
+5. Return the matching results or ranked answers
+6. Summarize what was found, including limits or ambiguities
+
+What it tests:
+
+- Query interpretation fidelity
+- Structured retrieval from natural-language requests
+- Result explanation and correction friendliness
+- Manager-style analytical assistance
+
+### Task 5: Triggered Verification Sweep and Exception Routing
+
+**Task type:** workflow orchestration and exception handling
+
+The agent receives a queue of records plus trigger conditions and access to one or more external mock systems or tools. It must run the required checks, handle retries or failures, record outcomes, escalate only the exceptions, and update workflow state with a clean audit trail.
+
+End-to-end flow:
+
+1. Read the queue and determine which records require checks
+2. Execute the required external lookups or tool-driven verifications
+3. Handle rate limits, transient failures, and retries within policy
+4. Record routine negative or normal results automatically
+5. Escalate positive hits or uncertain outcomes for review
+6. Update workflow state and produce an audit summary
+
+What it tests:
+
+- Tool reliability under operational constraints
+- Stateful orchestration over multiple records
+- Retry logic and exception handling
+- Accurate escalation and auditability
 
 ## Benchmark Methodology
 
@@ -126,10 +225,10 @@ All finalist frameworks will be evaluated under the same benchmark rules unless 
 ### Shared Rules
 
 - Use the same model family/provider across finalists where feasible
-- Use the same task category definitions and success criteria
-- Use the same budget envelope per task category
-- Use the same allowed tool envelope per task category
-- Run each task category three times per framework to reduce one-off variance
+- Use the same task definitions and success criteria
+- Use the same budget envelope per task
+- Use the same allowed tool envelope per task
+- Run each task three times per framework to reduce one-off variance
 - Capture both human-readable and machine-readable outputs for every run
 
 ### Normalization Principles
@@ -141,9 +240,9 @@ All finalist frameworks will be evaluated under the same benchmark rules unless 
 
 ### Run Matrix
 
-For three shortlisted frameworks, three task categories, and three repeated runs per category, the v1 benchmark will include:
+For three shortlisted frameworks, five benchmark tasks, and three repeated runs per task, the v1 benchmark will include:
 
-- 27 total benchmark runs
+- 45 total benchmark runs
 
 ## Output Contract
 
@@ -157,7 +256,8 @@ The minimum JSON result schema is:
 ```json
 {
   "framework": "string",
-  "task_category": "coding | tool_use | research",
+  "task_id": "archive_review | packet_drafting | intake_triage | portfolio_investigation | verification_sweep",
+  "task_type": "document_intelligence | draft_generation_and_qa | intake_decisioning | natural_language_analytics | workflow_orchestration",
   "run_id": "string",
   "outcome": "pass | partial | fail",
   "score_breakdown": {
@@ -183,7 +283,7 @@ The minimum JSON result schema is:
 The Markdown summary for each run should include:
 
 - Framework name
-- Task category
+- Task identifier and task type
 - Run identifier
 - Short execution summary
 - Outcome
@@ -218,7 +318,7 @@ This PRD is successful when it enables the next implementation pass to proceed w
 The benchmark program is successful when it produces:
 
 - A ranked comparison of three shortlisted frameworks
-- Repeatable results across coding, tool use, and research tasks
+- Repeatable results across all five end-to-end benchmark tasks
 - Transparent Markdown and JSON artifacts for every run
 - A final recommendation that clearly explains why the winning framework is the best fit
 
@@ -228,7 +328,8 @@ The benchmark effort should eventually produce:
 
 - A longlist research comparison
 - A shortlisted set of three frameworks
-- Benchmark task specifications for the three categories
+- Benchmark task specifications for the five tasks
+- YAML task definitions in the `tasks/` directory
 - Per-run Markdown summaries
 - Per-run JSON result files
 - An aggregate comparison report with final recommendation
@@ -245,7 +346,7 @@ The benchmark effort should eventually produce:
 These items are intentionally deferred to later planning or implementation:
 
 - Final shortlist after Stage 1 scoring
-- Concrete benchmark prompts for each task category
+- Concrete prompt packs and datasets for each task
 - Exact task budgets and timeout numbers
 - Final directory layout for benchmark harness code and result storage
 - Final recommendation once benchmark results exist

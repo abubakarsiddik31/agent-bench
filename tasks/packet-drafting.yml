@@ -1,0 +1,49 @@
+id: packet_drafting
+name: Policy-Aware Packet Drafting and Preflight Review
+task_type: draft_generation_and_qa
+difficulty: high
+objective: >
+  Assemble a near-final packet from structured inputs, policy rules, and a
+  style guide, then run a preflight review that flags missing information,
+  rule violations, and uncertain sections before human approval.
+why_this_task_exists:
+  - Tests controlled generation under constraints rather than freeform writing.
+  - Measures whether a framework can pair drafting with self-QA in one workflow.
+inputs:
+  - structured_case_data: names, dates, metadata, and required facts
+  - policy_rules: must-have clauses, formatting constraints, and gating logic
+  - template_pack: content structure and optional style variants
+  - completeness_checklist: required sections and validation rules
+allowed_tools:
+  - file_system
+  - template_lookup
+  - structured_output_validation
+  - rule_engine_or_local_checks
+workflow:
+  - Gather all required inputs and determine the applicable template variant.
+  - Draft a complete packet using the style guide and policy rules.
+  - Validate names, dates, references, and required sections.
+  - Flag any missing data, uncertain text, or policy mismatches.
+  - Generate a preflight review summary with remediation notes.
+  - Return the final draft and QA artifacts for approval.
+deliverables:
+  - drafted_packet_md
+  - qa_findings_json
+  - approval_summary_md
+  - unresolved_items_json
+success_criteria:
+  - The draft is complete enough for human review, not a skeleton template.
+  - Required sections are present and policy-compliant.
+  - Mechanical issues are surfaced before handoff.
+  - Uncertain areas are clearly identified instead of guessed over.
+scoring_focus:
+  - draft_completeness
+  - policy_compliance
+  - qa_precision
+  - uncertainty_handling
+  - reviewer_handoff_quality
+agentic_requirements:
+  - Must choose a template or variant based on input conditions.
+  - Must perform a second-pass QA instead of returning the first draft.
+  - Must produce explicit remediation notes for unresolved issues.
+  - Must separate mechanical checks from judgment-heavy review items.
