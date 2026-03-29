@@ -64,6 +64,8 @@ This repo is still early, but the intended structure is:
 │   └── verification-sweep.yml
 ├── evaluation/
 │   ├── benchmark-execution.yml
+│   ├── evaluate_intake_run.py
+│   ├── judge-model.yml
 │   ├── metric-counting-policy.yml
 │   └── review-form.yml
 ├── results/
@@ -81,6 +83,11 @@ uv sync
 cp .env.example .env
 ```
 
+The root `.env` should contain:
+
+- `ANTHROPIC_API_KEY` for Anthropic framework runs
+- `GEMINI_API_KEY` for Google AI Studio evaluation/judging
+
 ## Usage
 
 Run the first Anthropic starter iteration from the repo root:
@@ -92,6 +99,55 @@ uv run \
   --out results/anthropic-agent-sdk/intake-triage/starter_v1/run-001
 ```
 
+Evaluate a completed run from the repo root:
+
+```bash
+uv run python evaluation/evaluate_intake_run.py \
+  --run-dir results/anthropic-agent-sdk/intake-triage/starter_v1/run-003 \
+  --fixture-dir benchmarks/intake-triage/fixtures/case-001
+```
+
+## Evaluation Flow
+
+Evaluation happens in two layers:
+
+1. Task evaluation
+   - The agent runs against a fixed prompt pack and fixture set.
+   - We inspect the produced artifacts against the task contract and rubric.
+   - Hard gates check whether required files, formats, and core outputs are present.
+   - If the contract is violated, the run can fail even if the agent produced something useful.
+
+2. Framework evaluation
+   - After task execution, we record implementation and operator experience.
+   - This includes tool calling, orchestration, ease of use, implementation effort, readability, extensibility, and observability.
+   - Final framework ranking uses both the task-performance score and the framework-quality score.
+
+Evaluation model:
+
+- Locked judge target: `Gemini 3.1 Pro Preview`
+- Provider: `Google AI Studio`
+- Model ID: `gemini-3.1-pro-preview`
+- Config file: `evaluation/judge-model.yml`
+
+Current scoring implementation:
+
+- Deterministic evaluator script handles hard gates, normalized artifact matching, and fixture checks today
+- Gemini-based judge assistance is the next layer, not the current hard-gate source of truth
+
+Current evaluation status:
+
+- Execution and deterministic evaluation are working for Anthropic `run-003`
+- Deterministic contract evaluation is available through `evaluation/evaluate_intake_run.py`
+- Full rubric automation and Gemini-assisted judging are still pending
+
+## Scoreboard
+
+This table is the high-level benchmark view. Each row should be backed by the saved `evaluation_summary.json` for that run.
+
+| Framework | Task | Run | Execution | Contract | Final Score | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| Anthropic Agent SDK | `intake-triage` | `run-003` | Success | Pass | `5.0 / 5.0` | Saved in `results/anthropic-agent-sdk/intake-triage/starter_v1/run-003/evaluation_summary.json`. Normalized artifact matching passed, and all semantic checks passed. |
+
 ## Next Steps
 
 - Complete Stage 1 longlist research and scoring
@@ -99,9 +155,10 @@ uv run \
 - Lock the exact provider and model ID in `evaluation/benchmark-execution.yml`
 - Install dependencies from the repo root with `uv sync`
 - Lock the exact provider and model ID in `evaluation/benchmark-execution.yml`
-- Run the Anthropic `intake-triage` implementation against the starter fixtures
+- Decide whether to keep normalized contract matching or force canonical output filenames in the runner
+- Run the remaining Anthropic `intake-triage` starter fixtures
 - Record outputs in `results/anthropic-agent-sdk/intake-triage/starter_v1/`
-- Implement evaluators that apply the rubric definitions in `rubrics/`
+- Extend the deterministic evaluator with Gemini-based rubric judging
 - Lock the execution contract and evaluation policies in `evaluation/`
 - Capture framework-level implementation metrics and human ratings alongside task scores
 - Add the benchmark harness and result collection structure

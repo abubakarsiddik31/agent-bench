@@ -1,0 +1,11 @@
+id: evaluation_judge_model
+version: 1
+provider: google_ai_studio
+model_name: Gemini 3.1 Pro Preview
+model_id: gemini-3.1-pro-preview
+purpose: >
+  Preferred LLM judge for rubric assistance, qualitative comparison, and
+  evaluation support once the judge-assisted pipeline is implemented.
+notes:
+  - Locked for evaluation use, not as the framework runtime model.
+  - Deterministic contract checks remain the hard-gate source of truth.
