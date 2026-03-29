@@ -21,6 +21,8 @@ The benchmark is intended to evaluate frameworks, not models. Task results are o
 
 The implementation flow is framework-by-framework and task-by-task: implement one task, evaluate it immediately, record framework implementation notes, and then continue to the next task.
 
+The first concrete benchmark package is `intake-triage`, with a starter prompt pack, shared policies, and gold fixtures under `benchmarks/intake-triage/`.
+
 The detailed benchmark plan lives in [.plans/agent-framework-benchmark-prd.md](.plans/agent-framework-benchmark-prd.md).
 
 ## Planned Repository Structure
@@ -32,6 +34,11 @@ This repo is still early, but the intended structure is:
 ├── .plans/
 │   └── agent-framework-benchmark-prd.md
 ├── README.md
+├── benchmarks/
+│   ├── README.md
+│   └── intake-triage/
+│       ├── prompt-pack.yml
+│       └── fixtures/
 ├── tasks/
 │   ├── archive-review.yml
 │   ├── intake-triage.yml
@@ -50,13 +57,13 @@ This repo is still early, but the intended structure is:
 │   ├── benchmark-execution.yml
 │   ├── metric-counting-policy.yml
 │   └── review-form.yml
-├── benchmarks/   # TBD
-└── results/      # TBD
+├── results/
+│   └── README.md
 ```
 
 ## Status
 
-Project initialized. The first PRD for benchmark design is now in place. Benchmark tasks, harness code, and result storage are still to be defined.
+Project initialized. The benchmark design docs are in place, and the first concrete benchmark package now exists for `intake-triage`. Framework implementations and actual run artifacts are the next step.
 
 ## Install
 
@@ -70,7 +77,9 @@ Project initialized. The first PRD for benchmark design is now in place. Benchma
 
 - Complete Stage 1 longlist research and scoring
 - Select the final three frameworks for hands-on benchmarking
-- Define the concrete prompt packs and datasets for the five task specs in `tasks/`
+- Lock the exact provider and model ID in `evaluation/benchmark-execution.yml`
+- Implement the `intake-triage` benchmark in the first framework
+- Run the starter fixture set and record outputs in `results/`
 - Implement evaluators that apply the rubric definitions in `rubrics/`
 - Lock the execution contract and evaluation policies in `evaluation/`
 - Capture framework-level implementation metrics and human ratings alongside task scores

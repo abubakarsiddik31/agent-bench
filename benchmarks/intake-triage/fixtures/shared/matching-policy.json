@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "signals": [
+    {
+      "name": "external_reference_exact",
+      "weight": 40,
+      "description": "Exact match on client_case_ref or provider_case_ref"
+    },
+    {
+      "name": "customer_name_similarity",
+      "weight": 15,
+      "description": "Normalized customer or account name similarity"
+    },
+    {
+      "name": "site_address_match",
+      "weight": 20,
+      "description": "Normalized site address match"
+    },
+    {
+      "name": "asset_identifier_match",
+      "weight": 15,
+      "description": "Exact or near-exact asset serial or unit identifier match"
+    },
+    {
+      "name": "contact_match",
+      "weight": 10,
+      "description": "Matching contact email or phone"
+    }
+  ],
+  "disposition_rules": {
+    "update": {
+      "description": "Use when the inbound packet clearly refers to an existing record under the same provider or operating owner",
+      "typical_signals": [
+        "external_reference_exact",
+        "site_address_match",
+        "asset_identifier_match"
+      ]
+    },
+    "transfer": {
+      "description": "Use when the inbound packet clearly refers to an existing record but under a new provider or operating owner",
+      "typical_signals": [
+        "site_address_match",
+        "asset_identifier_match",
+        "customer_name_similarity"
+      ]
+    },
+    "new_record": {
+      "description": "Use when no existing record is a credible match",
+      "typical_signals": []
+    },
+    "duplicate_review": {
+      "description": "Use when two or more records are plausible matches and a reviewer must resolve the ambiguity",
+      "typical_signals": [
+        "customer_name_similarity",
+        "site_address_match"
+      ]
+    }
+  }
+}

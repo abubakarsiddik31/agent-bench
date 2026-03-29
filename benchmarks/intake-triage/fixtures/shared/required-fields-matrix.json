@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "must_have": [
+    "customer.name",
+    "site.address_line_1",
+    "site.city",
+    "site.state",
+    "site.postal_code",
+    "requested_actions",
+    "contacts.primary_contact.email"
+  ],
+  "later_required": [
+    "asset.asset_id",
+    "asset.asset_type",
+    "service_window.preferred_date_range",
+    "reference_numbers.provider_case_ref"
+  ],
+  "optional": [
+    "contacts.primary_contact.phone",
+    "site.access_notes",
+    "asset.serial_number",
+    "billing_code"
+  ]
+}

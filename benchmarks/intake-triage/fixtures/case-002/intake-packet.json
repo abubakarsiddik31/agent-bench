@@ -1,0 +1,36 @@
+{
+  "intake_id": "INT-002",
+  "submitted_at": "2026-03-04T13:40:00Z",
+  "service_provider": "BlueRoute Service Ops",
+  "customer": {
+    "name": "Pine Ridge Hospitality"
+  },
+  "site": {
+    "address_line_1": "88 Summit Trail",
+    "city": "Everton",
+    "state": "CO",
+    "postal_code": "80439"
+  },
+  "asset": {
+    "asset_id": "GEN-44",
+    "asset_type": "Backup Generator",
+    "serial_number": "GEN44-PRH-1209"
+  },
+  "reference_numbers": {
+    "provider_case_ref": "BR-99810"
+  },
+  "requested_actions": [
+    "resume maintenance plan",
+    "confirm service history transfer"
+  ],
+  "contacts": {
+    "primary_contact": {
+      "name": "Amelia Hart",
+      "email": "ahart@pineridge.example",
+      "phone": "303-555-0124"
+    }
+  },
+  "service_window": {
+    "preferred_date_range": "2026-03-10 to 2026-03-12"
+  }
+}

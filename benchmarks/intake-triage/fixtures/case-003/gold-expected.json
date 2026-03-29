@@ -1,0 +1,27 @@
+{
+  "fixture_id": "case_003_new_record_with_gaps",
+  "expected_disposition": "new_record",
+  "expected_best_match_record_id": null,
+  "expected_confidence": "medium",
+  "expected_top_ranked_candidates": [
+    "REC-3010",
+    "REC-3011"
+  ],
+  "expected_missing_fields": {
+    "must_have": [],
+    "later_required": [
+      "asset.asset_id",
+      "reference_numbers.provider_case_ref",
+      "service_window.preferred_date_range"
+    ],
+    "optional": [
+      "asset.serial_number",
+      "contacts.primary_contact.phone"
+    ]
+  },
+  "rationale_must_include": [
+    "similar site but different customer",
+    "insufficient evidence for update or transfer",
+    "safe default is new record"
+  ]
+}

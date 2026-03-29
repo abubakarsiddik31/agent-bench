@@ -1,0 +1,23 @@
+{
+  "fixture_id": "case_004_duplicate_review_ambiguous",
+  "expected_disposition": "duplicate_review",
+  "expected_best_match_record_id": null,
+  "expected_confidence": "medium",
+  "expected_top_ranked_candidates": [
+    "REC-4110",
+    "REC-4111"
+  ],
+  "expected_missing_fields": {
+    "must_have": [],
+    "later_required": [
+      "asset.asset_id"
+    ],
+    "optional": []
+  },
+  "rationale_must_include": [
+    "two plausible matches exist",
+    "same customer and same site",
+    "asset identity is ambiguous",
+    "human review is required"
+  ]
+}

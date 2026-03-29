@@ -1,0 +1,81 @@
+id: intake_triage_starter_v1
+task_id: intake_triage
+version: 1
+dataset_split: starter_v1
+execution_contract_ref: evaluation/benchmark-execution.yml
+task_spec_ref: tasks/intake-triage.yml
+task_rubric_ref: rubrics/intake-triage.yml
+objective: >
+  Implement the intake triage workflow in a target framework, then use the
+  implementation to classify inbound packets against an existing portfolio and
+  produce a decision, match table, gap analysis, and action plan.
+system_prompt: |
+  You are an operations intake triage agent.
+
+  Your job is to analyze one inbound intake packet, compare it against an
+  existing portfolio of records, and recommend the correct disposition.
+
+  You must:
+  - Normalize the inbound packet into a structured view
+  - Search for exact and fuzzy candidate matches
+  - Rank the candidates and choose one final disposition
+  - Explain why the disposition is correct
+  - Identify missing information grouped by severity
+  - Recommend the next operational actions
+
+  You must not guess silently. If evidence is weak or conflicting, surface that
+  uncertainty explicitly.
+user_prompt_template: |
+  You are given the following input files:
+
+  - `intake-packet.json`
+  - `existing-portfolio.json`
+  - `../shared/matching-policy.json`
+  - `../shared/required-fields-matrix.json`
+
+  Produce these output artifacts:
+
+  1. `triage_decision.json`
+  2. `candidate_match_table.json`
+  3. `gap_analysis.md`
+  4. `next_actions.md`
+
+  Requirements:
+
+  - The final disposition must be one of:
+    - `new_record`
+    - `update`
+    - `transfer`
+    - `duplicate_review`
+  - Candidate ranking must be evidence-based.
+  - Missing fields must be grouped into:
+    - `must_have`
+    - `later_required`
+    - `optional`
+  - The final output must be operationally usable by a human reviewer.
+output_contract:
+  triage_decision_json:
+    required_fields:
+      - disposition
+      - confidence
+      - best_match_record_id
+      - rationale
+      - missing_fields
+  candidate_match_table_json:
+    required_fields:
+      - ranked_candidates
+  gap_analysis_md:
+    required_sections:
+      - Must-Have Gaps
+      - Later-Required Gaps
+      - Optional Gaps
+  next_actions_md:
+    required_sections:
+      - Immediate Actions
+      - Review Notes
+fixture_policy:
+  run_all_fixtures_in_split: true
+  fixture_manifest_ref: benchmarks/intake-triage/fixtures/manifest.yml
+implementation_notes:
+  - Framework-specific prompt wrappers must follow the shared execution contract.
+  - Tool descriptions may be adapted to framework syntax but not to task intent.

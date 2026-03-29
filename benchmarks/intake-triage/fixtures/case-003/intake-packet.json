@@ -1,0 +1,28 @@
+{
+  "intake_id": "INT-003",
+  "submitted_at": "2026-03-06T08:25:00Z",
+  "service_provider": "BlueRoute Service Ops",
+  "customer": {
+    "name": "Greenline Foods East"
+  },
+  "site": {
+    "address_line_1": "725 Produce Loop",
+    "city": "Riverton",
+    "state": "PA",
+    "postal_code": "19011"
+  },
+  "asset": {
+    "asset_type": "Cold Storage Sensor"
+  },
+  "reference_numbers": {},
+  "requested_actions": [
+    "create monitoring record",
+    "dispatch installation survey"
+  ],
+  "contacts": {
+    "primary_contact": {
+      "name": "Dana Cole",
+      "email": "dcole@greenline-east.example"
+    }
+  }
+}

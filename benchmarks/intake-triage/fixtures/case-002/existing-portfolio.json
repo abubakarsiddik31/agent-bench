@@ -1,0 +1,53 @@
+{
+  "records": [
+    {
+      "record_id": "REC-2050",
+      "status": "provider_transition_pending",
+      "service_provider": "Summit Field Services",
+      "customer": {
+        "name": "Pine Ridge Hospitality"
+      },
+      "site": {
+        "address_line_1": "88 Summit Trail",
+        "city": "Everton",
+        "state": "CO",
+        "postal_code": "80439"
+      },
+      "asset": {
+        "asset_id": "GEN-44",
+        "asset_type": "Backup Generator",
+        "serial_number": "GEN44-PRH-1209"
+      },
+      "reference_numbers": {
+        "provider_case_ref": "SFS-44117"
+      },
+      "contacts": {
+        "primary_contact": {
+          "email": "ahart@pineridge.example"
+        }
+      }
+    },
+    {
+      "record_id": "REC-2051",
+      "status": "active",
+      "service_provider": "BlueRoute Service Ops",
+      "customer": {
+        "name": "Pine Ridge Hospitality"
+      },
+      "site": {
+        "address_line_1": "91 Summit Trail",
+        "city": "Everton",
+        "state": "CO",
+        "postal_code": "80439"
+      },
+      "asset": {
+        "asset_id": "GEN-12",
+        "asset_type": "Backup Generator",
+        "serial_number": "GEN12-PRH-4420"
+      },
+      "reference_numbers": {
+        "provider_case_ref": "BR-12014"
+      }
+    }
+  ]
+}

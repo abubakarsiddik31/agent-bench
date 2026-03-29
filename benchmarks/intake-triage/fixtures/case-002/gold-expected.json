@@ -1,0 +1,21 @@
+{
+  "fixture_id": "case_002_transfer_provider_change",
+  "expected_disposition": "transfer",
+  "expected_best_match_record_id": "REC-2050",
+  "expected_confidence": "high",
+  "expected_top_ranked_candidates": [
+    "REC-2050",
+    "REC-2051"
+  ],
+  "expected_missing_fields": {
+    "must_have": [],
+    "later_required": [],
+    "optional": []
+  },
+  "rationale_must_include": [
+    "same customer",
+    "same site address",
+    "same asset identifier",
+    "different provider indicates transfer"
+  ]
+}

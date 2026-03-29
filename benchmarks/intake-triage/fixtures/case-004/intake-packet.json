@@ -1,0 +1,34 @@
+{
+  "intake_id": "INT-004",
+  "submitted_at": "2026-03-07T16:05:00Z",
+  "service_provider": "BlueRoute Service Ops",
+  "customer": {
+    "name": "Lakefront Retail Group"
+  },
+  "site": {
+    "address_line_1": "118 Marina Square",
+    "city": "Ashport",
+    "state": "MI",
+    "postal_code": "49014"
+  },
+  "asset": {
+    "asset_type": "Front Entrance Access Controller"
+  },
+  "reference_numbers": {
+    "client_case_ref": "LRG-118-ACCESS"
+  },
+  "requested_actions": [
+    "assess outage",
+    "confirm whether an existing record should be resumed"
+  ],
+  "contacts": {
+    "primary_contact": {
+      "name": "Miles Keene",
+      "email": "mkeene@lakefront.example",
+      "phone": "616-555-0190"
+    }
+  },
+  "service_window": {
+    "preferred_date_range": "2026-03-08 to 2026-03-09"
+  }
+}

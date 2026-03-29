@@ -1,0 +1,24 @@
+id: intake_triage_starter_fixtures
+task_id: intake_triage
+version: 1
+dataset_split: starter_v1
+shared_inputs:
+  - benchmarks/intake-triage/fixtures/shared/matching-policy.json
+  - benchmarks/intake-triage/fixtures/shared/required-fields-matrix.json
+fixtures:
+  - id: case_001_update_clear_match
+    path: benchmarks/intake-triage/fixtures/case-001
+    expected_disposition: update
+    difficulty: medium
+  - id: case_002_transfer_provider_change
+    path: benchmarks/intake-triage/fixtures/case-002
+    expected_disposition: transfer
+    difficulty: medium_high
+  - id: case_003_new_record_with_gaps
+    path: benchmarks/intake-triage/fixtures/case-003
+    expected_disposition: new_record
+    difficulty: medium
+  - id: case_004_duplicate_review_ambiguous
+    path: benchmarks/intake-triage/fixtures/case-004
+    expected_disposition: duplicate_review
+    difficulty: high

@@ -1,0 +1,21 @@
+{
+  "fixture_id": "case_001_update_clear_match",
+  "expected_disposition": "update",
+  "expected_best_match_record_id": "REC-1001",
+  "expected_confidence": "high",
+  "expected_top_ranked_candidates": [
+    "REC-1001",
+    "REC-1002"
+  ],
+  "expected_missing_fields": {
+    "must_have": [],
+    "later_required": [],
+    "optional": []
+  },
+  "rationale_must_include": [
+    "exact client_case_ref match",
+    "same site address",
+    "same asset identifier",
+    "same contact email"
+  ]
+}

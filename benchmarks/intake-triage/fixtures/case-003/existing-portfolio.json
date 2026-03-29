@@ -1,0 +1,45 @@
+{
+  "records": [
+    {
+      "record_id": "REC-3010",
+      "status": "active",
+      "service_provider": "BlueRoute Service Ops",
+      "customer": {
+        "name": "Greenline Foods West"
+      },
+      "site": {
+        "address_line_1": "725 Produce Loop",
+        "city": "Riverton",
+        "state": "PA",
+        "postal_code": "19011"
+      },
+      "asset": {
+        "asset_id": "SEN-88",
+        "asset_type": "Cold Storage Sensor",
+        "serial_number": "SEN88-GLW-7710"
+      },
+      "reference_numbers": {
+        "provider_case_ref": "BR-77110"
+      }
+    },
+    {
+      "record_id": "REC-3011",
+      "status": "closed",
+      "service_provider": "BlueRoute Service Ops",
+      "customer": {
+        "name": "Greenline Foods South"
+      },
+      "site": {
+        "address_line_1": "812 Produce Loop",
+        "city": "Riverton",
+        "state": "PA",
+        "postal_code": "19011"
+      },
+      "asset": {
+        "asset_id": "SEN-31",
+        "asset_type": "Cold Storage Sensor",
+        "serial_number": "SEN31-GLS-1130"
+      }
+    }
+  ]
+}
