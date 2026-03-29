@@ -19,6 +19,8 @@ The benchmark will begin with desk research across a longlist of frameworks and 
 
 The benchmark is intended to evaluate frameworks, not models. Task results are only one part of the decision; the benchmark will also compare tool calling, orchestration, human review quality, ease of use, implementation effort, readability, extensibility, and observability.
 
+The implementation flow is framework-by-framework and task-by-task: implement one task, evaluate it immediately, record framework implementation notes, and then continue to the next task.
+
 The detailed benchmark plan lives in [.plans/agent-framework-benchmark-prd.md](.plans/agent-framework-benchmark-prd.md).
 
 ## Planned Repository Structure
@@ -44,6 +46,10 @@ This repo is still early, but the intended structure is:
 │   ├── packet-drafting.yml
 │   ├── portfolio-investigation.yml
 │   └── verification-sweep.yml
+├── evaluation/
+│   ├── benchmark-execution.yml
+│   ├── metric-counting-policy.yml
+│   └── review-form.yml
 ├── benchmarks/   # TBD
 └── results/      # TBD
 ```
@@ -66,6 +72,7 @@ Project initialized. The first PRD for benchmark design is now in place. Benchma
 - Select the final three frameworks for hands-on benchmarking
 - Define the concrete prompt packs and datasets for the five task specs in `tasks/`
 - Implement evaluators that apply the rubric definitions in `rubrics/`
+- Lock the execution contract and evaluation policies in `evaluation/`
 - Capture framework-level implementation metrics and human ratings alongside task scores
 - Add the benchmark harness and result collection structure
 

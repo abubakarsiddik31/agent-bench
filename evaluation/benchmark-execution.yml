@@ -1,0 +1,48 @@
+id: benchmark_execution
+version: 1
+purpose: >
+  Locks the execution environment so framework differences remain visible and
+  model or run-setting drift does not contaminate the benchmark.
+model_control:
+  provider: TBD_before_first_run
+  model_id: TBD_before_first_run
+  temperature: 0
+  top_p: 1
+  reasoning_effort: medium
+  notes:
+    - The exact provider and model ID must be locked before the first benchmark run.
+    - Once locked, they cannot change across finalist frameworks without restarting the comparison.
+turn_and_timeout_limits:
+  max_turns_per_run: 25
+  max_tool_calls_per_run: 50
+  wall_clock_timeout_seconds: 1800
+  per_tool_timeout_seconds: 120
+retry_policy:
+  llm_retries: 0
+  transient_tool_retries: 2
+  retry_backoff_seconds:
+    - 2
+    - 10
+prompt_wrapper_policy:
+  system_prompt_template: shared and versioned across frameworks
+  task_prompt_pack: versioned per task and shared across frameworks
+  framework_specific_prompting:
+    allowed: true
+    rules:
+      - Only minimal adapter glue is allowed.
+      - Framework-specific prompt changes that alter task intent are not allowed.
+tool_policy:
+  allowed_tools_must_match_task_spec: true
+  tool_descriptions_must_be_semantically_equivalent: true
+  framework_specific_helper_tools:
+    allowed: false
+logging_requirements:
+  record_prompt_pack_version: true
+  record_rubric_version: true
+  record_dataset_split: true
+  record_framework_version: true
+  record_environment_notes: true
+change_control:
+  if_any_field_changes:
+    - mark subsequent results as a new benchmark series
+    - do not compare directly with the old series in rankings

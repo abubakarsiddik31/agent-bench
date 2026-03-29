@@ -1,0 +1,45 @@
+id: metric_counting_policy
+version: 1
+purpose: >
+  Defines how implementation metrics are counted so framework comparisons are
+  fair and not inflated by shared harness code or boilerplate differences.
+lines_of_code:
+  definition: non-empty, non-comment lines in framework-specific implementation files
+  include:
+    - framework-specific source files
+    - framework-specific configuration files
+    - framework-specific prompt adapters
+    - framework-specific task wiring
+  exclude:
+    - shared benchmark harness code
+    - shared datasets and fixtures
+    - shared evaluators and rubric files
+    - vendored code
+    - copied examples not used in the final implementation
+    - generated files
+    - comments and blank lines
+files_touched:
+  include:
+    - files created or modified specifically to make the framework pass the task
+  exclude:
+    - unchanged shared files
+    - dataset fixture files
+    - result artifacts generated during runs
+setup_steps:
+  definition: user-visible steps required to get a working implementation from clean checkout
+  include:
+    - dependency install commands
+    - environment setup commands
+    - config creation steps
+    - framework-specific bootstrapping or auth steps
+  exclude:
+    - repeated run commands after setup is complete
+counting_rules:
+  per_task_snapshot: count only the files and LOC needed for that framework-task pair
+  final_framework_rollup: aggregate all framework-specific implementation files across tasks
+measurement_method:
+  primary: cloc_style_non_comment_lines
+  fallback: manual_count_with_note
+documentation_requirements:
+  - Every framework review must state what was counted.
+  - Any exclusion or exception must be explained in notes.

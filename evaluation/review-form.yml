@@ -1,0 +1,46 @@
+id: review_form
+version: 1
+purpose: >
+  Standardizes human review so ease of use, readability, and extensibility are
+  scored through the same checklist across frameworks.
+reviewer_requirements:
+  minimum_reviewers_for_final_rollup: 2
+  required_roles:
+    - primary_implementer
+    - secondary_reviewer
+review_process:
+  task_snapshot_review:
+    reviewers_required: 1
+    reviewer_role: primary_implementer
+  final_framework_review:
+    reviewers_required: 2
+    reviewer_roles:
+      - primary_implementer
+      - secondary_reviewer
+scoring_scale:
+  min: 0
+  max: 5
+questions:
+  - id: tool_calling
+    prompt: Were tools easy to define, invoke, and debug correctly?
+  - id: orchestration
+    prompt: Was multi-step control flow clear and maintainable?
+  - id: ease_of_use
+    prompt: How quickly could a developer become productive in this framework?
+  - id: implementation_effort
+    prompt: How much code, glue, and setup work was required to complete the task?
+  - id: readability
+    prompt: How readable was the resulting implementation for another engineer?
+  - id: extensibility
+    prompt: How easy would it be to add a new task, tool, or review step?
+  - id: observability
+    prompt: How easy was it to inspect traces, debug failures, and understand state?
+required_notes:
+  - strongest_positive
+  - strongest_negative
+  - biggest_source_of_complexity
+  - what_would_make_this_score_higher
+disagreement_policy:
+  if_reviewers_differ_by_more_than_one_point:
+    - require written justification from both reviewers
+    - record both scores and the averaged final score

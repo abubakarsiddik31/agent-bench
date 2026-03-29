@@ -14,6 +14,20 @@ The agent ecosystem is moving quickly, and framework selection based on populari
 
 Choose the most suitable general-purpose agent framework for this repo by benchmarking a shortlist of three frameworks on practical, end-to-end agent workflows with transparent, repeatable evaluation.
 
+## Operating Loop
+
+The benchmark will be executed in a repeating loop:
+
+1. Pick one framework
+2. Implement one benchmark task in that framework
+3. Run the task using the locked execution contract
+4. Score the task output with the task rubric
+5. Record a framework implementation snapshot for that task
+6. Repeat for the next task in the same framework
+7. After all tasks are complete, produce the final framework-level rollup
+
+This keeps framework pain, ergonomics, and implementation quality tied to each task while the work is still fresh.
+
 ## Non-Goals
 
 - Building the benchmark harness in this document
@@ -109,6 +123,7 @@ Rules for Stage 2:
 - The comparison must be normalized through shared task definitions, success criteria, budgets, and result formats.
 - The same model family/provider should be used where feasible across finalists.
 - The same model family/provider should be treated as a control variable rather than the subject of evaluation.
+- The exact run settings must be locked in `evaluation/benchmark-execution.yml` before the first benchmark run starts.
 - If a framework cannot support the shared benchmark conditions cleanly, the limitation must be documented as part of the evaluation.
 
 ## Benchmark Scope
@@ -249,6 +264,7 @@ The benchmark has two layers:
 
 - Use the same model family/provider across finalists where feasible
 - Hold the model as constant as possible so framework differences remain visible
+- Use one locked execution contract for model ID, temperature, turn limits, timeout limits, retry policy, and prompt wrapper rules
 - Use the same task definitions and success criteria
 - Use the same rubric definitions and scoring scale
 - Use the same budget envelope per task
@@ -275,7 +291,8 @@ Every benchmark run must produce:
 
 - One Markdown summary for human review
 - One JSON result for aggregation and comparison
-- One framework implementation review per framework for cross-task assessment
+- One per-task framework implementation snapshot
+- One final framework implementation review per framework for cross-task assessment
 
 The minimum JSON result schema is:
 
@@ -307,6 +324,33 @@ The minimum JSON result schema is:
 ```
 
 In addition to per-run results, each framework must also have a framework assessment artifact that captures implementation and operator experience across the full benchmark suite.
+
+Each task implementation must also have a framework snapshot artifact that captures the immediate implementation experience for that specific framework-task pair.
+
+The minimum per-task framework snapshot schema is:
+
+```json
+{
+  "framework": "string",
+  "task_id": "string",
+  "reviewer": "string",
+  "human_rating": 0,
+  "implementation_metrics": {
+    "lines_of_code": 0,
+    "files_touched": 0,
+    "setup_steps": 0
+  },
+  "score_breakdown": {
+    "tool_calling": 0,
+    "orchestration": 0,
+    "ease_of_use": 0,
+    "readability": 0,
+    "extensibility": 0,
+    "observability": 0
+  },
+  "notes": "string"
+}
+```
 
 The minimum framework assessment schema is:
 
@@ -354,8 +398,8 @@ The benchmark will use a two-part scorecard:
 
 | Score group | Weight |
 | --- | --- |
-| Task performance score | 60% |
-| Framework quality score | 40% |
+| Task performance score | 50% |
+| Framework quality score | 50% |
 
 ### Task Performance Score
 
@@ -384,6 +428,12 @@ The framework quality score will be assessed separately using a framework-level 
 | Extensibility and reuse potential | 10% |
 | Observability and debugging support | 10% |
 
+### Ranking Eligibility Rules
+
+- A framework cannot rank first unless its framework quality score is at least `3.0 / 5`.
+- A framework cannot rank first if framework review hard gates fail.
+- Final recommendations must show task performance and framework quality as separate columns before showing the combined score.
+
 ### Rubric Structure
 
 Each benchmark task will have a dedicated rubric YAML file, plus one shared rubric contract that defines the common scoring scale and evaluator rules. The benchmark will also have a framework-level rubric YAML for implementation and operator assessment.
@@ -396,6 +446,8 @@ Rubric requirements:
 - Keep task-level criterion weights normalized to `100`
 - Keep framework-level criterion weights normalized to `100`
 - Map task-level and framework-level criteria back to the benchmark-level scorecard dimensions
+- Use the metric counting policy in `evaluation/metric-counting-policy.yml` for all implementation metrics
+- Use the reviewer checklist and scoring form in `evaluation/review-form.yml` for all human ratings
 
 Evaluator rules:
 
@@ -404,6 +456,7 @@ Evaluator rules:
 - Scores must be evidence-backed with notes tied to outputs, logs, or produced artifacts
 - Repeated runs must use the same rubric version
 - Human ratings must be recorded explicitly and never inferred from weighted task scores alone
+- Final framework ranking requires at least two human reviewers on the framework rollup
 
 Scoring guidance:
 
@@ -434,6 +487,8 @@ The benchmark effort should eventually produce:
 - Benchmark task specifications for the five tasks
 - YAML task definitions in the `tasks/` directory
 - YAML rubric definitions in the `rubrics/` directory
+- Execution and evaluation policy files in the `evaluation/` directory
+- Per-task framework implementation snapshots
 - Framework-level review artifacts and implementation metrics
 - Per-run Markdown summaries
 - Per-run JSON result files
@@ -452,6 +507,5 @@ These items are intentionally deferred to later planning or implementation:
 
 - Final shortlist after Stage 1 scoring
 - Concrete prompt packs and datasets for each task
-- Exact task budgets and timeout numbers
 - Final directory layout for benchmark harness code and result storage
 - Final recommendation once benchmark results exist
