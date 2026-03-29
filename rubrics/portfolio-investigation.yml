@@ -31,7 +31,7 @@ criteria:
   - id: result_explanation
     weight: 15
     maps_to:
-      - developer_experience_and_implementation_effort
+      - human_review_quality
     description: Clarity of the summary and explanation of what was found.
     anchors:
       low: The answer is opaque or hard to interpret.
@@ -49,7 +49,7 @@ criteria:
   - id: correction_friendliness
     weight: 15
     maps_to:
-      - developer_experience_and_implementation_effort
+      - human_review_quality
     description: How easy it is for a user to refine the query after seeing the output.
     anchors:
       low: The output gives little help for correcting or refining the request.

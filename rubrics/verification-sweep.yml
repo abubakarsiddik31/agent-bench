@@ -51,7 +51,7 @@ criteria:
     weight: 15
     maps_to:
       - output_quality_and_task_success
-      - developer_experience_and_implementation_effort
+      - human_review_quality
     description: Consistency between observed outcomes, exceptions, and state updates.
     anchors:
       low: Final state is inconsistent with observed verification outcomes.

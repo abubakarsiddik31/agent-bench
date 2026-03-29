@@ -2,7 +2,7 @@
 
 ## Summary
 
-This project will benchmark agent frameworks to choose the best-fit framework for this repository's future work. The benchmark will start with a researched longlist of eight frameworks, narrow that set to three finalists through desk research, and then evaluate the finalists across five benchmark tasks.
+This project will benchmark agent frameworks to choose the best-fit framework for this repository's future work. The benchmark will start with a researched longlist of eight frameworks, narrow that set to three finalists through desk research, and then evaluate the finalists across five benchmark tasks plus a framework-level implementation review.
 
 This PRD defines the benchmark program, decision criteria, task suite, scoring model, and output contract. It does not define the full benchmark harness implementation or the final prompt packs for each task.
 
@@ -32,6 +32,23 @@ Choose the most suitable general-purpose agent framework for this repo by benchm
 The benchmark will answer one decision:
 
 Which agent framework is the best overall fit for this repo's general-purpose agent use cases when balancing output quality, reliability, developer experience, observability, speed, and cost?
+
+## Evaluation Principle
+
+This repository is evaluating frameworks, not models.
+
+Task runs are included because they expose framework capabilities under realistic conditions, but the final recommendation must emphasize framework qualities such as:
+
+- Tool-calling reliability and ergonomics
+- Orchestration primitives and control
+- Human review quality
+- Ease of implementation
+- Lines of code required
+- Readability of the implementation
+- Extensibility for future tasks
+- Observability, tracing, and debugging support
+
+Model output quality matters only insofar as the framework helps teams structure, control, review, and operate those workflows.
 
 ## Task Design Principles
 
@@ -91,6 +108,7 @@ Rules for Stage 2:
 - Each framework should be used in its strongest first-party language/runtime rather than forcing all finalists into one language.
 - The comparison must be normalized through shared task definitions, success criteria, budgets, and result formats.
 - The same model family/provider should be used where feasible across finalists.
+- The same model family/provider should be treated as a control variable rather than the subject of evaluation.
 - If a framework cannot support the shared benchmark conditions cleanly, the limitation must be documented as part of the evaluation.
 
 ## Benchmark Scope
@@ -222,9 +240,15 @@ What it tests:
 
 All finalist frameworks will be evaluated under the same benchmark rules unless a documented framework limitation prevents exact parity.
 
+The benchmark has two layers:
+
+- Task performance evaluation: how well each framework supports the five end-to-end workflows
+- Framework implementation evaluation: how usable, maintainable, and operable the framework is for building those workflows
+
 ### Shared Rules
 
 - Use the same model family/provider across finalists where feasible
+- Hold the model as constant as possible so framework differences remain visible
 - Use the same task definitions and success criteria
 - Use the same rubric definitions and scoring scale
 - Use the same budget envelope per task
@@ -251,6 +275,7 @@ Every benchmark run must produce:
 
 - One Markdown summary for human review
 - One JSON result for aggregation and comparison
+- One framework implementation review per framework for cross-task assessment
 
 The minimum JSON result schema is:
 
@@ -264,7 +289,7 @@ The minimum JSON result schema is:
   "score_breakdown": {
     "output_quality_and_task_success": 0,
     "reliability_and_repeatability": 0,
-    "developer_experience_and_implementation_effort": 0,
+    "human_review_quality": 0,
     "tooling_tracing_and_observability": 0,
     "runtime_speed": 0,
     "cost_efficiency": 0
@@ -276,6 +301,32 @@ The minimum JSON result schema is:
   "cost": {
     "currency": "USD",
     "value": 0
+  },
+  "notes": "string"
+}
+```
+
+In addition to per-run results, each framework must also have a framework assessment artifact that captures implementation and operator experience across the full benchmark suite.
+
+The minimum framework assessment schema is:
+
+```json
+{
+  "framework": "string",
+  "reviewer": "string",
+  "human_rating": 0,
+  "score_breakdown": {
+    "tool_calling": 0,
+    "orchestration": 0,
+    "ease_of_use": 0,
+    "implementation_effort": 0,
+    "readability": 0,
+    "extensibility": 0,
+    "observability": 0
+  },
+  "implementation_metrics": {
+    "lines_of_code": 0,
+    "files_touched": 0
   },
   "notes": "string"
 }
@@ -294,20 +345,48 @@ The Markdown summary for each run should include:
 
 ## Scoring Model
 
-The benchmark will use a balanced scorecard with fixed weights:
+The benchmark will use a two-part scorecard:
+
+- Task performance score: how well the framework enables successful task execution
+- Framework quality score: how strong the framework is as a developer/operator platform
+
+### Final Weights
+
+| Score group | Weight |
+| --- | --- |
+| Task performance score | 60% |
+| Framework quality score | 40% |
+
+### Task Performance Score
+
+The task performance score uses the following fixed weights:
 
 | Criterion | Weight |
 | --- | --- |
 | Output quality and task success | 35% |
 | Reliability and repeatability | 20% |
-| Developer experience and implementation effort | 15% |
+| Human review quality | 15% |
 | Tooling, tracing, and observability | 10% |
 | Runtime speed | 10% |
 | Cost efficiency | 10% |
 
+### Framework Quality Score
+
+The framework quality score will be assessed separately using a framework-level rubric:
+
+| Criterion | Weight |
+| --- | --- |
+| Tool-calling ergonomics and reliability | 20% |
+| Orchestration primitives and control | 20% |
+| Ease of use and developer ergonomics | 15% |
+| Implementation effort and lines of code | 15% |
+| Readability and maintainability | 10% |
+| Extensibility and reuse potential | 10% |
+| Observability and debugging support | 10% |
+
 ### Rubric Structure
 
-Each benchmark task will have a dedicated rubric YAML file, plus one shared rubric contract that defines the common scoring scale and evaluator rules.
+Each benchmark task will have a dedicated rubric YAML file, plus one shared rubric contract that defines the common scoring scale and evaluator rules. The benchmark will also have a framework-level rubric YAML for implementation and operator assessment.
 
 Rubric requirements:
 
@@ -315,7 +394,8 @@ Rubric requirements:
 - Include clear anchors for weak, acceptable, and strong performance
 - Define hard gating checks separately from weighted quality criteria
 - Keep task-level criterion weights normalized to `100`
-- Map task-level criteria back to the benchmark-level scorecard dimensions
+- Keep framework-level criterion weights normalized to `100`
+- Map task-level and framework-level criteria back to the benchmark-level scorecard dimensions
 
 Evaluator rules:
 
@@ -323,6 +403,7 @@ Evaluator rules:
 - Missing required artifacts score `0` on the affected criteria
 - Scores must be evidence-backed with notes tied to outputs, logs, or produced artifacts
 - Repeated runs must use the same rubric version
+- Human ratings must be recorded explicitly and never inferred from weighted task scores alone
 
 Scoring guidance:
 
@@ -330,6 +411,7 @@ Scoring guidance:
 - Apply the same rubric to every repeated run
 - Aggregate scores at both run level and framework level
 - Preserve raw notes alongside numerical results to support final interpretation
+- Report task performance and framework quality separately before computing the final combined score
 
 ## Success Criteria
 
@@ -339,6 +421,7 @@ The benchmark program is successful when it produces:
 
 - A ranked comparison of three shortlisted frameworks
 - Repeatable results across all five end-to-end benchmark tasks
+- A clear framework-level comparison for implementation quality, maintainability, and operator ergonomics
 - Transparent Markdown and JSON artifacts for every run
 - A final recommendation that clearly explains why the winning framework is the best fit
 
@@ -351,6 +434,7 @@ The benchmark effort should eventually produce:
 - Benchmark task specifications for the five tasks
 - YAML task definitions in the `tasks/` directory
 - YAML rubric definitions in the `rubrics/` directory
+- Framework-level review artifacts and implementation metrics
 - Per-run Markdown summaries
 - Per-run JSON result files
 - An aggregate comparison report with final recommendation

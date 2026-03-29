@@ -50,7 +50,7 @@ criteria:
   - id: report_usability
     weight: 15
     maps_to:
-      - developer_experience_and_implementation_effort
+      - human_review_quality
     description: How easy the final packet is for a reviewer to consume.
     anchors:
       low: Review packet is hard to follow or missing operational context.

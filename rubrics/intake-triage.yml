@@ -23,7 +23,7 @@ criteria:
     weight: 20
     maps_to:
       - output_quality_and_task_success
-      - developer_experience_and_implementation_effort
+      - human_review_quality
     description: Clarity and evidence quality of the rationale behind the decision.
     anchors:
       low: Rationale is vague, missing, or unsupported.
@@ -41,7 +41,7 @@ criteria:
   - id: actionability
     weight: 15
     maps_to:
-      - developer_experience_and_implementation_effort
+      - human_review_quality
     description: Usefulness of the next-step recommendation for an operator.
     anchors:
       low: Next steps are missing or too vague to execute.

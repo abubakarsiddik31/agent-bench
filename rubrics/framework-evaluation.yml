@@ -1,0 +1,100 @@
+id: framework_evaluation_rubric
+name: Framework-Level Evaluation
+version: 1
+uses_shared_contract: shared_evaluation
+scope: framework_level
+description: >
+  Evaluates the framework itself rather than only task output quality. This
+  rubric is applied once per framework after completing the benchmark suite.
+human_review:
+  required: true
+  reviewers:
+    minimum: 1
+  notes: >
+    Human evaluators must record explicit judgments on implementation quality,
+    operator experience, and maintainability. These ratings are not inferred
+    from task success alone.
+hard_gates:
+  - id: implementation_artifacts_present
+    description: Framework implementation code and notes are available for review.
+  - id: implementation_metrics_recorded
+    description: Lines of code, files touched, and setup notes are captured.
+  - id: human_review_completed
+    description: At least one evaluator completed the framework review.
+criteria:
+  - id: tool_calling
+    weight: 20
+    maps_to:
+      - tooling_tracing_and_observability
+    description: Reliability and ergonomics of tool definition, invocation, and result handling.
+    anchors:
+      low: Tool integration is brittle, awkward, or hard to debug.
+      medium: Tool integration works with some friction or extra boilerplate.
+      high: Tool integration is reliable, clear, and pleasant to work with.
+  - id: orchestration
+    weight: 20
+    maps_to:
+      - output_quality_and_task_success
+    description: Quality of orchestration primitives for sequencing, branching, retries, and control flow.
+    anchors:
+      low: Control flow is hard to express or reason about.
+      medium: Orchestration is workable with some complexity or indirection.
+      high: Orchestration is expressive, clear, and easy to control.
+  - id: ease_of_use
+    weight: 15
+    maps_to:
+      - developer_experience_and_implementation_effort
+    description: Overall developer ergonomics, API clarity, and onboarding speed.
+    anchors:
+      low: Steep learning curve and confusing API surface.
+      medium: Usable with moderate ramp-up and some rough edges.
+      high: Fast to learn, clear to use, and low-friction in practice.
+  - id: implementation_effort
+    weight: 15
+    maps_to:
+      - developer_experience_and_implementation_effort
+    description: Amount of implementation effort required, including code volume and setup overhead.
+    anchors:
+      low: Requires excessive boilerplate, setup, or custom glue code.
+      medium: Moderate code volume and acceptable setup burden.
+      high: Efficient to implement with low ceremony and strong defaults.
+    metrics:
+      - lines_of_code
+      - files_touched
+      - setup_steps
+  - id: readability
+    weight: 10
+    maps_to:
+      - developer_experience_and_implementation_effort
+    description: Readability and maintainability of the resulting benchmark implementation.
+    anchors:
+      low: Resulting code is difficult to read or maintain.
+      medium: Code is understandable with some framework-specific complexity.
+      high: Code is readable, idiomatic, and easy to maintain.
+  - id: extensibility
+    weight: 10
+    maps_to:
+      - developer_experience_and_implementation_effort
+    description: Ease of adding new tasks, tools, review steps, and variants later.
+    anchors:
+      low: Extending the implementation requires fragile rewrites.
+      medium: Extensions are possible but involve moderate rework.
+      high: New tasks and features can be added cleanly with reuse.
+  - id: observability
+    weight: 10
+    maps_to:
+      - tooling_tracing_and_observability
+    description: Support for tracing, debugging, inspection, logs, and operator visibility.
+    anchors:
+      low: Debugging is opaque and traces are weak or missing.
+      medium: Debugging support exists but is limited or inconsistent.
+      high: Strong tracing and debugging support make failures easy to inspect.
+framework_metrics:
+  required:
+    - lines_of_code
+    - files_touched
+    - setup_steps
+  optional:
+    - time_to_first_working_task
+    - time_to_add_new_tool
+    - time_to_add_new_task

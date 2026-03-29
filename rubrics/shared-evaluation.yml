@@ -49,12 +49,12 @@ evidence_policy:
 repeatability_policy:
   - Use the same prompt pack version, rubric version, and dataset split for repeated runs.
   - Record environment differences that could affect timing or cost.
-overall_scorecard_mapping:
+task_scorecard_mapping:
   output_quality_and_task_success:
     weight_percent: 35
   reliability_and_repeatability:
     weight_percent: 20
-  developer_experience_and_implementation_effort:
+  human_review_quality:
     weight_percent: 15
   tooling_tracing_and_observability:
     weight_percent: 10
@@ -62,3 +62,10 @@ overall_scorecard_mapping:
     weight_percent: 10
   cost_efficiency:
     weight_percent: 10
+framework_scorecard_mapping:
+  developer_experience_and_implementation_effort:
+    weight_percent: 50
+  tooling_tracing_and_observability:
+    weight_percent: 30
+  output_quality_and_task_success:
+    weight_percent: 20

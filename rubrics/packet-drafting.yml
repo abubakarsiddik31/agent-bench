@@ -50,7 +50,7 @@ criteria:
   - id: reviewer_handoff_quality
     weight: 15
     maps_to:
-      - developer_experience_and_implementation_effort
+      - human_review_quality
     description: Clarity of the approval summary and remediation guidance.
     anchors:
       low: Reviewer must reconstruct what is wrong or unfinished.
