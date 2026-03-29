@@ -23,6 +23,8 @@ The implementation flow is framework-by-framework and task-by-task: implement on
 
 The first concrete benchmark package is `intake-triage`, with a starter prompt pack, shared policies, and gold fixtures under `benchmarks/intake-triage/`.
 
+The first framework implementation has started under `frameworks/anthropic-agent-sdk/intake-triage/`.
+
 The detailed benchmark plan lives in [.plans/agent-framework-benchmark-prd.md](.plans/agent-framework-benchmark-prd.md).
 
 ## Planned Repository Structure
@@ -33,12 +35,19 @@ This repo is still early, but the intended structure is:
 .
 ├── .plans/
 │   └── agent-framework-benchmark-prd.md
+├── .env.example
+├── .gitignore
+├── pyproject.toml
 ├── README.md
 ├── benchmarks/
 │   ├── README.md
 │   └── intake-triage/
 │       ├── prompt-pack.yml
 │       └── fixtures/
+├── frameworks/
+│   └── anthropic-agent-sdk/
+│       └── intake-triage/
+│           └── agent.py
 ├── tasks/
 │   ├── archive-review.yml
 │   ├── intake-triage.yml
@@ -67,19 +76,31 @@ Project initialized. The benchmark design docs are in place, and the first concr
 
 ## Install
 
-`TBD`
+```bash
+uv sync
+cp .env.example .env
+```
 
 ## Usage
 
-`TBD`
+Run the first Anthropic starter iteration from the repo root:
+
+```bash
+uv run \
+  python frameworks/anthropic-agent-sdk/intake-triage/agent.py \
+  --fixture benchmarks/intake-triage/fixtures/case-001 \
+  --out results/anthropic-agent-sdk/intake-triage/starter_v1/run-001
+```
 
 ## Next Steps
 
 - Complete Stage 1 longlist research and scoring
 - Select the final three frameworks for hands-on benchmarking
 - Lock the exact provider and model ID in `evaluation/benchmark-execution.yml`
-- Implement the `intake-triage` benchmark in the first framework
-- Run the starter fixture set and record outputs in `results/`
+- Install dependencies from the repo root with `uv sync`
+- Lock the exact provider and model ID in `evaluation/benchmark-execution.yml`
+- Run the Anthropic `intake-triage` implementation against the starter fixtures
+- Record outputs in `results/anthropic-agent-sdk/intake-triage/starter_v1/`
 - Implement evaluators that apply the rubric definitions in `rubrics/`
 - Lock the execution contract and evaluation policies in `evaluation/`
 - Capture framework-level implementation metrics and human ratings alongside task scores
