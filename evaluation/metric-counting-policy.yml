@@ -3,8 +3,11 @@ version: 1
 purpose: >
   Defines how implementation metrics are counted so framework comparisons are
   fair and not inflated by shared harness code or boilerplate differences.
+  Framework-specific agent-construction code is the primary thing being
+  measured, not shared utilities.
 lines_of_code:
   definition: non-empty, non-comment lines in framework-specific implementation files
+  primary_focus: framework-specific agent construction, orchestration, tool wiring, and task logic
   include:
     - framework-specific source files
     - framework-specific configuration files
@@ -12,6 +15,7 @@ lines_of_code:
     - framework-specific task wiring
   exclude:
     - shared benchmark harness code
+    - shared common utilities used across frameworks
     - shared datasets and fixtures
     - shared evaluators and rubric files
     - vendored code
@@ -37,9 +41,17 @@ setup_steps:
 counting_rules:
   per_task_snapshot: count only the files and LOC needed for that framework-task pair
   final_framework_rollup: aggregate all framework-specific implementation files across tasks
+  shared_utils_policy:
+    guidance: shared utilities should live in a common area and be excluded from framework-specific LOC scoring
+    examples:
+      - workspace setup helpers
+      - common artifact writers
+      - prompt-pack readers
+      - evaluator helpers reused across frameworks
 measurement_method:
   primary: cloc_style_non_comment_lines
   fallback: manual_count_with_note
 documentation_requirements:
   - Every framework review must state what was counted.
   - Any exclusion or exception must be explained in notes.
+  - Reviews must clearly distinguish framework-specific agent code from shared utility code.

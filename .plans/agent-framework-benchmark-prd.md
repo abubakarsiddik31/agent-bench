@@ -343,7 +343,9 @@ The minimum per-task framework snapshot schema is:
   "score_breakdown": {
     "tool_calling": 0,
     "orchestration": 0,
-    "ease_of_use": 0,
+    "human_review_quality": 0,
+    "ease_of_implementation": 0,
+    "lines_of_code_required": 0,
     "readability": 0,
     "extensibility": 0,
     "observability": 0
@@ -362,8 +364,9 @@ The minimum framework assessment schema is:
   "score_breakdown": {
     "tool_calling": 0,
     "orchestration": 0,
-    "ease_of_use": 0,
-    "implementation_effort": 0,
+    "human_review_quality": 0,
+    "ease_of_implementation": 0,
+    "lines_of_code_required": 0,
     "readability": 0,
     "extensibility": 0,
     "observability": 0
@@ -394,6 +397,18 @@ The benchmark will use a two-part scorecard:
 - Task performance score: how well the framework enables successful task execution
 - Framework quality score: how strong the framework is as a developer/operator platform
 
+The framework quality score is the primary decision surface for framework selection.
+It must explicitly reflect these evaluation dimensions:
+
+- Tool-calling reliability and ergonomics
+- Orchestration primitives and control
+- Human review quality
+- Ease of implementation
+- Lines of code required
+- Readability of the implementation
+- Extensibility for future tasks
+- Observability, tracing, and debugging support
+
 ### Final Weights
 
 | Score group | Weight |
@@ -422,11 +437,18 @@ The framework quality score will be assessed separately using a framework-level 
 | --- | --- |
 | Tool-calling ergonomics and reliability | 20% |
 | Orchestration primitives and control | 20% |
-| Ease of use and developer ergonomics | 15% |
-| Implementation effort and lines of code | 15% |
+| Human review quality | 10% |
+| Ease of implementation | 10% |
+| Lines of code required | 10% |
 | Readability and maintainability | 10% |
 | Extensibility and reuse potential | 10% |
 | Observability and debugging support | 10% |
+
+Framework-quality interpretation notes:
+
+- Human review quality measures how easy it is for a reviewer to inspect agent behavior, understand the implementation, and score it consistently.
+- Lines of code required must emphasize framework-specific agent-construction code, not shared benchmark utilities.
+- Shared utilities should live in a common area and must not dominate framework-quality scoring for any single framework-task implementation.
 
 ### Ranking Eligibility Rules
 

@@ -1,8 +1,8 @@
 id: review_form
 version: 1
 purpose: >
-  Standardizes human review so ease of use, readability, and extensibility are
-  scored through the same checklist across frameworks.
+  Standardizes human review so framework-selection criteria are scored through
+  the same checklist across frameworks.
 reviewer_requirements:
   minimum_reviewers_for_final_rollup: 2
   required_roles:
@@ -25,10 +25,12 @@ questions:
     prompt: Were tools easy to define, invoke, and debug correctly?
   - id: orchestration
     prompt: Was multi-step control flow clear and maintainable?
-  - id: ease_of_use
-    prompt: How quickly could a developer become productive in this framework?
-  - id: implementation_effort
-    prompt: How much code, glue, and setup work was required to complete the task?
+  - id: human_review_quality
+    prompt: How easy was it for a reviewer to inspect outputs, behavior, and code and score the implementation confidently?
+  - id: ease_of_implementation
+    prompt: How quickly could a developer implement the task cleanly in this framework?
+  - id: lines_of_code_required
+    prompt: How much framework-specific agent code was required, excluding shared benchmark utilities?
   - id: readability
     prompt: How readable was the resulting implementation for another engineer?
   - id: extensibility

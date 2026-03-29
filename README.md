@@ -18,6 +18,9 @@ This repository exists to compare agent frameworks in a structured way instead o
 The benchmark will begin with desk research across a longlist of frameworks and then narrow to three finalists. Those finalists will be compared on the same benchmark tasks, with shared success criteria and repeat runs where feasible.
 
 The benchmark is intended to evaluate frameworks, not models. Task results are only one part of the decision; the benchmark will also compare tool calling, orchestration, human review quality, ease of use, implementation effort, readability, extensibility, and observability.
+The framework scorecard uses these explicit dimensions: tool-calling reliability and ergonomics, orchestration primitives and control, human review quality, ease of implementation, lines of code required, readability, extensibility, and observability.
+
+Framework-specific agent code is the primary unit of comparison. Shared helpers should live in a common area and should not dominate framework-level scoring.
 
 The implementation flow is framework-by-framework and task-by-task: implement one task, evaluate it immediately, record framework implementation notes, and then continue to the next task.
 
@@ -44,6 +47,8 @@ This repo is still early, but the intended structure is:
 │   └── intake-triage/
 │       ├── prompt-pack.yml
 │       └── fixtures/
+├── common/
+│   └── benchmark_utils.py
 ├── frameworks/
 │   └── anthropic-agent-sdk/
 │       └── intake-triage/
@@ -119,7 +124,7 @@ Evaluation happens in two layers:
 
 2. Framework evaluation
    - After task execution, we record implementation and operator experience.
-   - This includes tool calling, orchestration, ease of use, implementation effort, readability, extensibility, and observability.
+   - This includes tool-calling reliability and ergonomics, orchestration primitives and control, human review quality, ease of implementation, lines of code required, readability, extensibility, and observability.
    - Final framework ranking uses both the task-performance score and the framework-quality score.
 
 Evaluation model:
@@ -142,11 +147,11 @@ Current evaluation status:
 
 ## Scoreboard
 
-This table is the high-level benchmark view. Each row should be backed by the saved `evaluation_summary.json` for that run.
+This table is the high-level benchmark view. It should reflect both task success and framework quality.
 
-| Framework | Task | Run | Execution | Contract | Final Score | Notes |
-| --- | --- | --- | --- | --- | --- | --- |
-| Anthropic Agent SDK | `intake-triage` | `run-003` | Success | Pass | `5.0 / 5.0` | Saved in `results/anthropic-agent-sdk/intake-triage/starter_v1/run-003/evaluation_summary.json`. Normalized artifact matching passed, and all semantic checks passed. |
+| Framework | Task | Run | Task Score | Tool Calling | Orchestration | Human Review | Ease of Impl | LOC Required | Readability | Extensibility | Observability | Final Score |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Anthropic Agent SDK | `intake-triage` | `run-003` | `5.0 / 5.0` | Pending | Pending | Pending | Pending | Pending | Pending | Pending | Pending | Pending |
 
 ## Next Steps
 

@@ -50,28 +50,38 @@ criteria:
       low: Control flow is hard to express or reason about.
       medium: Orchestration is workable with some complexity or indirection.
       high: Orchestration is expressive, clear, and easy to control.
-  - id: ease_of_use
-    weight: 15
+  - id: human_review_quality
+    weight: 10
     maps_to:
       - developer_experience_and_implementation_effort
-    description: Overall developer ergonomics, API clarity, and onboarding speed.
+    description: How easy it is for human reviewers to inspect agent behavior, understand the implementation, and rate the work consistently.
+    anchors:
+      low: Review requires guesswork because outputs, flow, or code are hard to inspect.
+      medium: Review is possible but needs extra interpretation or manual reconstruction.
+      high: Review is straightforward because outputs, behavior, and code structure are easy to inspect.
+  - id: ease_of_implementation
+    weight: 10
+    maps_to:
+      - developer_experience_and_implementation_effort
+    description: Overall implementation ergonomics, API clarity, and onboarding speed.
     anchors:
       low: Steep learning curve and confusing API surface.
       medium: Usable with moderate ramp-up and some rough edges.
       high: Fast to learn, clear to use, and low-friction in practice.
-  - id: implementation_effort
-    weight: 15
-    maps_to:
-      - developer_experience_and_implementation_effort
-    description: Amount of implementation effort required, including code volume and setup overhead.
-    anchors:
-      low: Requires excessive boilerplate, setup, or custom glue code.
-      medium: Moderate code volume and acceptable setup burden.
-      high: Efficient to implement with low ceremony and strong defaults.
     metrics:
-      - lines_of_code
       - files_touched
       - setup_steps
+  - id: lines_of_code_required
+    weight: 10
+    maps_to:
+      - developer_experience_and_implementation_effort
+    description: Framework-specific code volume required for the agent implementation, excluding shared benchmark utilities.
+    anchors:
+      low: Requires excessive framework-specific code, glue, or boilerplate.
+      medium: Requires a moderate amount of framework-specific implementation code.
+      high: Requires little framework-specific code while remaining clear and complete.
+    metrics:
+      - lines_of_code
   - id: readability
     weight: 10
     maps_to:
