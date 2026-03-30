@@ -1,0 +1,15 @@
+Operator phone note
+Date: 2026-03-18 07:30 ET
+Taken by: Rosa
+
+Caller reported:
+- outage at same Lakefront Marina Square location
+- "south entry" controller affected
+- did not have the asset sticker visible
+- thinks previous remote diagnostics already looked at the same side
+- wants onsite dispatch if possible
+
+Freeform remarks:
+- This is exactly the kind of call where the generic client ref causes confusion
+- South-entry wording nudges one record higher than the other, but it still is not enough to collapse the ambiguity completely
+- Human review is safer than pretending the side clue is a definitive asset ID

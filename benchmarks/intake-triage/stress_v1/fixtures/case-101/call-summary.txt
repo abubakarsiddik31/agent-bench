@@ -1,0 +1,23 @@
+Call summary
+Recorded by: Leah P.
+Date: 2026-03-11 14:25 ET
+
+Inbound caller said they were following up on "the live Harbor Point cooler, not the one that got scrapped."
+
+Raw notes:
+- caller = Jenna O. maybe from logistics or facilities
+- site definitely 4100 Harbor Point / Harbor Pt / Harbor Point Rd, Bayview NJ
+- she referenced BR-71209 at first because it was on a spreadsheet
+- when asked if that was the active record she said no, that might be the old export number
+- she also mentioned OPS-4100-2026-A as the number their client success rep told them to keep using
+- asset sticker ends 8842
+- same contact phone as prior scheduling thread
+- wants inspection resumed, not a brand new case
+
+Agent observations:
+- strong chance caller is talking about the active unit tied to the current site record
+- stale provider ref could cause a false match to the retired equipment unless the agent checks the notes
+- no obvious missing fields from the call other than the usual confirmation that the old unit is retired
+
+Recommendation from call taker:
+Treat this as continuation of the active Harbor Point cooling-unit workflow unless a reviewer finds evidence that the serial ending 8842 moved to another record.

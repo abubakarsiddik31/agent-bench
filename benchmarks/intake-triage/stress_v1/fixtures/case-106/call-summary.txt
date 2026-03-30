@@ -1,0 +1,15 @@
+Escalation desk summary
+Date: 2026-03-25 06:31 ET
+Agent: Mina
+
+Caller wanted to know which Summit team owns the Depot Loop gate controller.
+
+Live notes:
+- same customer, same site, same asset ID GATE-2
+- same client ref on both candidate records
+- managed-services record exists but sounds provisional
+- municipal record still looks active
+- caller explicitly said a human review step is acceptable
+
+Desk interpretation:
+This is not a clean update and not a clean transfer. Same provider family reduces the signal that a transfer is final, while the provisional child record keeps duplicate-review alive. Strong candidate for duplicate_review unless final handoff evidence appears.

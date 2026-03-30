@@ -36,6 +36,8 @@ user_prompt_template: |
   - `existing-portfolio.json`
   - `activity-log.json`
   - `intake-notes.md`
+  - `email-thread.md`
+  - `call-summary.txt`
   - `./shared/matching-policy.json`
   - `./shared/required-fields-matrix.json`
   - `./shared/provider-aliases.json`
@@ -56,6 +58,7 @@ user_prompt_template: |
     - `transfer`
     - `duplicate_review`
   - Candidate ranking must be evidence-based and must mention contradictory signals.
+  - The decision must incorporate relevant evidence from unstructured files, not just the JSON fields.
   - Missing fields must be grouped into:
     - `must_have`
     - `later_required`

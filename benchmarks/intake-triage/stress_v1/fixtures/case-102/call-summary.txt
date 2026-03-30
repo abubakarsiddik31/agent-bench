@@ -1,0 +1,18 @@
+Call center summary
+Timestamp: 2026-03-16 10:18 ET
+Agent: Priya S.
+
+Caller: Elaine Sosa
+Company: Vantage Cold Storage
+
+Messy notes from live call:
+- "Meridian Ops" is the name they use verbally
+- old vendor was "North Axis" or "North Axis FS"
+- same freezer controller as before, level 2
+- same suite 200 location on Foundry
+- they believe ownership changed, not equipment
+- caller said there is an older Meridian record at a different address that should not be picked just because it already has a Meridian-style ref
+- she explicitly said "please do not open a duplicate"
+
+Interpretation:
+This sounds like an ownership migration across provider families. Strong candidate for transfer if the asset and site align with an existing North Axis record. A closed Meridian record at another address would be a tempting but incorrect shortcut.

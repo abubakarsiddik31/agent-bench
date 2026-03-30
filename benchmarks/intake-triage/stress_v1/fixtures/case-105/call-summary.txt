@@ -1,0 +1,14 @@
+Mobile form follow-up
+Agent: Caleb
+Date: 2026-03-22 18:05 ET
+
+Caller summary:
+- Nora P. from Saint Anne / St. Anne / SADC warehouse
+- references BR-77109
+- says same Dock 04 controller as prior paused ticket
+- mobile form was incomplete and likely missing email plus date range
+- no indication they want a new case
+
+Additional notes:
+- Address shorthand "Mercer Ind Blvd" should normalize to Mercer Industrial Boulevard
+- This is a good test of whether the agent can recover the right update path from sparse input instead of penalizing missing fields too early

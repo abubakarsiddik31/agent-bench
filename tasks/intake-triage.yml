@@ -14,6 +14,8 @@ inputs:
   - existing_portfolio: current records and historical metadata
   - activity_log: historical notes, handoff events, or normalization clues
   - intake_notes: operator notes that may clarify or complicate the packet
+  - email_thread: long-form email evidence with stale references, forwarded text, and conflicting claims
+  - call_summary: messy phone notes with shorthand, uncertainty, and operational hints
   - matching_policy: weighted signals and disposition rules
   - provider_aliases: provider family and migration context
   - review_guardrails: override and caution rules for ambiguous cases
@@ -25,6 +27,7 @@ allowed_tools:
   - structured_output_validation
 workflow:
   - Parse the intake packet into normalized fields.
+  - Extract and reconcile evidence from structured and unstructured inputs.
   - Search the portfolio for exact and fuzzy candidate matches.
   - Reconcile contradictory evidence across references, aliases, notes, and activity history.
   - Rank candidate matches and decide new_record, update, transfer, or duplicate_review.
@@ -50,6 +53,7 @@ scoring_focus:
   - confidence_calibration
 agentic_requirements:
   - Must combine exact and fuzzy evidence, not rely on a single key.
+  - Must extract relevant clues from long unstructured notes, emails, and call summaries.
   - Must reconcile conflicting evidence instead of ignoring it.
   - Must apply shared guardrails when references are stale, reused, or ambiguous.
   - Must make a final disposition decision.

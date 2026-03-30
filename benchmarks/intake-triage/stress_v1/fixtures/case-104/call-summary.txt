@@ -1,0 +1,15 @@
+Phone intake summary
+Time: 2026-03-20 10:02 ET
+Agent: Jonah
+
+Caller sounded clear that this is a newly commissioned controller, not a reopened issue.
+
+Raw fragments:
+- same campus address as old jobs
+- asset now called GEN-3
+- old ref BR-44019 came from a forwarded email, not from the current project docs
+- customer explicitly warned not to fold this into elevator work
+- would accept a new record if the system shows no credible generator match
+
+Takeaway:
+Strong risk of false positive if the agent over-trusts same-site matches or reused provider refs. The right move is likely new record unless a genuinely aligned generator controller record already exists.
