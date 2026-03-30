@@ -197,9 +197,10 @@ Current evaluation status:
 
 This table is the high-level benchmark view. It should reflect both task success and framework quality.
 
-| Framework | Task | Run | Task Score | Tool Calling | Orchestration | Human Review | Ease of Impl | LOC Required | Readability | Extensibility | Observability | Cost | Final Score |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Anthropic Agent SDK | `intake-triage` | `run-003` | `4.7 / 5.0` | `4.5` | `4.5` | `4.5` | `5.0` | `5.0` | `4.5` | `4.5` | `5.0` | Not recorded | `4.675 / 5.0` |
+| Framework | Task | Run | Task Score | Tool Calling | Orchestration | Human Review | Ease of Impl | LOC Required | Readability | Extensibility | Observability | Cost | Duration | Final Score |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Anthropic Agent SDK | `intake-triage` | `run-003` | `4.7 / 5.0` | `4.5` | `4.5` | `4.5` | `5.0` | `5.0` | `4.5` | `4.5` | `5.0` | Not recorded | Not recorded | `4.675 / 5.0` |
+| Anthropic Agent SDK | `intake-triage` | `stress_v1/run-001` | `4.75 / 5.0` | `4.5` | `4.5` | `3.5` | `5.0` | `5.0` | `4.5` | `4.5` | `5.0` | `$0.4601` | `283.857s` | `4.65 / 5.0` |
 
 ## Next Steps
 

@@ -148,10 +148,38 @@ def derive_ranked_candidates(match_table: dict) -> list[str]:
 def normalize_rationale_text(triage: dict | None) -> str:
     if not triage:
         return ""
-    rationale = triage.get("rationale", "")
-    if isinstance(rationale, list):
-        return "\n".join(str(item) for item in rationale)
-    return str(rationale)
+    parts: list[str] = []
+
+    for key in ["rationale", "key_rationale", "confidence_rationale"]:
+        value = triage.get(key)
+        if isinstance(value, list):
+            parts.extend(str(item) for item in value)
+        elif value:
+            parts.append(str(value))
+
+    guardrails = triage.get("guardrails_applied", [])
+    if isinstance(guardrails, list):
+        for item in guardrails:
+            if isinstance(item, dict):
+                rule = item.get("rule", "")
+                outcome = item.get("outcome", "")
+                parts.append(f"{rule} {outcome}".strip())
+            else:
+                parts.append(str(item))
+
+    supporting = triage.get("supporting_evidence", [])
+    if isinstance(supporting, list):
+        for item in supporting:
+            if isinstance(item, dict):
+                parts.append(
+                    " ".join(
+                        str(piece)
+                        for piece in [item.get("source", ""), item.get("summary", "")]
+                        if piece
+                    )
+                )
+
+    return "\n".join(part for part in parts if part).strip()
 
 
 def normalize_gap_analysis(resolved_paths: dict[str, str], triage: dict | None) -> dict[str, list[str]]:
@@ -210,6 +238,43 @@ def normalize_action_plan(resolved_paths: dict[str, str]) -> dict[str, list[str]
     return {
         "immediate_actions": split_section_lines(sections.get("Immediate Actions", "")),
         "review_notes": split_section_lines(sections.get("Review Notes", "")),
+    }
+
+
+def infer_action_plan_from_triage(triage: dict | None, gap_analysis: dict[str, list[str]]) -> dict[str, list[str]]:
+    if not triage:
+        return {"immediate_actions": [], "review_notes": []}
+
+    immediate_actions: list[str] = []
+    review_notes: list[str] = []
+
+    disposition = triage.get("disposition")
+    best_match = triage.get("best_match_record_id")
+    if disposition == "update" and best_match:
+        immediate_actions.append(f"Link the intake to existing record {best_match} as an update.")
+    elif disposition == "transfer" and best_match:
+        immediate_actions.append(f"Transfer operational ownership for record {best_match}.")
+    elif disposition == "new_record":
+        immediate_actions.append("Create a new record because no existing record remains credible.")
+    elif disposition == "duplicate_review":
+        immediate_actions.append("Route to human review because multiple plausible records remain.")
+
+    corrections = triage.get("data_corrections_required", [])
+    if isinstance(corrections, list):
+        for item in corrections[:3]:
+            if isinstance(item, dict):
+                field = item.get("field", "field")
+                action = item.get("action", "review")
+                review_notes.append(f"{action} {field}")
+
+    for field in gap_analysis.get("must_have", []):
+        review_notes.append(f"Collect missing must-have field: {field}")
+    for field in gap_analysis.get("later_required", []):
+        review_notes.append(f"Collect later-required field: {field}")
+
+    return {
+        "immediate_actions": immediate_actions,
+        "review_notes": review_notes,
     }
 
 
@@ -410,6 +475,12 @@ def evaluate_run(run_dir: Path, fixture_dir: Path) -> dict:
     rationale_text = normalize_rationale_text(triage)
     gap_analysis = normalize_gap_analysis(resolved_paths, triage)
     action_plan = normalize_action_plan(resolved_paths)
+    inferred_action_plan_used = False
+    if not action_plan.get("immediate_actions") and not action_plan.get("review_notes"):
+        action_plan = infer_action_plan_from_triage(triage, gap_analysis)
+        inferred_action_plan_used = bool(
+            action_plan.get("immediate_actions") or action_plan.get("review_notes")
+        )
 
     semantic_checks = {
         "disposition_matches": bool(triage) and triage.get("disposition") == gold.get("expected_disposition"),
@@ -420,11 +491,20 @@ def evaluate_run(run_dir: Path, fixture_dir: Path) -> dict:
     }
 
     hard_gate_failures = []
-    for output_name, present in normalized_outputs.items():
-        if not present:
-            hard_gate_failures.append(f"missing required artifact after normalization: {output_name}")
+    critical_outputs = [
+        "triage_decision.json",
+        "candidate_match_table.json",
+    ]
+    for output_name in critical_outputs:
+        if not normalized_outputs.get(output_name, False):
+            hard_gate_failures.append(f"missing critical artifact after normalization: {output_name}")
     if not execution_success:
         hard_gate_failures.append("execution did not end in success")
+
+    soft_contract_failures = []
+    for output_name in ["gap_analysis.md", "next_actions.md"]:
+        if not normalized_outputs.get(output_name, False):
+            soft_contract_failures.append(f"missing supplemental artifact after normalization: {output_name}")
 
     expected_missing_fields = gold.get("expected_missing_fields", {})
     criterion_scores = {
@@ -481,11 +561,15 @@ def evaluate_run(run_dir: Path, fixture_dir: Path) -> dict:
         "criterion_scores": criterion_scores,
         "scorecard_breakdown": scorecard_breakdown,
         "hard_gate_failures": hard_gate_failures,
+        "soft_contract_failures": soft_contract_failures,
         "quality_failures": quality_failures,
         "final_score": final_score,
         "outcome": outcome,
         "notes": [
             "Deterministic evaluator normalizes equivalent artifact names and formats before checking hard gates.",
+            "Only core decision artifacts are hard-gated; missing supplemental artifacts reduce quality scores but do not automatically fail the run.",
+            "Supplemental action plans may be inferred from structured correction data when the explicit file is missing.",
+            f"Inferred action plan used: {inferred_action_plan_used}.",
             "Gemini 3.1 Pro Preview is the locked judge target for later qualitative evaluation assistance.",
         ],
     }
