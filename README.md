@@ -27,7 +27,7 @@ The implementation flow is framework-by-framework and task-by-task: implement on
 
 The first concrete benchmark package is `intake-triage`, and `stress_v1` is the default comparison split.
 
-The first framework implementations have started under `frameworks/anthropic-agent-sdk/intake-triage/` and `frameworks/openai-agents-sdk/intake-triage/`.
+The first framework implementations have started under `frameworks/anthropic-agent-sdk/intake-triage/`, `frameworks/openai-agents-sdk/intake-triage/`, and `frameworks/google-adk/intake-triage/`.
 
 The detailed benchmark plan lives in [.plans/agent-framework-benchmark-prd.md](.plans/agent-framework-benchmark-prd.md).
 
@@ -54,6 +54,9 @@ This repo is still early, but the intended structure is:
 │   └── evaluation_utils.py
 ├── frameworks/
 │   ├── anthropic-agent-sdk/
+│   │   └── intake-triage/
+│   │       └── agent.py
+│   ├── google-adk/
 │   │   └── intake-triage/
 │   │       └── agent.py
 │   └── openai-agents-sdk/
@@ -100,6 +103,7 @@ The root `.env` should contain:
 
 - `ANTHROPIC_API_KEY` for Anthropic framework runs
 - `OPENAI_API_KEY` for OpenAI framework runs and GPT-5.4 evaluation judging
+- `GOOGLE_API_KEY` for Google ADK framework runs with Gemini
 
 ## Usage
 
@@ -120,6 +124,17 @@ uv run python evaluation/run_intake_benchmark.py \
   --fixture benchmarks/intake-triage/stress_v1/fixtures/case-101 \
   --out results/openai-agents-sdk/intake-triage/stress_v1/run-001
 ```
+
+Run the Google ADK benchmark for the same task:
+
+```bash
+uv run python evaluation/run_intake_benchmark.py \
+  --agent-script frameworks/google-adk/intake-triage/agent.py \
+  --fixture benchmarks/intake-triage/stress_v1/fixtures/case-101 \
+  --out results/google-adk/intake-triage/stress_v1/run-001
+```
+
+The Google ADK runner defaults to `gemini-3.1-pro-preview` unless `GOOGLE_ADK_MODEL` or `GEMINI_MODEL` is set.
 
 Re-score an existing run without calling the agent again:
 
@@ -205,6 +220,7 @@ This table is the high-level benchmark view. It should reflect both task success
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Anthropic Agent SDK | `intake-triage` | `stress_v1/run-001` | `4.75 / 5.0` | `4.875` | `4.5` | `3.5` | `5.0` | `5.0` | `4.5` | `4.5` | `5.0` | `$0.4601` | `283.857s` | `4.688 / 5.0` |
 | OpenAI Agents SDK | `intake-triage` | `stress_v1/run-003` | `4.75 / 5.0` | `4.893` | `4.5` | `3.5` | `4.333` | `3.0` | `2.5` | `4.5` | `5.0` | `$0.11` | `72.222s` | `4.456 / 5.0` |
+| Google ADK | `intake-triage` | `stress_v1/run-001` | `3.5 / 5.0` | `4.2` | `4.0` | `4.1` | `4.6` | `3.0` | `4.5` | `4.1` | `4.4` | `Not recorded` | `117.643s` | `3.805 / 5.0` |
 
 ## Next Steps
 
