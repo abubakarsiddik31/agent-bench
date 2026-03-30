@@ -1,0 +1,16 @@
+{
+  "events": [
+    {
+      "timestamp": "2026-03-17T12:10:00Z",
+      "record_id": "REC-5301",
+      "type": "technician_note",
+      "text": "North door controller stable. South entry controller still waiting on replacement part."
+    },
+    {
+      "timestamp": "2026-03-17T15:50:00Z",
+      "record_id": "REC-5302",
+      "type": "technician_note",
+      "text": "Remote diagnostics suggest south entry controller B is failing intermittently."
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "records": [
+    {
+      "record_id": "REC-5101",
+      "status": "awaiting_inspection",
+      "service_provider": "BlueRoute Service Ops",
+      "customer": {
+        "name": "North Harbor Logistics"
+      },
+      "site": {
+        "address_line_1": "4100 Harbor Point Road",
+        "city": "Bayview",
+        "state": "NJ",
+        "postal_code": "07002"
+      },
+      "asset": {
+        "asset_id": "CU-17",
+        "asset_type": "Cooling Unit",
+        "serial_number": "CU17-NHL-8842"
+      },
+      "reference_numbers": {
+        "client_case_ref": "OPS-4100-2026-A",
+        "provider_case_ref": "BR-88421"
+      },
+      "contacts": {
+        "primary_contact": {
+          "email": "jortiz@northharbor.example"
+        }
+      }
+    },
+    {
+      "record_id": "REC-5102",
+      "status": "closed",
+      "service_provider": "BlueRoute Service Ops",
+      "customer": {
+        "name": "North Harbor Logistics"
+      },
+      "site": {
+        "address_line_1": "4100 Harbor Point Road",
+        "city": "Bayview",
+        "state": "NJ",
+        "postal_code": "07002"
+      },
+      "asset": {
+        "asset_id": "CU-17-OLD",
+        "asset_type": "Cooling Unit",
+        "serial_number": "CU17-NHL-1121"
+      },
+      "reference_numbers": {
+        "provider_case_ref": "BR-71209"
+      }
+    }
+  ]
+}

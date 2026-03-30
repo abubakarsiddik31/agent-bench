@@ -1,0 +1,35 @@
+{
+  "intake_id": "INT-102",
+  "submitted_at": "2026-03-16T13:40:00Z",
+  "service_provider": "Meridian Ops",
+  "customer": {
+    "name": "Vantage Cold Storage"
+  },
+  "site": {
+    "address_line_1": "55 Foundry Avenue Suite 200",
+    "city": "Riverton",
+    "state": "PA",
+    "postal_code": "19077"
+  },
+  "asset": {
+    "asset_id": "FREEZER-L2",
+    "asset_type": "Industrial Freezer Controller",
+    "serial_number": "FRZ-L2-9081"
+  },
+  "reference_numbers": {
+    "provider_case_ref": "MAO-99117"
+  },
+  "requested_actions": [
+    "assume active ownership",
+    "continue maintenance window"
+  ],
+  "contacts": {
+    "primary_contact": {
+      "name": "Elaine Sosa",
+      "email": "esosa@vantagecold.example"
+    }
+  },
+  "service_window": {
+    "preferred_date_range": "2026-03-18 to 2026-03-20"
+  }
+}

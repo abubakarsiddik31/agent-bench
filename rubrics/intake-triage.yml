@@ -11,7 +11,7 @@ hard_gates:
     description: Missing information is identified and categorized.
 criteria:
   - id: matching_accuracy
-    weight: 30
+    weight: 25
     maps_to:
       - output_quality_and_task_success
     description: Accuracy of candidate ranking and final disposition.
@@ -19,18 +19,28 @@ criteria:
       low: Disposition is wrong or candidate ranking is not credible.
       medium: Final disposition is usually correct with some ranking weakness.
       high: Disposition and ranking are accurate and well-supported.
+  - id: policy_application
+    weight: 20
+    maps_to:
+      - output_quality_and_task_success
+      - reliability_and_repeatability
+    description: Correct use of guardrails, provider alias rules, and contradictory evidence.
+    anchors:
+      low: Ignores important policy or contradiction signals and overcommits.
+      medium: Applies some policy correctly but misses important caveats.
+      high: Applies guardrails correctly and handles contradictory evidence explicitly.
   - id: explanation_quality
     weight: 20
     maps_to:
       - output_quality_and_task_success
       - human_review_quality
-    description: Clarity and evidence quality of the rationale behind the decision.
+    description: Clarity and evidence quality of the rationale behind the decision, including why nearby alternatives lost.
     anchors:
       low: Rationale is vague, missing, or unsupported.
       medium: Rationale is understandable but incomplete or uneven.
       high: Rationale is concise, evidence-based, and decision-ready.
   - id: gap_prioritization
-    weight: 20
+    weight: 15
     maps_to:
       - output_quality_and_task_success
     description: Correct prioritization of must-have, later-required, and optional gaps.
@@ -39,7 +49,7 @@ criteria:
       medium: Major priorities are right, but some gap severity is off.
       high: Gaps are prioritized correctly and operationally.
   - id: actionability
-    weight: 15
+    weight: 10
     maps_to:
       - human_review_quality
     description: Usefulness of the next-step recommendation for an operator.
@@ -48,7 +58,7 @@ criteria:
       medium: Next steps are usable with some manual interpretation.
       high: Next steps are specific, ordered, and easy to act on.
   - id: confidence_calibration
-    weight: 15
+    weight: 10
     maps_to:
       - reliability_and_repeatability
     description: Whether confidence matches the strength of the evidence.

@@ -1,0 +1,23 @@
+{
+  "fixture_id": "case_102_transfer_alias_migration",
+  "expected_disposition": "transfer",
+  "expected_best_match_record_id": "REC-5204",
+  "expected_confidence": "high",
+  "expected_top_ranked_candidates": [
+    "REC-5204",
+    "REC-5205"
+  ],
+  "expected_missing_fields": {
+    "must_have": [],
+    "later_required": [
+      "reference_numbers.client_case_ref"
+    ],
+    "optional": []
+  },
+  "rationale_must_include": [
+    "provider migration",
+    "same site address",
+    "same asset identifier",
+    "do not create a duplicate record"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "fixture_id": "case_106_duplicate_review_transfer_conflict",
+  "expected_disposition": "duplicate_review",
+  "expected_best_match_record_id": null,
+  "expected_confidence": "medium",
+  "expected_top_ranked_candidates": [
+    "REC-5602",
+    "REC-5601"
+  ],
+  "expected_missing_fields": {
+    "must_have": [],
+    "later_required": [
+      "reference_numbers.provider_case_ref"
+    ],
+    "optional": []
+  },
+  "rationale_must_include": [
+    "same provider family",
+    "ownership handoff is not final",
+    "two records remain plausible",
+    "human review is required"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "rules": [
+    "A provider_case_ref may be stale or copied forward incorrectly if the activity log says it was reused.",
+    "A closed record should not win unless the evidence explicitly says the record should be resumed or reopened.",
+    "A client_case_ref may legitimately map to multiple records when a site has multiple similar assets.",
+    "Provider aliases inside the same family do not by themselves imply transfer.",
+    "A migration relationship across provider families should push toward transfer when other core identifiers align.",
+    "When two candidates remain plausible after applying all guardrails, choose duplicate_review instead of guessing."
+  ]
+}

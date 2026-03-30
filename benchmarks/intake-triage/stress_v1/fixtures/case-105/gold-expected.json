@@ -1,0 +1,28 @@
+{
+  "fixture_id": "case_105_update_sparse_packet_reconstructed",
+  "expected_disposition": "update",
+  "expected_best_match_record_id": "REC-5507",
+  "expected_confidence": "medium",
+  "expected_top_ranked_candidates": [
+    "REC-5507",
+    "REC-5508"
+  ],
+  "expected_missing_fields": {
+    "must_have": [
+      "contacts.primary_contact.email"
+    ],
+    "later_required": [
+      "service_window.preferred_date_range"
+    ],
+    "optional": [
+      "contacts.primary_contact.phone",
+      "asset.serial_number"
+    ]
+  },
+  "rationale_must_include": [
+    "same provider_case_ref",
+    "same asset identifier",
+    "customer name normalization",
+    "contact email is missing from the inbound packet"
+  ]
+}

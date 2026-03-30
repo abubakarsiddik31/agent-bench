@@ -14,6 +14,7 @@ if str(REPO_ROOT) not in sys.path:
 from common.benchmark_utils import (  # noqa: E402
     build_prompt,
     collect_output_presence,
+    infer_prompt_pack_path,
     parse_args,
     prepare_workspace,
     read_prompt_pack,
@@ -69,7 +70,7 @@ async def main() -> None:
 
     fixture_dir, out_dir = parse_args(sys.argv[1:])
     repo_root_path = repo_root(__file__)
-    prompt_pack = read_prompt_pack(repo_root_path / "benchmarks" / "intake-triage" / "prompt-pack.yml")
+    prompt_pack = read_prompt_pack(infer_prompt_pack_path(fixture_dir))
     workspace_dir = out_dir / "workspace"
     trace_path = out_dir / "agent-trace.jsonl"
 

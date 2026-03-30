@@ -1,0 +1,16 @@
+{
+  "events": [
+    {
+      "timestamp": "2026-03-10T15:00:00Z",
+      "record_id": "REC-5101",
+      "type": "internal_note",
+      "text": "Vendor export reused old provider ref BR-71209 from the retired unit. Continue treating OPS-4100-2026-A as the authoritative reference."
+    },
+    {
+      "timestamp": "2026-03-10T15:20:00Z",
+      "record_id": "REC-5102",
+      "type": "closure_note",
+      "text": "Retired legacy unit CU-17-OLD. Do not reopen unless serial 1121 specifically reappears."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "events": [
+    {
+      "timestamp": "2026-03-21T09:35:00Z",
+      "record_id": "REC-5507",
+      "type": "phone_log",
+      "text": "Nora Pierce called asking whether parts-hold ticket BR-77109 can resume next week."
+    },
+    {
+      "timestamp": "2026-03-21T09:42:00Z",
+      "record_id": "REC-5507",
+      "type": "normalization_note",
+      "text": "Customer name appears as St. Anne, Saint Anne, or SADC in inbound channels. Treat as same account."
+    }
+  ]
+}

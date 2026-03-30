@@ -1,0 +1,49 @@
+{
+  "records": [
+    {
+      "record_id": "REC-5204",
+      "status": "in_progress",
+      "service_provider": "North Axis Field Services",
+      "customer": {
+        "name": "Vantage Cold Storage"
+      },
+      "site": {
+        "address_line_1": "55 Foundry Ave Ste 200",
+        "city": "Riverton",
+        "state": "PA",
+        "postal_code": "19077"
+      },
+      "asset": {
+        "asset_id": "FREEZER-L2",
+        "asset_type": "Industrial Freezer Controller",
+        "serial_number": "FRZ-L2-9081"
+      },
+      "reference_numbers": {
+        "client_case_ref": "NAX-VCS-55-L2",
+        "provider_case_ref": "NAX-55110"
+      }
+    },
+    {
+      "record_id": "REC-5205",
+      "status": "closed",
+      "service_provider": "Meridian Asset Ops",
+      "customer": {
+        "name": "Vantage Cold Storage"
+      },
+      "site": {
+        "address_line_1": "57 Foundry Avenue",
+        "city": "Riverton",
+        "state": "PA",
+        "postal_code": "19077"
+      },
+      "asset": {
+        "asset_id": "FREEZER-L1",
+        "asset_type": "Industrial Freezer Controller",
+        "serial_number": "FRZ-L1-9001"
+      },
+      "reference_numbers": {
+        "provider_case_ref": "MAO-99117"
+      }
+    }
+  ]
+}

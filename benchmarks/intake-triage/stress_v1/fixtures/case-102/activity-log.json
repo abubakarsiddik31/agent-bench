@@ -1,0 +1,16 @@
+{
+  "events": [
+    {
+      "timestamp": "2026-01-18T09:00:00Z",
+      "record_id": "REC-5204",
+      "type": "migration_note",
+      "text": "North Axis account Vantage Cold Storage moved to Meridian after 2026-01-15. Matching records should transfer when asset and site align."
+    },
+    {
+      "timestamp": "2026-03-14T11:45:00Z",
+      "record_id": "REC-5204",
+      "type": "handoff_note",
+      "text": "Pending ownership handoff to Meridian Ops. Do not create a duplicate record."
+    }
+  ]
+}

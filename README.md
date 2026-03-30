@@ -24,7 +24,7 @@ Framework-specific agent code is the primary unit of comparison. Shared helpers 
 
 The implementation flow is framework-by-framework and task-by-task: implement one task, evaluate it immediately, record framework implementation notes, and then continue to the next task.
 
-The first concrete benchmark package is `intake-triage`, with a starter prompt pack, shared policies, and gold fixtures under `benchmarks/intake-triage/`.
+The first concrete benchmark package is `intake-triage`, with both a `starter_v1` split for harness validation and a harder `stress_v1` split for real framework comparison.
 
 The first framework implementation has started under `frameworks/anthropic-agent-sdk/intake-triage/`.
 
@@ -46,7 +46,8 @@ This repo is still early, but the intended structure is:
 │   ├── README.md
 │   └── intake-triage/
 │       ├── prompt-pack.yml
-│       └── fixtures/
+│       ├── fixtures/
+│       └── stress_v1/
 ├── common/
 │   └── benchmark_utils.py
 ├── frameworks/
@@ -95,7 +96,7 @@ The root `.env` should contain:
 
 ## Usage
 
-Run the first Anthropic starter iteration from the repo root:
+Run the Anthropic starter iteration from the repo root:
 
 ```bash
 uv run \
@@ -104,12 +105,29 @@ uv run \
   --out results/anthropic-agent-sdk/intake-triage/starter_v1/run-001
 ```
 
+Run the harder stress split from the repo root:
+
+```bash
+uv run \
+  python frameworks/anthropic-agent-sdk/intake-triage/agent.py \
+  --fixture benchmarks/intake-triage/stress_v1/fixtures/case-101 \
+  --out results/anthropic-agent-sdk/intake-triage/stress_v1/run-001
+```
+
 Evaluate a completed run from the repo root:
 
 ```bash
 uv run python evaluation/evaluate_intake_run.py \
   --run-dir results/anthropic-agent-sdk/intake-triage/starter_v1/run-003 \
   --fixture-dir benchmarks/intake-triage/fixtures/case-001
+```
+
+Evaluate a stress-split run from the repo root:
+
+```bash
+uv run python evaluation/evaluate_intake_run.py \
+  --run-dir results/anthropic-agent-sdk/intake-triage/stress_v1/run-001 \
+  --fixture-dir benchmarks/intake-triage/stress_v1/fixtures/case-101
 ```
 
 ## Evaluation Flow
@@ -144,6 +162,7 @@ Current evaluation status:
 - Execution and deterministic evaluation are working for Anthropic `run-003`
 - Deterministic contract evaluation is available through `evaluation/evaluate_intake_run.py`
 - Full rubric automation and Gemini-assisted judging are still pending
+- `starter_v1` exists for harness validation; `stress_v1` now exists to better separate framework quality
 
 ## Scoreboard
 
@@ -161,8 +180,9 @@ This table is the high-level benchmark view. It should reflect both task success
 - Install dependencies from the repo root with `uv sync`
 - Lock the exact provider and model ID in `evaluation/benchmark-execution.yml`
 - Decide whether to keep normalized contract matching or force canonical output filenames in the runner
-- Run the remaining Anthropic `intake-triage` starter fixtures
+- Run the new `intake-triage` `stress_v1` fixtures
 - Record outputs in `results/anthropic-agent-sdk/intake-triage/starter_v1/`
+- Add scoring automation for the new harder split
 - Extend the deterministic evaluator with Gemini-based rubric judging
 - Lock the execution contract and evaluation policies in `evaluation/`
 - Capture framework-level implementation metrics and human ratings alongside task scores

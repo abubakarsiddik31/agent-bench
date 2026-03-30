@@ -1,0 +1,46 @@
+{
+  "records": [
+    {
+      "record_id": "REC-5301",
+      "status": "paused_pending_parts",
+      "service_provider": "BlueRoute Service Ops",
+      "customer": {
+        "name": "Lakefront Retail Group"
+      },
+      "site": {
+        "address_line_1": "118 Marina Square",
+        "city": "Ashport",
+        "state": "MI",
+        "postal_code": "49014"
+      },
+      "asset": {
+        "asset_id": "AC-118-A",
+        "asset_type": "Front Entrance Access Controller"
+      },
+      "reference_numbers": {
+        "client_case_ref": "LRG-118-ACCESS"
+      }
+    },
+    {
+      "record_id": "REC-5302",
+      "status": "awaiting_remote_diagnosis",
+      "service_provider": "BlueRoute Service Ops",
+      "customer": {
+        "name": "Lakefront Retail Group"
+      },
+      "site": {
+        "address_line_1": "118 Marina Square",
+        "city": "Ashport",
+        "state": "MI",
+        "postal_code": "49014"
+      },
+      "asset": {
+        "asset_id": "AC-118-B",
+        "asset_type": "Front Entrance Access Controller"
+      },
+      "reference_numbers": {
+        "client_case_ref": "LRG-118-ACCESS"
+      }
+    }
+  ]
+}

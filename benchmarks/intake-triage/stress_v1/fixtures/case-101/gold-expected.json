@@ -1,0 +1,21 @@
+{
+  "fixture_id": "case_101_update_conflicting_refs",
+  "expected_disposition": "update",
+  "expected_best_match_record_id": "REC-5101",
+  "expected_confidence": "medium",
+  "expected_top_ranked_candidates": [
+    "REC-5101",
+    "REC-5102"
+  ],
+  "expected_missing_fields": {
+    "must_have": [],
+    "later_required": [],
+    "optional": []
+  },
+  "rationale_must_include": [
+    "client_case_ref is authoritative",
+    "provider ref was reused or stale",
+    "same site address",
+    "same asset identifier"
+  ]
+}

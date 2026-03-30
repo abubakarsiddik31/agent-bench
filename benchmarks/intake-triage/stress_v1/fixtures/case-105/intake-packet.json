@@ -1,0 +1,30 @@
+{
+  "intake_id": "INT-105",
+  "submitted_at": "2026-03-22T18:10:00Z",
+  "service_provider": "BlueRoute Service Ops",
+  "customer": {
+    "name": "St. Anne Distribution Ctr."
+  },
+  "site": {
+    "address_line_1": "77 Mercer Ind Blvd",
+    "city": "Trenton",
+    "state": "NJ",
+    "postal_code": "08611"
+  },
+  "asset": {
+    "asset_id": "DOCK-04",
+    "asset_type": "Dock Door Controller"
+  },
+  "reference_numbers": {
+    "provider_case_ref": "BR-77109"
+  },
+  "requested_actions": [
+    "resume parts hold review",
+    "confirm firmware level"
+  ],
+  "contacts": {
+    "primary_contact": {
+      "name": "N. Pierce"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "intake_id": "INT-106",
+  "submitted_at": "2026-03-25T06:45:00Z",
+  "service_provider": "Summit Managed Services",
+  "customer": {
+    "name": "Hillside Transit Authority"
+  },
+  "site": {
+    "address_line_1": "12 Depot Loop",
+    "city": "Fairmont",
+    "state": "VA",
+    "postal_code": "22031"
+  },
+  "asset": {
+    "asset_id": "GATE-2",
+    "asset_type": "Security Gate Controller"
+  },
+  "reference_numbers": {
+    "client_case_ref": "HTA-DEPOT-G2"
+  },
+  "requested_actions": [
+    "confirm which provider owns the gate case",
+    "resume field work"
+  ],
+  "contacts": {
+    "primary_contact": {
+      "name": "Omar Vale",
+      "email": "ovale@hillsidetransit.example"
+    }
+  },
+  "service_window": {
+    "preferred_date_range": "2026-03-26 to 2026-03-27"
+  }
+}

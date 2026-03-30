@@ -1,0 +1,71 @@
+{
+  "version": 2,
+  "signals": [
+    {
+      "name": "external_reference_exact",
+      "weight": 30,
+      "description": "Exact match on client_case_ref or provider_case_ref when the reference is not flagged as stale or reused"
+    },
+    {
+      "name": "customer_name_similarity",
+      "weight": 12,
+      "description": "Normalized customer or account name similarity, including punctuation and suffix normalization"
+    },
+    {
+      "name": "site_address_match",
+      "weight": 18,
+      "description": "Normalized site address match using street-type and suite normalization"
+    },
+    {
+      "name": "asset_identifier_match",
+      "weight": 18,
+      "description": "Exact or near-exact asset serial, controller, unit, or equipment identifier match"
+    },
+    {
+      "name": "contact_match",
+      "weight": 8,
+      "description": "Matching primary contact email or phone"
+    },
+    {
+      "name": "historical_activity_support",
+      "weight": 8,
+      "description": "Activity log or note evidence that ties the inbound packet to a specific record"
+    },
+    {
+      "name": "provider_alias_alignment",
+      "weight": 6,
+      "description": "Provider names that map through approved aliases or migration relationships"
+    }
+  ],
+  "negative_signals": [
+    {
+      "name": "reference_reuse_warning",
+      "penalty": 20,
+      "description": "Subtract when a reference is explicitly flagged as stale, reused, or copied forward incorrectly"
+    },
+    {
+      "name": "asset_type_conflict",
+      "penalty": 25,
+      "description": "Subtract when the inbound asset category conflicts with the candidate record's asset category"
+    },
+    {
+      "name": "closed_record_without_reopen_evidence",
+      "penalty": 18,
+      "description": "Subtract when a record is closed and there is no evidence it should be resumed"
+    }
+  ],
+  "disposition_rules": {
+    "update": {
+      "description": "Use when the inbound packet clearly refers to an existing record under the same operating provider family and no meaningful ambiguity remains"
+    },
+    "transfer": {
+      "description": "Use when the inbound packet clearly refers to an existing record but operational ownership has moved to a different provider or provider family"
+    },
+    "new_record": {
+      "description": "Use when no existing record remains credible after applying positive and negative signals"
+    },
+    "duplicate_review": {
+      "description": "Use when two or more records remain plausible after applying policy and a reviewer must resolve the ambiguity"
+    }
+  }
+}

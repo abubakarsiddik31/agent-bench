@@ -1,0 +1,39 @@
+{
+  "provider_families": [
+    {
+      "family_id": "north_axis_family",
+      "canonical_name": "North Axis Field Services",
+      "aliases": [
+        "North Axis Field Services",
+        "North Axis FS",
+        "NAFS"
+      ]
+    },
+    {
+      "family_id": "meridian_family",
+      "canonical_name": "Meridian Asset Ops",
+      "aliases": [
+        "Meridian Asset Ops",
+        "Meridian Ops",
+        "MAO"
+      ]
+    },
+    {
+      "family_id": "summit_family",
+      "canonical_name": "Summit Municipal Ops",
+      "aliases": [
+        "Summit Municipal Ops",
+        "Summit Ops",
+        "Summit Managed Services"
+      ]
+    }
+  ],
+  "migration_relationships": [
+    {
+      "from_family_id": "north_axis_family",
+      "to_family_id": "meridian_family",
+      "effective_date": "2026-01-15",
+      "interpretation": "A clear match from North Axis to Meridian should usually be treated as transfer, not update."
+    }
+  ]
+}

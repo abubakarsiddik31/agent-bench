@@ -1,0 +1,24 @@
+{
+  "fixture_id": "case_104_new_record_false_positive_site",
+  "expected_disposition": "new_record",
+  "expected_best_match_record_id": null,
+  "expected_confidence": "medium",
+  "expected_top_ranked_candidates": [
+    "REC-5402",
+    "REC-5401"
+  ],
+  "expected_missing_fields": {
+    "must_have": [],
+    "later_required": [
+      "reference_numbers.client_case_ref",
+      "asset.serial_number"
+    ],
+    "optional": []
+  },
+  "rationale_must_include": [
+    "same site is a false positive",
+    "asset type or asset identity does not align strongly enough",
+    "closed records should not be resumed",
+    "new project or new asset"
+  ]
+}

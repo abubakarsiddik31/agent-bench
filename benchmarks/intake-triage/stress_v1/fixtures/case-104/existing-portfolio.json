@@ -1,0 +1,46 @@
+{
+  "records": [
+    {
+      "record_id": "REC-5401",
+      "status": "closed",
+      "service_provider": "BlueRoute Service Ops",
+      "customer": {
+        "name": "Ridgeview Medical Campus"
+      },
+      "site": {
+        "address_line_1": "900 Wellness Plaza",
+        "city": "Cedar Grove",
+        "state": "OH",
+        "postal_code": "44119"
+      },
+      "asset": {
+        "asset_id": "ELV-2",
+        "asset_type": "Elevator Safety Controller"
+      },
+      "reference_numbers": {
+        "provider_case_ref": "BR-44019"
+      }
+    },
+    {
+      "record_id": "REC-5402",
+      "status": "closed",
+      "service_provider": "BlueRoute Service Ops",
+      "customer": {
+        "name": "Ridgeview Medical Campus"
+      },
+      "site": {
+        "address_line_1": "900 Wellness Plaza",
+        "city": "Cedar Grove",
+        "state": "OH",
+        "postal_code": "44119"
+      },
+      "asset": {
+        "asset_id": "GEN-1",
+        "asset_type": "Backup Generator Controller"
+      },
+      "reference_numbers": {
+        "provider_case_ref": "BR-43001"
+      }
+    }
+  ]
+}

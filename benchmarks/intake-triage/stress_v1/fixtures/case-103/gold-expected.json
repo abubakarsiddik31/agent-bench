@@ -1,0 +1,23 @@
+{
+  "fixture_id": "case_103_duplicate_review_split_asset",
+  "expected_disposition": "duplicate_review",
+  "expected_best_match_record_id": null,
+  "expected_confidence": "medium",
+  "expected_top_ranked_candidates": [
+    "REC-5302",
+    "REC-5301"
+  ],
+  "expected_missing_fields": {
+    "must_have": [],
+    "later_required": [
+      "asset.asset_id"
+    ],
+    "optional": []
+  },
+  "rationale_must_include": [
+    "two plausible matches exist",
+    "same customer and same site",
+    "south entry clue is helpful but not definitive",
+    "human review is required"
+  ]
+}

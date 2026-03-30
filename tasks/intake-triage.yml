@@ -1,7 +1,7 @@
 id: intake_triage
 name: Intake Triage, Matching, and Gap Analysis
 task_type: intake_decisioning
-difficulty: medium_high
+difficulty: high
 objective: >
   Analyze an inbound intake packet, compare it with an existing portfolio,
   decide the most likely disposition, identify missing information, and
@@ -12,7 +12,11 @@ why_this_task_exists:
 inputs:
   - intake_packet: semi-structured inbound record with possible inconsistencies
   - existing_portfolio: current records and historical metadata
+  - activity_log: historical notes, handoff events, or normalization clues
+  - intake_notes: operator notes that may clarify or complicate the packet
   - matching_policy: weighted signals and disposition rules
+  - provider_aliases: provider family and migration context
+  - review_guardrails: override and caution rules for ambiguous cases
   - required_fields_matrix: must_have, later_required, and optional fields
 allowed_tools:
   - file_system
@@ -22,6 +26,7 @@ allowed_tools:
 workflow:
   - Parse the intake packet into normalized fields.
   - Search the portfolio for exact and fuzzy candidate matches.
+  - Reconcile contradictory evidence across references, aliases, notes, and activity history.
   - Rank candidate matches and decide new_record, update, transfer, or duplicate_review.
   - Explain the rationale using the strongest matching evidence.
   - Identify missing fields and group them by severity.
@@ -38,12 +43,15 @@ success_criteria:
   - The action list is operationally usable.
 scoring_focus:
   - matching_accuracy
+  - policy_application
   - explanation_quality
   - gap_prioritization
   - actionability
   - confidence_calibration
 agentic_requirements:
   - Must combine exact and fuzzy evidence, not rely on a single key.
+  - Must reconcile conflicting evidence instead of ignoring it.
+  - Must apply shared guardrails when references are stale, reused, or ambiguous.
   - Must make a final disposition decision.
   - Must justify that decision in plain language.
   - Must turn the analysis into an actionable handoff.

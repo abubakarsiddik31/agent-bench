@@ -1,0 +1,34 @@
+id: intake_triage_stress_fixtures
+task_id: intake_triage
+version: 1
+dataset_split: stress_v1
+shared_inputs:
+  - benchmarks/intake-triage/stress_v1/fixtures/shared/matching-policy.json
+  - benchmarks/intake-triage/stress_v1/fixtures/shared/required-fields-matrix.json
+  - benchmarks/intake-triage/stress_v1/fixtures/shared/provider-aliases.json
+  - benchmarks/intake-triage/stress_v1/fixtures/shared/review-guardrails.json
+fixtures:
+  - id: case_101_update_conflicting_refs
+    path: benchmarks/intake-triage/stress_v1/fixtures/case-101
+    expected_disposition: update
+    difficulty: high
+  - id: case_102_transfer_alias_migration
+    path: benchmarks/intake-triage/stress_v1/fixtures/case-102
+    expected_disposition: transfer
+    difficulty: very_high
+  - id: case_103_duplicate_review_split_asset
+    path: benchmarks/intake-triage/stress_v1/fixtures/case-103
+    expected_disposition: duplicate_review
+    difficulty: very_high
+  - id: case_104_new_record_false_positive_site
+    path: benchmarks/intake-triage/stress_v1/fixtures/case-104
+    expected_disposition: new_record
+    difficulty: high
+  - id: case_105_update_sparse_packet_reconstructed
+    path: benchmarks/intake-triage/stress_v1/fixtures/case-105
+    expected_disposition: update
+    difficulty: very_high
+  - id: case_106_duplicate_review_transfer_conflict
+    path: benchmarks/intake-triage/stress_v1/fixtures/case-106
+    expected_disposition: duplicate_review
+    difficulty: very_high

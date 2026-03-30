@@ -1,0 +1,16 @@
+{
+  "events": [
+    {
+      "timestamp": "2026-03-01T14:20:00Z",
+      "record_id": "REC-5401",
+      "type": "closure_note",
+      "text": "Old elevator controller retired during south wing remodel."
+    },
+    {
+      "timestamp": "2026-03-19T08:05:00Z",
+      "record_id": null,
+      "type": "site_note",
+      "text": "Campus expansion added a new generator bank. New controller IDs start at GEN-3."
+    }
+  ]
+}

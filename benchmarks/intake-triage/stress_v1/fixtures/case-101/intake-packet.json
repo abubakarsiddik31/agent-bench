@@ -1,0 +1,37 @@
+{
+  "intake_id": "INT-101",
+  "submitted_at": "2026-03-12T09:05:00Z",
+  "service_provider": "BlueRoute Service Ops",
+  "customer": {
+    "name": "North Harbor Logistics LLC"
+  },
+  "site": {
+    "address_line_1": "4100 Harbor Pt Rd.",
+    "city": "Bayview",
+    "state": "NJ",
+    "postal_code": "07002"
+  },
+  "asset": {
+    "asset_id": "CU-17",
+    "asset_type": "Cooling Unit",
+    "serial_number": "CU17-NHL-8842"
+  },
+  "reference_numbers": {
+    "client_case_ref": "OPS-4100-2026-A",
+    "provider_case_ref": "BR-71209"
+  },
+  "requested_actions": [
+    "resume inspection scheduling",
+    "verify prior technician notes"
+  ],
+  "contacts": {
+    "primary_contact": {
+      "name": "Jenna Ortiz",
+      "email": "jenna.ortiz@northharbor.example",
+      "phone": "201-555-0172"
+    }
+  },
+  "service_window": {
+    "preferred_date_range": "2026-03-14 to 2026-03-15"
+  }
+}

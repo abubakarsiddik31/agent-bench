@@ -1,0 +1,50 @@
+{
+  "records": [
+    {
+      "record_id": "REC-5507",
+      "status": "paused_pending_parts",
+      "service_provider": "BlueRoute Service Ops",
+      "customer": {
+        "name": "Saint Anne Distribution Center"
+      },
+      "site": {
+        "address_line_1": "77 Mercer Industrial Boulevard",
+        "city": "Trenton",
+        "state": "NJ",
+        "postal_code": "08611"
+      },
+      "asset": {
+        "asset_id": "DOCK-04",
+        "asset_type": "Dock Door Controller",
+        "serial_number": "DDC-04-771"
+      },
+      "reference_numbers": {
+        "provider_case_ref": "BR-77109",
+        "client_case_ref": "SADC-DOCK-04"
+      },
+      "contacts": {
+        "primary_contact": {
+          "email": "npierce@saintanne.example"
+        }
+      }
+    },
+    {
+      "record_id": "REC-5508",
+      "status": "in_progress",
+      "service_provider": "BlueRoute Service Ops",
+      "customer": {
+        "name": "Saint Anne Distribution Center"
+      },
+      "site": {
+        "address_line_1": "79 Mercer Industrial Boulevard",
+        "city": "Trenton",
+        "state": "NJ",
+        "postal_code": "08611"
+      },
+      "asset": {
+        "asset_id": "DOCK-05",
+        "asset_type": "Dock Door Controller"
+      }
+    }
+  ]
+}

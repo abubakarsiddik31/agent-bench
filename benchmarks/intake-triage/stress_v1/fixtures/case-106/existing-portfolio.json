@@ -1,0 +1,46 @@
+{
+  "records": [
+    {
+      "record_id": "REC-5601",
+      "status": "awaiting_dispatch",
+      "service_provider": "Summit Municipal Ops",
+      "customer": {
+        "name": "Hillside Transit Authority"
+      },
+      "site": {
+        "address_line_1": "12 Depot Loop",
+        "city": "Fairmont",
+        "state": "VA",
+        "postal_code": "22031"
+      },
+      "asset": {
+        "asset_id": "GATE-2",
+        "asset_type": "Security Gate Controller"
+      },
+      "reference_numbers": {
+        "client_case_ref": "HTA-DEPOT-G2"
+      }
+    },
+    {
+      "record_id": "REC-5602",
+      "status": "in_handoff",
+      "service_provider": "Summit Managed Services",
+      "customer": {
+        "name": "Hillside Transit Authority"
+      },
+      "site": {
+        "address_line_1": "12 Depot Loop",
+        "city": "Fairmont",
+        "state": "VA",
+        "postal_code": "22031"
+      },
+      "asset": {
+        "asset_id": "GATE-2",
+        "asset_type": "Security Gate Controller"
+      },
+      "reference_numbers": {
+        "client_case_ref": "HTA-DEPOT-G2"
+      }
+    }
+  ]
+}

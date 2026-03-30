@@ -1,0 +1,16 @@
+{
+  "events": [
+    {
+      "timestamp": "2026-03-24T16:05:00Z",
+      "record_id": "REC-5601",
+      "type": "handoff_note",
+      "text": "Parent org Summit Municipal Ops may hand gate work to Summit Managed Services, but final ownership has not been confirmed."
+    },
+    {
+      "timestamp": "2026-03-24T16:20:00Z",
+      "record_id": "REC-5602",
+      "type": "handoff_note",
+      "text": "Provisional child-org record created for possible transfer, pending confirmation from procurement."
+    }
+  ]
+}

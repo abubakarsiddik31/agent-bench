@@ -24,6 +24,10 @@ def repo_root(from_file: str) -> Path:
     return Path(from_file).resolve().parents[3]
 
 
+def infer_prompt_pack_path(fixture_dir: Path) -> Path:
+    return fixture_dir.parents[1] / "prompt-pack.yml"
+
+
 def read_prompt_pack(prompt_pack_path: Path) -> dict[str, str]:
     text = prompt_pack_path.read_text(encoding="utf-8")
     return {
@@ -70,7 +74,7 @@ def extract_indented_block(lines: list[str], *, folded: bool) -> str:
 
 
 def prepare_workspace(repo_root_path: Path, fixture_dir: Path, workspace_dir: Path) -> None:
-    shared_dir = repo_root_path / "benchmarks" / "intake-triage" / "fixtures" / "shared"
+    shared_dir = fixture_dir.parent / "shared"
     workspace_dir.mkdir(parents=True, exist_ok=True)
 
     for item in fixture_dir.iterdir():
