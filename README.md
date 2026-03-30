@@ -49,7 +49,8 @@ This repo is still early, but the intended structure is:
 │       ├── fixtures/
 │       └── stress_v1/
 ├── common/
-│   └── benchmark_utils.py
+│   ├── benchmark_utils.py
+│   └── evaluation_utils.py
 ├── frameworks/
 │   └── anthropic-agent-sdk/
 │       └── intake-triage/
@@ -71,9 +72,11 @@ This repo is still early, but the intended structure is:
 ├── evaluation/
 │   ├── benchmark-execution.yml
 │   ├── evaluate_intake_run.py
+│   ├── evaluate_framework.py
 │   ├── judge-model.yml
 │   ├── metric-counting-policy.yml
-│   └── review-form.yml
+│   ├── review-form.yml
+│   └── run_intake_benchmark.py
 ├── results/
 │   └── README.md
 ```
@@ -96,11 +99,11 @@ The root `.env` should contain:
 
 ## Usage
 
-Run the Anthropic starter iteration from the repo root:
+Run the full Anthropic starter benchmark from the repo root:
 
 ```bash
-uv run \
-  python frameworks/anthropic-agent-sdk/intake-triage/agent.py \
+uv run python evaluation/run_intake_benchmark.py \
+  --agent-script frameworks/anthropic-agent-sdk/intake-triage/agent.py \
   --fixture benchmarks/intake-triage/fixtures/case-001 \
   --out results/anthropic-agent-sdk/intake-triage/starter_v1/run-001
 ```
@@ -108,13 +111,34 @@ uv run \
 Run the harder stress split from the repo root:
 
 ```bash
-uv run \
-  python frameworks/anthropic-agent-sdk/intake-triage/agent.py \
+uv run python evaluation/run_intake_benchmark.py \
+  --agent-script frameworks/anthropic-agent-sdk/intake-triage/agent.py \
   --fixture benchmarks/intake-triage/stress_v1/fixtures/case-101 \
   --out results/anthropic-agent-sdk/intake-triage/stress_v1/run-001
 ```
 
-Evaluate a completed run from the repo root:
+Re-score an existing run without calling the agent again:
+
+```bash
+uv run python evaluation/run_intake_benchmark.py \
+  --agent-script frameworks/anthropic-agent-sdk/intake-triage/agent.py \
+  --fixture benchmarks/intake-triage/fixtures/case-001 \
+  --out results/anthropic-agent-sdk/intake-triage/starter_v1/run-003 \
+  --skip-agent
+```
+
+Run the same pipeline without Gemini judging:
+
+```bash
+uv run python evaluation/run_intake_benchmark.py \
+  --agent-script frameworks/anthropic-agent-sdk/intake-triage/agent.py \
+  --fixture benchmarks/intake-triage/fixtures/case-001 \
+  --out results/anthropic-agent-sdk/intake-triage/starter_v1/run-003 \
+  --skip-agent \
+  --skip-judge
+```
+
+Evaluate only the task contract from the repo root:
 
 ```bash
 uv run python evaluation/evaluate_intake_run.py \
@@ -122,12 +146,13 @@ uv run python evaluation/evaluate_intake_run.py \
   --fixture-dir benchmarks/intake-triage/fixtures/case-001
 ```
 
-Evaluate a stress-split run from the repo root:
+Evaluate only the framework score from the repo root:
 
 ```bash
-uv run python evaluation/evaluate_intake_run.py \
+uv run python evaluation/evaluate_framework.py \
   --run-dir results/anthropic-agent-sdk/intake-triage/stress_v1/run-001 \
-  --fixture-dir benchmarks/intake-triage/stress_v1/fixtures/case-101
+  --fixture-dir benchmarks/intake-triage/stress_v1/fixtures/case-101 \
+  --framework-dir frameworks/anthropic-agent-sdk/intake-triage
 ```
 
 ## Evaluation Flow
@@ -154,15 +179,18 @@ Evaluation model:
 
 Current scoring implementation:
 
-- Deterministic evaluator script handles hard gates, normalized artifact matching, and fixture checks today
-- Gemini-based judge assistance is the next layer, not the current hard-gate source of truth
+- `evaluation/run_intake_benchmark.py` runs the full pipeline end to end
+- `evaluation/evaluate_intake_run.py` handles deterministic task scoring
+- `evaluation/evaluate_framework.py` handles framework-quality scoring
+- Gemini-based judging is used for qualitative framework scoring when `GEMINI_API_KEY` is present
+- Deterministic task evaluation remains the hard-gate source of truth
 
 Current evaluation status:
 
-- Execution and deterministic evaluation are working for Anthropic `run-003`
-- Deterministic contract evaluation is available through `evaluation/evaluate_intake_run.py`
-- Full rubric automation and Gemini-assisted judging are still pending
-- `starter_v1` exists for harness validation; `stress_v1` now exists to better separate framework quality
+- Full end-to-end benchmark execution is now implemented for `intake-triage`
+- `starter_v1` exists for harness validation; `stress_v1` exists to better separate framework quality
+- Framework-quality scoring uses deterministic metrics plus Gemini-assisted judging when configured
+- A heuristic fallback is available when Gemini judging is skipped or unavailable
 
 ## Scoreboard
 
@@ -170,7 +198,7 @@ This table is the high-level benchmark view. It should reflect both task success
 
 | Framework | Task | Run | Task Score | Tool Calling | Orchestration | Human Review | Ease of Impl | LOC Required | Readability | Extensibility | Observability | Final Score |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Anthropic Agent SDK | `intake-triage` | `run-003` | `5.0 / 5.0` | Pending | Pending | Pending | Pending | Pending | Pending | Pending | Pending | Pending |
+| Anthropic Agent SDK | `intake-triage` | `run-003` | `4.7 / 5.0` | `4.5` | `4.5` | `4.5` | `5.0` | `5.0` | `4.5` | `4.5` | `5.0` | `4.675 / 5.0` |
 
 ## Next Steps
 
@@ -178,15 +206,12 @@ This table is the high-level benchmark view. It should reflect both task success
 - Select the final three frameworks for hands-on benchmarking
 - Lock the exact provider and model ID in `evaluation/benchmark-execution.yml`
 - Install dependencies from the repo root with `uv sync`
-- Lock the exact provider and model ID in `evaluation/benchmark-execution.yml`
 - Decide whether to keep normalized contract matching or force canonical output filenames in the runner
 - Run the new `intake-triage` `stress_v1` fixtures
-- Record outputs in `results/anthropic-agent-sdk/intake-triage/starter_v1/`
-- Add scoring automation for the new harder split
-- Extend the deterministic evaluator with Gemini-based rubric judging
+- Tune the deterministic evaluator against the harder split
+- Improve framework judging prompts and reviewer overrides
 - Lock the execution contract and evaluation policies in `evaluation/`
-- Capture framework-level implementation metrics and human ratings alongside task scores
-- Add the benchmark harness and result collection structure
+- Add final framework rollups across multiple tasks and runs
 
 ## License
 
