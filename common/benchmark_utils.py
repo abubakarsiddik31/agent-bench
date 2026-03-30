@@ -137,7 +137,7 @@ def write_run_result(
             "trace_path": str(trace_path),
             "output_presence": output_presence,
             "usage": runtime_metadata.get("usage"),
-            "status": "Scoring is pending evaluator implementation.",
+            "status": "Initial runtime artifact written before evaluation.",
         },
     }
     (out_dir / "run_result.json").write_text(f"{json.dumps(payload, indent=2)}\n", encoding="utf-8")

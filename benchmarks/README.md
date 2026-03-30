@@ -5,8 +5,7 @@ This directory contains concrete benchmark assets used to run framework comparis
 Current contents:
 
 - `intake-triage/`: benchmark package for the `intake_triage` task
-  - `prompt-pack.yml` and `fixtures/` are the starter validation split
-  - `stress_v1/` is the harder comparison split with richer evidence and ambiguity
+  - `stress_v1/` is the default comparison split with richer evidence and ambiguity
 
 Each benchmark package should include:
 
@@ -17,5 +16,4 @@ Each benchmark package should include:
 
 Guidance:
 
-- Keep a lightweight starter split for harness validation.
-- Add one or more harder stress splits that force real policy use, ambiguity handling, and multi-file reasoning.
+- Default to harder stress splits that force real policy use, ambiguity handling, and multi-file reasoning.

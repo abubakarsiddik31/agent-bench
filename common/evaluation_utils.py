@@ -151,6 +151,74 @@ def call_google_ai_studio_json(model_id: str, prompt: str, api_key: str, timeout
         raise RuntimeError(f"Google AI Studio returned non-JSON output: {text}") from exc
 
 
+def call_openai_responses_json(
+    model_id: str,
+    prompt: str,
+    api_key: str,
+    schema_name: str,
+    schema: dict,
+    timeout_seconds: int = 120,
+) -> dict:
+    url = "https://api.openai.com/v1/responses"
+    payload = {
+        "model": model_id,
+        "input": [
+            {
+                "role": "user",
+                "content": [{"type": "input_text", "text": prompt}],
+            }
+        ],
+        "text": {
+            "format": {
+                "type": "json_schema",
+                "name": schema_name,
+                "schema": schema,
+                "strict": True,
+            }
+        },
+    }
+
+    request = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+        },
+        method="POST",
+    )
+
+    try:
+        with urllib.request.urlopen(request, timeout=timeout_seconds) as response:
+            body = json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        error_body = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"OpenAI Responses request failed: {exc.code} {error_body}") from exc
+    except urllib.error.URLError as exc:
+        raise RuntimeError(f"OpenAI Responses request failed: {exc}") from exc
+
+    text = body.get("output_text")
+    if not text:
+        output = body.get("output", [])
+        for item in output:
+            if item.get("type") != "message":
+                continue
+            for content in item.get("content", []):
+                text = content.get("text") or content.get("output_text")
+                if text:
+                    break
+            if text:
+                break
+
+    if not text:
+        raise RuntimeError("OpenAI Responses returned no JSON text output")
+
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"OpenAI Responses returned non-JSON output: {text}") from exc
+
+
 def env_or_none(name: str) -> str | None:
     value = os.getenv(name)
     if value and value.strip():

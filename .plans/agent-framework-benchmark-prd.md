@@ -401,6 +401,8 @@ The framework quality score is the primary decision surface for framework select
 It must explicitly reflect these evaluation dimensions:
 
 - Tool-calling reliability and ergonomics
+  - Including how easy it is to add a new tool
+  - Including how confident we are that the model will call the right tool correctly
 - Orchestration primitives and control
 - Human review quality
 - Ease of implementation
@@ -447,6 +449,8 @@ The framework quality score will be assessed separately using a framework-level 
 Framework-quality interpretation notes:
 
 - Human review quality measures how easy it is for a reviewer to inspect agent behavior, understand the implementation, and score it consistently.
+- Tool-calling ergonomics and reliability must include both developer-side tool extensibility and runtime confidence in correct tool selection and invocation.
+- Framework reviews should record how much work was required to add a representative new tool and whether the agent called that tool correctly without brittle prompt babysitting.
 - Lines of code required must emphasize framework-specific agent-construction code, not shared benchmark utilities.
 - Shared utilities should live in a common area and must not dominate framework-quality scoring for any single framework-task implementation.
 

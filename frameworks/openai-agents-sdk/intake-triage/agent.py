@@ -1,0 +1,189 @@
+import json
+import os
+import sys
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from agents import Agent, Runner, function_tool  # noqa: E402
+from common.benchmark_utils import (  # noqa: E402
+    build_prompt,
+    collect_output_presence,
+    infer_prompt_pack_path,
+    parse_args,
+    prepare_workspace,
+    read_prompt_pack,
+    repo_root,
+    write_framework_snapshot,
+    write_run_result,
+)
+
+
+def safe_path(workspace_dir: Path, relative_path: str) -> Path:
+    path = (workspace_dir / relative_path).resolve()
+    if workspace_dir.resolve() not in path.parents and path != workspace_dir.resolve():
+        raise ValueError(f"Path must stay inside workspace: {relative_path}")
+    return path
+
+
+def build_tools(workspace_dir: Path) -> list:
+    @function_tool
+    def list_workspace_files() -> str:
+        """List files available in the current workspace."""
+        files = []
+        for path in sorted(workspace_dir.rglob("*")):
+            if path.is_file():
+                files.append(str(path.relative_to(workspace_dir)))
+        return "\n".join(files)
+
+    @function_tool
+    def read_workspace_file(path: str) -> str:
+        """Read a file from the workspace using a relative path."""
+        return safe_path(workspace_dir, path).read_text(encoding="utf-8")
+
+    @function_tool
+    def search_workspace(query: str) -> str:
+        """Search the workspace for a text query and return matching lines with file references."""
+        matches: list[str] = []
+        lowered_query = query.lower()
+        for path in sorted(workspace_dir.rglob("*")):
+            if not path.is_file():
+                continue
+            try:
+                text = path.read_text(encoding="utf-8")
+            except UnicodeDecodeError:
+                continue
+            for index, line in enumerate(text.splitlines(), start=1):
+                if lowered_query in line.lower():
+                    matches.append(f"{path.relative_to(workspace_dir)}:{index}: {line}")
+        return "\n".join(matches[:200]) if matches else "No matches found."
+
+    @function_tool
+    def write_workspace_file(path: str, content: str) -> str:
+        """Write a file in the workspace using a relative path."""
+        target = safe_path(workspace_dir, path)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(content, encoding="utf-8")
+        return f"Wrote {target.relative_to(workspace_dir)}"
+
+    return [
+        list_workspace_files,
+        read_workspace_file,
+        search_workspace,
+        write_workspace_file,
+    ]
+
+
+def serialize_trace_item(item: object) -> dict[str, object]:
+    item_type = item.__class__.__name__
+    data = {"type": item_type}
+    raw_item = getattr(item, "raw_item", None)
+    if raw_item is not None:
+        try:
+            data["raw_item"] = json.loads(json.dumps(raw_item, default=repr))
+        except TypeError:
+            data["raw_item"] = repr(raw_item)
+    agent = getattr(item, "agent", None)
+    if agent is not None and hasattr(agent, "name"):
+        data["agent"] = agent.name
+    return data
+
+
+def serialize_usage(usage: object) -> object:
+    if usage is None:
+        return None
+    if hasattr(usage, "__dict__"):
+        return usage.__dict__
+    return repr(usage)
+
+
+def estimate_cost_from_usage(usage: object) -> float | None:
+    if usage is None:
+        return None
+
+    input_cost = os.getenv("OPENAI_INPUT_COST_PER_1M")
+    output_cost = os.getenv("OPENAI_OUTPUT_COST_PER_1M")
+    if not input_cost or not output_cost:
+        return None
+
+    try:
+        input_rate = float(input_cost)
+        output_rate = float(output_cost)
+        input_tokens = float(getattr(usage, "input_tokens", 0) or 0)
+        output_tokens = float(getattr(usage, "output_tokens", 0) or 0)
+    except ValueError:
+        return None
+
+    total = (input_tokens / 1_000_000 * input_rate) + (output_tokens / 1_000_000 * output_rate)
+    return round(total, 8)
+
+
+def main() -> None:
+    load_dotenv(repo_root(__file__) / ".env")
+
+    fixture_dir, out_dir = parse_args(sys.argv[1:])
+    repo_root_path = repo_root(__file__)
+    prompt_pack = read_prompt_pack(infer_prompt_pack_path(fixture_dir))
+    workspace_dir = out_dir / "workspace"
+    trace_path = out_dir / "agent-trace.jsonl"
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+    prepare_workspace(repo_root_path, fixture_dir, workspace_dir)
+
+    model_name = os.getenv("OPENAI_AGENT_MODEL") or os.getenv("OPENAI_MODEL") or "gpt-4.1-mini"
+    tools = build_tools(workspace_dir)
+    instructions = "\n\n".join(
+        [
+            prompt_pack["system_prompt"],
+            "Use the provided tools to inspect the workspace, search for evidence, and write the required output files.",
+            "Do not stop until all required outputs have been written to the workspace root.",
+        ]
+    )
+
+    agent = Agent(
+        name="Intake Triage Agent",
+        instructions=instructions,
+        model=model_name,
+        tools=tools,
+    )
+
+    result = Runner.run_sync(agent, build_prompt(prompt_pack))
+    usage = getattr(result.context_wrapper, "usage", None)
+    runtime_metadata = {
+        "total_cost_usd": estimate_cost_from_usage(usage),
+        "duration_seconds": None,
+        "usage": serialize_usage(usage),
+    }
+
+    trace_lines = [
+        json.dumps(
+            {
+                "type": "final_output",
+                "value": result.final_output,
+                "last_agent": getattr(result.last_agent, "name", None),
+                "usage": serialize_usage(usage),
+            }
+        )
+    ]
+    for item in getattr(result, "new_items", []):
+        trace_lines.append(json.dumps(serialize_trace_item(item), default=repr))
+    trace_path.write_text("\n".join(trace_lines) + "\n", encoding="utf-8")
+
+    output_presence = collect_output_presence(workspace_dir)
+    write_run_result(
+        out_dir,
+        fixture_dir,
+        prompt_pack,
+        output_presence,
+        trace_path,
+        runtime_metadata,
+    )
+    write_framework_snapshot(out_dir, fixture_dir)
+
+
+if __name__ == "__main__":
+    main()

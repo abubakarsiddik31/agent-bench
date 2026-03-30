@@ -36,11 +36,15 @@ criteria:
     weight: 20
     maps_to:
       - tooling_tracing_and_observability
-    description: Reliability and ergonomics of tool definition, invocation, and result handling.
+    description: Reliability and ergonomics of tool definition, tool extension, tool selection, invocation, and result handling.
     anchors:
-      low: Tool integration is brittle, awkward, or hard to debug.
-      medium: Tool integration works with some friction or extra boilerplate.
-      high: Tool integration is reliable, clear, and pleasant to work with.
+      low: Adding a new tool is awkward, and tool usage is brittle, misfired, or hard to trust.
+      medium: Adding a new tool is workable, and tool usage is usually correct with some prompting or glue.
+      high: Adding a new tool is low-friction, and the model uses tools correctly and confidently without brittle scaffolding.
+    metrics:
+      - time_to_add_new_tool
+      - tool_call_success_rate
+      - tool_call_recovery_rate
   - id: orchestration
     weight: 20
     maps_to:
@@ -118,6 +122,8 @@ framework_metrics:
     - time_to_first_working_task
     - time_to_add_new_tool
     - time_to_add_new_task
+    - tool_call_success_rate
+    - tool_call_recovery_rate
 policy_references:
   metric_counting_policy: evaluation/metric-counting-policy.yml
   review_form: evaluation/review-form.yml

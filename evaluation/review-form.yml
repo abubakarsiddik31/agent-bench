@@ -22,7 +22,7 @@ scoring_scale:
   max: 5
 questions:
   - id: tool_calling
-    prompt: Were tools easy to define, invoke, and debug correctly?
+    prompt: How easy was it to add a new tool, and how confident are you that the model would select and call that tool correctly?
   - id: orchestration
     prompt: Was multi-step control flow clear and maintainable?
   - id: human_review_quality
@@ -42,6 +42,8 @@ required_notes:
   - strongest_negative
   - biggest_source_of_complexity
   - what_would_make_this_score_higher
+  - tool_extension_note
+  - tool_invocation_confidence_note
 disagreement_policy:
   if_reviewers_differ_by_more_than_one_point:
     - require written justification from both reviewers

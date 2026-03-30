@@ -570,7 +570,7 @@ def evaluate_run(run_dir: Path, fixture_dir: Path) -> dict:
             "Only core decision artifacts are hard-gated; missing supplemental artifacts reduce quality scores but do not automatically fail the run.",
             "Supplemental action plans may be inferred from structured correction data when the explicit file is missing.",
             f"Inferred action plan used: {inferred_action_plan_used}.",
-            "Gemini 3.1 Pro Preview is the locked judge target for later qualitative evaluation assistance.",
+            "GPT-5.4 is the locked judge target for later qualitative evaluation assistance.",
         ],
     }
     return summary
@@ -593,8 +593,10 @@ def update_run_result(run_dir: Path, summary: dict) -> None:
     payload["score_breakdown"] = summary["scorecard_breakdown"]
     payload["criterion_scores"] = summary["criterion_scores"]
     payload.setdefault("notes", {})
+    payload["notes"]["status"] = "Task evaluation completed."
     payload["notes"]["task_evaluation_path"] = str(run_dir / "evaluation_summary.json")
     payload["notes"]["contract_pass"] = summary["contract_pass"]
+    payload["notes"]["soft_contract_failures"] = summary.get("soft_contract_failures", [])
     run_result_path.write_text(f"{json.dumps(payload, indent=2)}\n", encoding="utf-8")
 
 

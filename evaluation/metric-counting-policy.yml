@@ -55,3 +55,4 @@ documentation_requirements:
   - Every framework review must state what was counted.
   - Any exclusion or exception must be explained in notes.
   - Reviews must clearly distinguish framework-specific agent code from shared utility code.
+  - When measured, reviews should record the effort to add one representative new tool and whether the resulting tool path was called correctly in practice.

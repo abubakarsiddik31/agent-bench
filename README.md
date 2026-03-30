@@ -19,14 +19,15 @@ The benchmark will begin with desk research across a longlist of frameworks and 
 
 The benchmark is intended to evaluate frameworks, not models. Task results are only one part of the decision; the benchmark will also compare tool calling, orchestration, human review quality, ease of use, implementation effort, readability, extensibility, and observability.
 The framework scorecard uses these explicit dimensions: tool-calling reliability and ergonomics, orchestration primitives and control, human review quality, ease of implementation, lines of code required, readability, extensibility, and observability.
+Tool-calling evaluation includes both how easy it is to add a new tool and how confident we are that the model will call that tool correctly in practice.
 
 Framework-specific agent code is the primary unit of comparison. Shared helpers should live in a common area and should not dominate framework-level scoring.
 
 The implementation flow is framework-by-framework and task-by-task: implement one task, evaluate it immediately, record framework implementation notes, and then continue to the next task.
 
-The first concrete benchmark package is `intake-triage`, with both a `starter_v1` split for harness validation and a harder `stress_v1` split for real framework comparison.
+The first concrete benchmark package is `intake-triage`, and `stress_v1` is the default comparison split.
 
-The first framework implementation has started under `frameworks/anthropic-agent-sdk/intake-triage/`.
+The first framework implementations have started under `frameworks/anthropic-agent-sdk/intake-triage/` and `frameworks/openai-agents-sdk/intake-triage/`.
 
 The detailed benchmark plan lives in [.plans/agent-framework-benchmark-prd.md](.plans/agent-framework-benchmark-prd.md).
 
@@ -52,7 +53,10 @@ This repo is still early, but the intended structure is:
 │   ├── benchmark_utils.py
 │   └── evaluation_utils.py
 ├── frameworks/
-│   └── anthropic-agent-sdk/
+│   ├── anthropic-agent-sdk/
+│   │   └── intake-triage/
+│   │       └── agent.py
+│   └── openai-agents-sdk/
 │       └── intake-triage/
 │           └── agent.py
 ├── tasks/
@@ -95,20 +99,11 @@ cp .env.example .env
 The root `.env` should contain:
 
 - `ANTHROPIC_API_KEY` for Anthropic framework runs
-- `GEMINI_API_KEY` for Google AI Studio evaluation/judging
+- `OPENAI_API_KEY` for OpenAI framework runs and GPT-5.4 evaluation judging
 
 ## Usage
 
-Run the full Anthropic starter benchmark from the repo root:
-
-```bash
-uv run python evaluation/run_intake_benchmark.py \
-  --agent-script frameworks/anthropic-agent-sdk/intake-triage/agent.py \
-  --fixture benchmarks/intake-triage/fixtures/case-001 \
-  --out results/anthropic-agent-sdk/intake-triage/starter_v1/run-001
-```
-
-Run the harder stress split from the repo root:
+Run the full Anthropic benchmark from the repo root:
 
 ```bash
 uv run python evaluation/run_intake_benchmark.py \
@@ -117,23 +112,32 @@ uv run python evaluation/run_intake_benchmark.py \
   --out results/anthropic-agent-sdk/intake-triage/stress_v1/run-001
 ```
 
+Run the OpenAI Agents SDK benchmark for the same task:
+
+```bash
+uv run python evaluation/run_intake_benchmark.py \
+  --agent-script frameworks/openai-agents-sdk/intake-triage/agent.py \
+  --fixture benchmarks/intake-triage/stress_v1/fixtures/case-101 \
+  --out results/openai-agents-sdk/intake-triage/stress_v1/run-001
+```
+
 Re-score an existing run without calling the agent again:
 
 ```bash
 uv run python evaluation/run_intake_benchmark.py \
   --agent-script frameworks/anthropic-agent-sdk/intake-triage/agent.py \
-  --fixture benchmarks/intake-triage/fixtures/case-001 \
-  --out results/anthropic-agent-sdk/intake-triage/starter_v1/run-003 \
+  --fixture benchmarks/intake-triage/stress_v1/fixtures/case-101 \
+  --out results/anthropic-agent-sdk/intake-triage/stress_v1/run-001 \
   --skip-agent
 ```
 
-Run the same pipeline without Gemini judging:
+Run the same pipeline without GPT-5.4 judging:
 
 ```bash
 uv run python evaluation/run_intake_benchmark.py \
   --agent-script frameworks/anthropic-agent-sdk/intake-triage/agent.py \
-  --fixture benchmarks/intake-triage/fixtures/case-001 \
-  --out results/anthropic-agent-sdk/intake-triage/starter_v1/run-003 \
+  --fixture benchmarks/intake-triage/stress_v1/fixtures/case-101 \
+  --out results/anthropic-agent-sdk/intake-triage/stress_v1/run-001 \
   --skip-agent \
   --skip-judge
 ```
@@ -142,8 +146,8 @@ Evaluate only the task contract from the repo root:
 
 ```bash
 uv run python evaluation/evaluate_intake_run.py \
-  --run-dir results/anthropic-agent-sdk/intake-triage/starter_v1/run-003 \
-  --fixture-dir benchmarks/intake-triage/fixtures/case-001
+  --run-dir results/anthropic-agent-sdk/intake-triage/stress_v1/run-001 \
+  --fixture-dir benchmarks/intake-triage/stress_v1/fixtures/case-101
 ```
 
 Evaluate only the framework score from the repo root:
@@ -167,14 +171,14 @@ Evaluation happens in two layers:
 
 2. Framework evaluation
    - After task execution, we record implementation and operator experience.
-   - This includes tool-calling reliability and ergonomics, orchestration primitives and control, human review quality, ease of implementation, lines of code required, readability, extensibility, and observability.
+   - This includes tool-calling reliability and ergonomics, ease of adding new tools, confidence in correct tool invocation, orchestration primitives and control, human review quality, ease of implementation, lines of code required, readability, extensibility, and observability.
    - Final framework ranking uses both the task-performance score and the framework-quality score.
 
 Evaluation model:
 
-- Locked judge target: `Gemini 3.1 Pro Preview`
-- Provider: `Google AI Studio`
-- Model ID: `gemini-3.1-pro-preview`
+- Locked judge target: `GPT-5.4`
+- Provider: `OpenAI`
+- Model ID: `gpt-5.4`
 - Config file: `evaluation/judge-model.yml`
 
 Current scoring implementation:
@@ -182,16 +186,16 @@ Current scoring implementation:
 - `evaluation/run_intake_benchmark.py` runs the full pipeline end to end
 - `evaluation/evaluate_intake_run.py` handles deterministic task scoring
 - `evaluation/evaluate_framework.py` handles framework-quality scoring
-- Gemini-based judging is used for qualitative framework scoring when `GEMINI_API_KEY` is present
+- GPT-5.4-based judging is used for qualitative framework scoring when `OPENAI_API_KEY` is present
 - Deterministic task evaluation remains the hard-gate source of truth
 - When the framework runtime exposes it, per-run cost and duration are captured in the saved run artifacts
 
 Current evaluation status:
 
 - Full end-to-end benchmark execution is now implemented for `intake-triage`
-- `starter_v1` exists for harness validation; `stress_v1` exists to better separate framework quality
-- Framework-quality scoring uses deterministic metrics plus Gemini-assisted judging when configured
-- A heuristic fallback is available when Gemini judging is skipped or unavailable
+- `stress_v1` is the default comparison split
+- Framework-quality scoring uses deterministic metrics plus GPT-5.4-assisted judging when configured
+- A heuristic fallback is available when GPT-5.4 judging is skipped or unavailable
 
 ## Scoreboard
 
@@ -199,8 +203,8 @@ This table is the high-level benchmark view. It should reflect both task success
 
 | Framework | Task | Run | Task Score | Tool Calling | Orchestration | Human Review | Ease of Impl | LOC Required | Readability | Extensibility | Observability | Cost | Duration | Final Score |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Anthropic Agent SDK | `intake-triage` | `run-003` | `4.7 / 5.0` | `4.5` | `4.5` | `4.5` | `5.0` | `5.0` | `4.5` | `4.5` | `5.0` | Not recorded | Not recorded | `4.675 / 5.0` |
-| Anthropic Agent SDK | `intake-triage` | `stress_v1/run-001` | `4.75 / 5.0` | `4.5` | `4.5` | `3.5` | `5.0` | `5.0` | `4.5` | `4.5` | `5.0` | `$0.4601` | `283.857s` | `4.65 / 5.0` |
+| Anthropic Agent SDK | `intake-triage` | `run-003` | `4.7 / 5.0` | `4.5` | `4.5` | `4.5` | `5.0` | `5.0` | `4.5` | `4.5` | `5.0` | `~$0.14` | `~95s` | `4.675 / 5.0` |
+| Anthropic Agent SDK | `intake-triage` | `stress_v1/run-001` | `4.75 / 5.0` | `4.875` | `4.5` | `3.5` | `5.0` | `5.0` | `4.5` | `4.5` | `5.0` | `$0.4601` | `283.857s` | `4.688 / 5.0` |
 
 ## Next Steps
 
