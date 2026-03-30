@@ -100,6 +100,24 @@ def collect_output_presence(workspace_dir: Path) -> dict[str, bool]:
     return {file_name: (workspace_dir / file_name).exists() for file_name in REQUIRED_OUTPUTS}
 
 
+def to_json_safe(value: object) -> object:
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, dict):
+        return {str(key): to_json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [to_json_safe(item) for item in value]
+    if hasattr(value, "__dict__"):
+        return {
+            str(key): to_json_safe(item)
+            for key, item in vars(value).items()
+            if not str(key).startswith("_")
+        }
+    return repr(value)
+
+
 def write_run_result(
     out_dir: Path,
     fixture_dir: Path,
@@ -107,10 +125,11 @@ def write_run_result(
     output_presence: dict[str, bool],
     trace_path: Path,
     runtime_metadata: dict[str, float | int | None],
+    framework_name: str,
 ) -> None:
     fixture_id = fixture_dir.name
     payload = {
-        "framework": "anthropic-agent-sdk",
+        "framework": framework_name,
         "task_id": prompt_pack["task_id"],
         "task_type": "intake_decisioning",
         "run_id": f"{prompt_pack['dataset_split']}-{fixture_id}",
@@ -136,16 +155,16 @@ def write_run_result(
             "fixture_id": fixture_id,
             "trace_path": str(trace_path),
             "output_presence": output_presence,
-            "usage": runtime_metadata.get("usage"),
+            "usage": to_json_safe(runtime_metadata.get("usage")),
             "status": "Initial runtime artifact written before evaluation.",
         },
     }
     (out_dir / "run_result.json").write_text(f"{json.dumps(payload, indent=2)}\n", encoding="utf-8")
 
 
-def write_framework_snapshot(out_dir: Path, fixture_dir: Path) -> None:
+def write_framework_snapshot(out_dir: Path, fixture_dir: Path, framework_name: str) -> None:
     payload = {
-        "framework": "anthropic-agent-sdk",
+        "framework": framework_name,
         "task_id": "intake_triage",
         "reviewer": "TBD",
         "human_rating": 0,

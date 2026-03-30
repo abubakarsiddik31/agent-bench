@@ -467,7 +467,10 @@ def evaluate_run(run_dir: Path, fixture_dir: Path) -> dict:
     trace_path = run_dir / "agent-trace.jsonl"
     if trace_path.exists():
         trace_text = trace_path.read_text(encoding="utf-8")
-        execution_success = '"subtype": "success"' in trace_text
+        execution_success = (
+            '"subtype": "success"' in trace_text
+            or '"type": "final_output"' in trace_text
+        )
 
     triage = load_triage_decision(resolved_paths)
     match_table = load_match_table(resolved_paths)
@@ -546,7 +549,7 @@ def evaluate_run(run_dir: Path, fixture_dir: Path) -> dict:
     )
 
     summary = {
-        "framework": "anthropic-agent-sdk",
+        "framework": run_result_payload.get("framework", "unknown-framework"),
         "task_id": "intake_triage",
         "run_dir": str(run_dir),
         "fixture_dir": str(fixture_dir),

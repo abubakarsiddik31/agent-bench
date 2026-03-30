@@ -203,8 +203,8 @@ This table is the high-level benchmark view. It should reflect both task success
 
 | Framework | Task | Run | Task Score | Tool Calling | Orchestration | Human Review | Ease of Impl | LOC Required | Readability | Extensibility | Observability | Cost | Duration | Final Score |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Anthropic Agent SDK | `intake-triage` | `run-003` | `4.7 / 5.0` | `4.5` | `4.5` | `4.5` | `5.0` | `5.0` | `4.5` | `4.5` | `5.0` | `~$0.14` | `~95s` | `4.675 / 5.0` |
 | Anthropic Agent SDK | `intake-triage` | `stress_v1/run-001` | `4.75 / 5.0` | `4.875` | `4.5` | `3.5` | `5.0` | `5.0` | `4.5` | `4.5` | `5.0` | `$0.4601` | `283.857s` | `4.688 / 5.0` |
+| OpenAI Agents SDK | `intake-triage` | `stress_v1/run-003` | `4.75 / 5.0` | `4.893` | `4.5` | `3.5` | `4.333` | `3.0` | `2.5` | `4.5` | `5.0` | `$0.11` | `72.222s` | `4.456 / 5.0` |
 
 ## Next Steps
 

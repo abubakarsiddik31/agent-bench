@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import time
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -9,7 +10,7 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from agents import Agent, Runner, function_tool  # noqa: E402
+from agents import Agent, ModelSettings, Runner, function_tool  # noqa: E402
 from common.benchmark_utils import (  # noqa: E402
     build_prompt,
     collect_output_presence,
@@ -18,6 +19,8 @@ from common.benchmark_utils import (  # noqa: E402
     prepare_workspace,
     read_prompt_pack,
     repo_root,
+    to_json_safe,
+    REQUIRED_OUTPUTS,
     write_framework_snapshot,
     write_run_result,
 )
@@ -83,10 +86,7 @@ def serialize_trace_item(item: object) -> dict[str, object]:
     data = {"type": item_type}
     raw_item = getattr(item, "raw_item", None)
     if raw_item is not None:
-        try:
-            data["raw_item"] = json.loads(json.dumps(raw_item, default=repr))
-        except TypeError:
-            data["raw_item"] = repr(raw_item)
+        data["raw_item"] = to_json_safe(raw_item)
     agent = getattr(item, "agent", None)
     if agent is not None and hasattr(agent, "name"):
         data["agent"] = agent.name
@@ -94,11 +94,7 @@ def serialize_trace_item(item: object) -> dict[str, object]:
 
 
 def serialize_usage(usage: object) -> object:
-    if usage is None:
-        return None
-    if hasattr(usage, "__dict__"):
-        return usage.__dict__
-    return repr(usage)
+    return to_json_safe(usage)
 
 
 def estimate_cost_from_usage(usage: object) -> float | None:
@@ -122,6 +118,62 @@ def estimate_cost_from_usage(usage: object) -> float | None:
     return round(total, 8)
 
 
+def usage_totals(usage: object) -> dict[str, float]:
+    return {
+        "requests": float(getattr(usage, "requests", 0) or 0),
+        "input_tokens": float(getattr(usage, "input_tokens", 0) or 0),
+        "output_tokens": float(getattr(usage, "output_tokens", 0) or 0),
+        "total_tokens": float(getattr(usage, "total_tokens", 0) or 0),
+    }
+
+
+def accumulate_usage(total: dict[str, float], usage: object) -> dict[str, float]:
+    usage_values = usage_totals(usage)
+    return {
+        key: total.get(key, 0.0) + usage_values.get(key, 0.0)
+        for key in {"requests", "input_tokens", "output_tokens", "total_tokens"}
+    }
+
+
+def estimate_cost_from_totals(totals: dict[str, float]) -> float | None:
+    input_cost = os.getenv("OPENAI_INPUT_COST_PER_1M")
+    output_cost = os.getenv("OPENAI_OUTPUT_COST_PER_1M")
+    if not input_cost or not output_cost:
+        return None
+    try:
+        input_rate = float(input_cost)
+        output_rate = float(output_cost)
+    except ValueError:
+        return None
+    total = (totals.get("input_tokens", 0.0) / 1_000_000 * input_rate) + (
+        totals.get("output_tokens", 0.0) / 1_000_000 * output_rate
+    )
+    return round(total, 8)
+
+
+def missing_required_outputs(workspace_dir: Path) -> list[str]:
+    presence = collect_output_presence(workspace_dir)
+    return [file_name for file_name, exists in presence.items() if not exists]
+
+
+def run_once(agent: Agent, prompt: str, trace_lines: list[str]) -> object:
+    result = Runner.run_sync(agent, prompt, max_turns=25)
+    usage = getattr(result.context_wrapper, "usage", None)
+    trace_lines.append(
+        json.dumps(
+            {
+                "type": "final_output",
+                "value": to_json_safe(result.final_output),
+                "last_agent": getattr(result.last_agent, "name", None),
+                "usage": serialize_usage(usage),
+            }
+        )
+    )
+    for item in getattr(result, "new_items", []):
+        trace_lines.append(json.dumps(serialize_trace_item(item), default=repr))
+    return result
+
+
 def main() -> None:
     load_dotenv(repo_root(__file__) / ".env")
 
@@ -141,6 +193,7 @@ def main() -> None:
             prompt_pack["system_prompt"],
             "Use the provided tools to inspect the workspace, search for evidence, and write the required output files.",
             "Do not stop until all required outputs have been written to the workspace root.",
+            "If any required output file is missing, continue working and call the write tool until all files exist.",
         ]
     )
 
@@ -149,28 +202,52 @@ def main() -> None:
         instructions=instructions,
         model=model_name,
         tools=tools,
+        model_settings=ModelSettings(
+            tool_choice="required",
+            include_usage=True,
+        ),
     )
 
-    result = Runner.run_sync(agent, build_prompt(prompt_pack))
-    usage = getattr(result.context_wrapper, "usage", None)
-    runtime_metadata = {
-        "total_cost_usd": estimate_cost_from_usage(usage),
-        "duration_seconds": None,
-        "usage": serialize_usage(usage),
+    trace_lines: list[str] = []
+    start_time = time.perf_counter()
+    aggregated_usage = {
+        "requests": 0.0,
+        "input_tokens": 0.0,
+        "output_tokens": 0.0,
+        "total_tokens": 0.0,
     }
 
-    trace_lines = [
-        json.dumps(
-            {
-                "type": "final_output",
-                "value": result.final_output,
-                "last_agent": getattr(result.last_agent, "name", None),
-                "usage": serialize_usage(usage),
-            }
+    result = run_once(agent, build_prompt(prompt_pack), trace_lines)
+    usage = getattr(result.context_wrapper, "usage", None)
+    aggregated_usage = accumulate_usage(aggregated_usage, usage)
+
+    for attempt in range(2):
+        missing_outputs = missing_required_outputs(workspace_dir)
+        if not missing_outputs:
+            break
+        followup_prompt = "\n".join(
+            [
+                "The previous pass stopped before the benchmark was complete.",
+                f"Missing required output files: {', '.join(missing_outputs)}.",
+                "Continue from the current workspace state.",
+                "Use the available tools and write every missing required output file now.",
+                f"Required files: {', '.join(REQUIRED_OUTPUTS)}.",
+                "Do not summarize a plan. Finish by creating the missing files.",
+            ]
         )
-    ]
-    for item in getattr(result, "new_items", []):
-        trace_lines.append(json.dumps(serialize_trace_item(item), default=repr))
+        result = run_once(agent, followup_prompt, trace_lines)
+        usage = getattr(result.context_wrapper, "usage", None)
+        aggregated_usage = accumulate_usage(aggregated_usage, usage)
+
+    duration_seconds = round(time.perf_counter() - start_time, 3)
+    runtime_metadata = {
+        "total_cost_usd": estimate_cost_from_totals(aggregated_usage) or estimate_cost_from_usage(usage),
+        "duration_seconds": duration_seconds,
+        "usage": {
+            "aggregated": to_json_safe(aggregated_usage),
+            "last_run": serialize_usage(usage),
+        },
+    }
     trace_path.write_text("\n".join(trace_lines) + "\n", encoding="utf-8")
 
     output_presence = collect_output_presence(workspace_dir)
@@ -181,8 +258,9 @@ def main() -> None:
         output_presence,
         trace_path,
         runtime_metadata,
+        framework_name="openai-agents-sdk",
     )
-    write_framework_snapshot(out_dir, fixture_dir)
+    write_framework_snapshot(out_dir, fixture_dir, framework_name="openai-agents-sdk")
 
 
 if __name__ == "__main__":

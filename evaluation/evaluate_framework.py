@@ -3,6 +3,8 @@ import json
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
@@ -74,7 +76,8 @@ def analyze_trace(trace_path: Path) -> dict:
             payload = json.loads(line)
         except json.JSONDecodeError:
             continue
-        if payload.get("type") == "assistant":
+        payload_type = payload.get("type")
+        if payload_type == "assistant":
             assistant_messages += 1
             for block in payload.get("content", []):
                 if block.get("kind") == "tool":
@@ -86,6 +89,20 @@ def analyze_trace(trace_path: Path) -> dict:
                         write_calls += 1
                     if any(name in lowered for name in ["read", "grep", "glob", "search", "list", "bash"]):
                         read_like_calls += 1
+        elif payload_type == "ToolCallItem":
+            tool_messages += 1
+            raw_item = payload.get("raw_item", {})
+            tool_name = str(raw_item.get("name", "unknown"))
+            tool_calls_by_name[tool_name] = tool_calls_by_name.get(tool_name, 0) + 1
+            lowered = tool_name.lower()
+            if "write" in lowered or lowered == "edit":
+                write_calls += 1
+            if any(name in lowered for name in ["read", "grep", "glob", "search", "list", "bash"]):
+                read_like_calls += 1
+            if str(raw_item.get("status", "")).lower() in {"failed", "error"}:
+                failed_tool_calls_detected += 1
+        elif payload_type == "MessageOutputItem":
+            assistant_messages += 1
         for value in payload.values():
             if isinstance(value, str) and any(marker in value.lower() for marker in error_markers):
                 failed_tool_calls_detected += 1
@@ -447,6 +464,8 @@ def judge_scores_with_openai(
 
 
 def evaluate_framework(run_dir: Path, fixture_dir: Path, framework_dir: Path, skip_judge: bool = False) -> dict:
+    load_dotenv(REPO_ROOT / ".env")
+
     task_summary = load_json(run_dir / "evaluation_summary.json")
     framework_name = framework_dir.parent.name
     code_files = list_framework_source_files(framework_dir)

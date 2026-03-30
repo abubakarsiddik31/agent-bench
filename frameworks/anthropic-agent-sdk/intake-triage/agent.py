@@ -19,6 +19,7 @@ from common.benchmark_utils import (  # noqa: E402
     prepare_workspace,
     read_prompt_pack,
     repo_root,
+    to_json_safe,
     write_framework_snapshot,
     write_run_result,
 )
@@ -90,13 +91,7 @@ def serialize_block(block: object) -> dict[str, str]:
 
 
 def serialize_usage(usage: object) -> object:
-    if usage is None:
-        return None
-    if isinstance(usage, dict):
-        return usage
-    if hasattr(usage, "__dict__"):
-        return usage.__dict__
-    return str(usage)
+    return to_json_safe(usage)
 
 
 async def main() -> None:
@@ -126,8 +121,9 @@ async def main() -> None:
         output_presence,
         trace_path,
         runtime_metadata,
+        framework_name="anthropic-agent-sdk",
     )
-    write_framework_snapshot(out_dir, fixture_dir)
+    write_framework_snapshot(out_dir, fixture_dir, framework_name="anthropic-agent-sdk")
 
 
 if __name__ == "__main__":
