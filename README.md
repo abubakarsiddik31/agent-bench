@@ -184,6 +184,7 @@ Current scoring implementation:
 - `evaluation/evaluate_framework.py` handles framework-quality scoring
 - Gemini-based judging is used for qualitative framework scoring when `GEMINI_API_KEY` is present
 - Deterministic task evaluation remains the hard-gate source of truth
+- When the framework runtime exposes it, per-run cost and duration are captured in the saved run artifacts
 
 Current evaluation status:
 
@@ -196,9 +197,9 @@ Current evaluation status:
 
 This table is the high-level benchmark view. It should reflect both task success and framework quality.
 
-| Framework | Task | Run | Task Score | Tool Calling | Orchestration | Human Review | Ease of Impl | LOC Required | Readability | Extensibility | Observability | Final Score |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Anthropic Agent SDK | `intake-triage` | `run-003` | `4.7 / 5.0` | `4.5` | `4.5` | `4.5` | `5.0` | `5.0` | `4.5` | `4.5` | `5.0` | `4.675 / 5.0` |
+| Framework | Task | Run | Task Score | Tool Calling | Orchestration | Human Review | Ease of Impl | LOC Required | Readability | Extensibility | Observability | Cost | Final Score |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Anthropic Agent SDK | `intake-triage` | `run-003` | `4.7 / 5.0` | `4.5` | `4.5` | `4.5` | `5.0` | `5.0` | `4.5` | `4.5` | `5.0` | Not recorded | `4.675 / 5.0` |
 
 ## Next Steps
 

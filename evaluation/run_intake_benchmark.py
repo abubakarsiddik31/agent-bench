@@ -54,6 +54,8 @@ def combine_scores(task_summary: dict, framework_summary: dict) -> dict:
         "framework": framework_summary.get("framework"),
         "task_id": task_summary.get("task_id"),
         "run_dir": task_summary.get("run_dir"),
+        "cost": task_summary.get("cost"),
+        "duration": task_summary.get("duration"),
         "task_score": task_score,
         "framework_quality_score": framework_score,
         "combined_score": combined_score,

@@ -106,6 +106,7 @@ def write_run_result(
     prompt_pack: dict[str, str],
     output_presence: dict[str, bool],
     trace_path: Path,
+    runtime_metadata: dict[str, float | int | None],
 ) -> None:
     fixture_id = fixture_dir.name
     payload = {
@@ -122,13 +123,20 @@ def write_run_result(
             "runtime_speed": 0,
             "cost_efficiency": 0,
         },
-        "duration": {"unit": "seconds", "value": 0},
-        "cost": {"currency": "USD", "value": 0},
+        "duration": {
+            "unit": "seconds",
+            "value": runtime_metadata.get("duration_seconds"),
+        },
+        "cost": {
+            "currency": "USD",
+            "value": runtime_metadata.get("total_cost_usd"),
+        },
         "notes": {
             "prompt_pack_id": prompt_pack["id"],
             "fixture_id": fixture_id,
             "trace_path": str(trace_path),
             "output_presence": output_presence,
+            "usage": runtime_metadata.get("usage"),
             "status": "Scoring is pending evaluator implementation.",
         },
     }

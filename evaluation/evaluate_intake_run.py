@@ -394,6 +394,7 @@ def map_task_scores_to_scorecard(
 def evaluate_run(run_dir: Path, fixture_dir: Path) -> dict:
     workspace_dir = run_dir / "workspace"
     gold = load_json(fixture_dir / "gold-expected.json")
+    run_result_payload = try_load_json(run_dir / "run_result.json") or {}
     normalized_outputs, resolved_paths = resolve_outputs(run_dir, workspace_dir)
     exact_outputs = {name: (run_dir / name).exists() for name in CANONICAL_OUTPUTS}
 
@@ -469,6 +470,8 @@ def evaluate_run(run_dir: Path, fixture_dir: Path) -> dict:
         "task_id": "intake_triage",
         "run_dir": str(run_dir),
         "fixture_dir": str(fixture_dir),
+        "duration": run_result_payload.get("duration"),
+        "cost": run_result_payload.get("cost"),
         "execution_success": execution_success,
         "contract_pass": contract_pass,
         "exact_output_presence": exact_outputs,

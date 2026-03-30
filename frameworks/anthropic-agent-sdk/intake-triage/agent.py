@@ -24,7 +24,11 @@ from common.benchmark_utils import (  # noqa: E402
 )
 
 
-async def run_agent(prompt: str, workspace_dir: Path, system_prompt: str) -> list[str]:
+async def run_agent(
+    prompt: str,
+    workspace_dir: Path,
+    system_prompt: str,
+) -> tuple[list[str], dict[str, object]]:
     options = ClaudeAgentOptions(
         allowed_tools=["Read", "Write", "Edit", "Glob", "Grep"],
         permission_mode="acceptEdits",
@@ -34,17 +38,34 @@ async def run_agent(prompt: str, workspace_dir: Path, system_prompt: str) -> lis
     )
 
     trace_lines: list[str] = []
+    runtime_metadata: dict[str, object] = {
+        "total_cost_usd": None,
+        "duration_seconds": None,
+        "usage": None,
+    }
     async for message in query(prompt=prompt, options=options):
         trace_lines.append(format_message(message))
-    return trace_lines
+        if isinstance(message, ResultMessage):
+            total_cost = getattr(message, "total_cost_usd", None)
+            duration_ms = getattr(message, "duration_ms", None)
+            runtime_metadata["total_cost_usd"] = total_cost
+            runtime_metadata["duration_seconds"] = (
+                round(duration_ms / 1000, 3) if isinstance(duration_ms, (int, float)) else None
+            )
+            usage = getattr(message, "usage", None)
+            if usage is not None:
+                runtime_metadata["usage"] = usage
+    return trace_lines, runtime_metadata
 
 
 def format_message(message: object) -> str:
     if isinstance(message, AssistantMessage):
+        usage = getattr(message, "usage", None)
         return json.dumps(
             {
                 "type": "assistant",
                 "content": [serialize_block(block) for block in message.content],
+                "usage": serialize_usage(usage),
             }
         )
     if isinstance(message, ResultMessage):
@@ -52,6 +73,9 @@ def format_message(message: object) -> str:
             {
                 "type": "result",
                 "subtype": getattr(message, "subtype", "unknown"),
+                "duration_ms": getattr(message, "duration_ms", None),
+                "total_cost_usd": getattr(message, "total_cost_usd", None),
+                "usage": serialize_usage(getattr(message, "usage", None)),
             }
         )
     return json.dumps({"type": message.__class__.__name__})
@@ -63,6 +87,16 @@ def serialize_block(block: object) -> dict[str, str]:
     if hasattr(block, "name"):
         return {"kind": "tool", "value": getattr(block, "name")}
     return {"kind": "unknown", "value": block.__class__.__name__}
+
+
+def serialize_usage(usage: object) -> object:
+    if usage is None:
+        return None
+    if isinstance(usage, dict):
+        return usage
+    if hasattr(usage, "__dict__"):
+        return usage.__dict__
+    return str(usage)
 
 
 async def main() -> None:
@@ -77,7 +111,7 @@ async def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     prepare_workspace(repo_root_path, fixture_dir, workspace_dir)
 
-    trace_lines = await run_agent(
+    trace_lines, runtime_metadata = await run_agent(
         build_prompt(prompt_pack),
         workspace_dir,
         prompt_pack["system_prompt"],
@@ -85,7 +119,14 @@ async def main() -> None:
     trace_path.write_text("\n".join(trace_lines) + "\n", encoding="utf-8")
 
     output_presence = collect_output_presence(workspace_dir)
-    write_run_result(out_dir, fixture_dir, prompt_pack, output_presence, trace_path)
+    write_run_result(
+        out_dir,
+        fixture_dir,
+        prompt_pack,
+        output_presence,
+        trace_path,
+        runtime_metadata,
+    )
     write_framework_snapshot(out_dir, fixture_dir)
 
 
