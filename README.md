@@ -222,6 +222,16 @@ This table is the high-level benchmark view. It should reflect both task success
 | OpenAI Agents SDK | `intake-triage` | `stress_v1/run-003` | `4.75 / 5.0` | `4.893` | `4.5` | `3.5` | `4.333` | `3.0` | `2.5` | `4.5` | `5.0` | `$0.11` | `72.222s` | `4.456 / 5.0` |
 | Google ADK | `intake-triage` | `stress_v1/run-001` | `3.5 / 5.0` | `4.2` | `4.0` | `4.1` | `4.6` | `3.0` | `4.5` | `4.1` | `4.4` | `Not recorded` | `117.643s` | `3.805 / 5.0` |
 
+## Tool Metrics
+
+This table tracks the detailed tool-calling behavior that sits behind the framework score.
+
+| Framework | Run | Tool Pass | Total Calls | Passed Calls | Failed Calls | Unique Tools | Write Calls | Artifacts Produced | Success Rate | Write Completion | Output Coverage | Custom Tool Efficiency |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Anthropic Agent SDK | `stress_v1/run-001` | `Pass` | `39` | `39` | `0` | `4` | `4` | `3 / 4` | `1.0` | `0.75` | `0.75` | `0.875` |
+| OpenAI Agents SDK | `stress_v1/run-003` | `Pass` | `44` | `44` | `0` | `4` | `7` | `4 / 4` | `1.0` | `0.571` | `1.0` | `0.893` |
+| Google ADK | `stress_v1/run-001` | `Pass` | `25` | `25` | `0` | `4` | `8` | `4 / 4` | `1.0` | `0.5` | `1.0` | `0.875` |
+
 ## Next Steps
 
 - Complete Stage 1 longlist research and scoring
