@@ -17,6 +17,32 @@ The benchmark is framework-first, not model-first. Results are intended to help 
 - extensibility
 - observability, tracing, and debugging support
 
+## Scoreboard
+
+This is the main comparison view for the current public benchmark runs.
+
+| Framework | Runtime Model Used | Provider-Agnostic? | Task | Run | Task Score | Framework Score | Final Score | Cost | Duration | Outcome |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Anthropic Agent SDK | `sonnet-4.6` | `No` | `intake-triage` | `stress_v1/run-001` | `4.75 / 5.0` | `4.625 / 5.0` | `4.688 / 5.0` | `$0.4601` | `283.857s` | `Pass` |
+| OpenAI Agents SDK | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-003` | `4.75 / 5.0` | `4.162 / 5.0` | `4.456 / 5.0` | `$0.11` | `72.222s` | `Pass` |
+| Google ADK | `gemini-3.1-pro-preview` | `Yes` | `intake-triage` | `stress_v1/run-001` | `3.5 / 5.0` | `4.11 / 5.0` | `3.805 / 5.0` | `Not recorded` | `117.643s` | `Partial` |
+
+Notes:
+- `Provider-Agnostic?` here means whether the framework is designed to work as a general multi-provider runtime.
+- Anthropic Agent SDK can authenticate through multiple hosting paths for Claude, but it is still Claude-specific rather than provider-agnostic.
+- The current recorded runtime models are `sonnet-4.6`, `gpt-5.4`, and `gemini-3.1-pro-preview`.
+
+## Tool Metrics
+
+This table tracks the detailed tool-calling behavior that sits behind the framework score.
+
+| Framework | Run | Tool Pass | Total Calls | Passed Calls | Failed Calls | Unique Tools | Write Calls | Artifacts Produced | Success Rate | Write Completion | Output Coverage | Custom Tool Efficiency |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Anthropic Agent SDK | `stress_v1/run-001` | `Pass` | `39` | `39` | `0` | `4` | `4` | `3 / 4` | `1.0` | `0.75` | `0.75` | `0.875` |
+| OpenAI Agents SDK | `stress_v1/run-003` | `Pass` | `44` | `44` | `0` | `4` | `7` | `4 / 4` | `1.0` | `0.571` | `1.0` | `0.893` |
+| Google ADK | `stress_v1/run-001` | `Pass` | `25` | `25` | `0` | `4` | `8` | `4 / 4` | `1.0` | `0.5` | `1.0` | `0.875` |
+
+
 ## Current Scope
 
 The current public benchmark focuses on:
@@ -102,7 +128,10 @@ The root `.env` should contain:
 
 ## Usage
 
-Run the full Anthropic benchmark from the repo root:
+Run commands are grouped by framework below.
+
+<details>
+<summary>Anthropic Agent SDK</summary>
 
 ```bash
 uv run python evaluation/run_intake_benchmark.py \
@@ -111,16 +140,22 @@ uv run python evaluation/run_intake_benchmark.py \
   --out results/anthropic-agent-sdk/intake-triage/stress_v1/run-001
 ```
 
-Run the OpenAI Agents SDK benchmark for the same task:
+</details>
+
+<details>
+<summary>OpenAI Agents SDK</summary>
 
 ```bash
 uv run python evaluation/run_intake_benchmark.py \
   --agent-script frameworks/openai-agents-sdk/intake-triage/agent.py \
   --fixture benchmarks/intake-triage/stress_v1/fixtures/case-101 \
-  --out results/openai-agents-sdk/intake-triage/stress_v1/run-001
+  --out results/openai-agents-sdk/intake-triage/stress_v1/run-003
 ```
 
-Run the Google ADK benchmark for the same task:
+</details>
+
+<details>
+<summary>Google ADK</summary>
 
 ```bash
 uv run python evaluation/run_intake_benchmark.py \
@@ -131,7 +166,10 @@ uv run python evaluation/run_intake_benchmark.py \
 
 The Google ADK runner defaults to `gemini-3.1-pro-preview` unless `GOOGLE_ADK_MODEL` or `GEMINI_MODEL` is set.
 
-Re-score an existing run without calling the agent again:
+</details>
+
+<details>
+<summary>Re-score Existing Run</summary>
 
 ```bash
 uv run python evaluation/run_intake_benchmark.py \
@@ -141,7 +179,10 @@ uv run python evaluation/run_intake_benchmark.py \
   --skip-agent
 ```
 
-Run the same pipeline without GPT-5.4 judging:
+</details>
+
+<details>
+<summary>Skip Judge</summary>
 
 ```bash
 uv run python evaluation/run_intake_benchmark.py \
@@ -152,7 +193,10 @@ uv run python evaluation/run_intake_benchmark.py \
   --skip-judge
 ```
 
-Evaluate only the task contract from the repo root:
+</details>
+
+<details>
+<summary>Task-Only Evaluation</summary>
 
 ```bash
 uv run python evaluation/evaluate_intake_run.py \
@@ -160,7 +204,10 @@ uv run python evaluation/evaluate_intake_run.py \
   --fixture-dir benchmarks/intake-triage/stress_v1/fixtures/case-101
 ```
 
-Evaluate only the framework score from the repo root:
+</details>
+
+<details>
+<summary>Framework-Only Evaluation</summary>
 
 ```bash
 uv run python evaluation/evaluate_framework.py \
@@ -168,6 +215,8 @@ uv run python evaluation/evaluate_framework.py \
   --fixture-dir benchmarks/intake-triage/stress_v1/fixtures/case-101 \
   --framework-dir frameworks/anthropic-agent-sdk/intake-triage
 ```
+
+</details>
 
 ## How Evaluation Works
 
@@ -207,25 +256,6 @@ Current evaluation status:
 - Framework-quality scoring uses deterministic metrics plus GPT-5.4-assisted judging when configured
 - A heuristic fallback is available when GPT-5.4 judging is skipped or unavailable
 
-## Scoreboard
-
-This table is the high-level benchmark view. It should reflect both task success and framework quality.
-
-| Framework | Task | Run | Task Score | Tool Calling | Orchestration | Human Review | Ease of Impl | LOC Required | Readability | Extensibility | Observability | Cost | Duration | Final Score |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Anthropic Agent SDK | `intake-triage` | `stress_v1/run-001` | `4.75 / 5.0` | `4.875` | `4.5` | `3.5` | `5.0` | `5.0` | `4.5` | `4.5` | `5.0` | `$0.4601` | `283.857s` | `4.688 / 5.0` |
-| OpenAI Agents SDK | `intake-triage` | `stress_v1/run-003` | `4.75 / 5.0` | `4.893` | `4.5` | `3.5` | `4.333` | `3.0` | `2.5` | `4.5` | `5.0` | `$0.11` | `72.222s` | `4.456 / 5.0` |
-| Google ADK | `intake-triage` | `stress_v1/run-001` | `3.5 / 5.0` | `4.2` | `4.0` | `4.1` | `4.6` | `3.0` | `4.5` | `4.1` | `4.4` | `Not recorded` | `117.643s` | `3.805 / 5.0` |
-
-## Tool Metrics
-
-This table tracks the detailed tool-calling behavior that sits behind the framework score.
-
-| Framework | Run | Tool Pass | Total Calls | Passed Calls | Failed Calls | Unique Tools | Write Calls | Artifacts Produced | Success Rate | Write Completion | Output Coverage | Custom Tool Efficiency |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Anthropic Agent SDK | `stress_v1/run-001` | `Pass` | `39` | `39` | `0` | `4` | `4` | `3 / 4` | `1.0` | `0.75` | `0.75` | `0.875` |
-| OpenAI Agents SDK | `stress_v1/run-003` | `Pass` | `44` | `44` | `0` | `4` | `7` | `4 / 4` | `1.0` | `0.571` | `1.0` | `0.893` |
-| Google ADK | `stress_v1/run-001` | `Pass` | `25` | `25` | `0` | `4` | `8` | `4 / 4` | `1.0` | `0.5` | `1.0` | `0.875` |
 
 ## Public Release Notes
 
