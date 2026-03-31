@@ -10,8 +10,8 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from agents import Agent, ModelSettings, Runner, function_tool  # noqa: E402
-from common.benchmark_utils import (  # noqa: E402
+from agents import Agent, ModelSettings, Runner, function_tool
+from common.benchmark_utils import (
     build_prompt,
     collect_output_presence,
     infer_prompt_pack_path,
