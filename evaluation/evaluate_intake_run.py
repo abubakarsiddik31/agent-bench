@@ -573,7 +573,7 @@ def evaluate_run(run_dir: Path, fixture_dir: Path) -> dict:
             "Only core decision artifacts are hard-gated; missing supplemental artifacts reduce quality scores but do not automatically fail the run.",
             "Supplemental action plans may be inferred from structured correction data when the explicit file is missing.",
             f"Inferred action plan used: {inferred_action_plan_used}.",
-            "GPT-5.4 is the locked judge target for later qualitative evaluation assistance.",
+            "Gemini 3.1 Pro Preview is the locked judge target for later qualitative evaluation assistance.",
         ],
     }
     return summary

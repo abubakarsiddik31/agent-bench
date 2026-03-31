@@ -21,11 +21,11 @@ The benchmark is framework-first, not model-first. Results are intended to help 
 
 This is the main comparison view for the current public benchmark runs.
 
-| Framework | Runtime Model Used | Provider-Agnostic? | Task | Run | Task Score | Framework Score | Final Score | Cost | Duration | Outcome |
+| Framework | Runtime Model Used | Provider-Agnostic? | Task | Run | Task Score | Framework Score | Final Score | Duration | Outcome |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Anthropic Agent SDK | `sonnet-4.6` | `No` | `intake-triage` | `stress_v1/run-001` | `4.75 / 5.0` | `4.625 / 5.0` | `4.688 / 5.0` | `$0.4601` | `283.857s` | `Pass` |
-| OpenAI Agents SDK | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-003` | `4.75 / 5.0` | `4.162 / 5.0` | `4.456 / 5.0` | `$0.11` | `72.222s` | `Pass` |
-| Google ADK | `gemini-3.1-pro-preview` | `Yes` | `intake-triage` | `stress_v1/run-001` | `3.5 / 5.0` | `4.11 / 5.0` | `3.805 / 5.0` | `Not recorded` | `117.643s` | `Partial` |
+| Anthropic Agent SDK | `sonnet-4.6` | `No` | `intake-triage` | `stress_v1/run-001` | `4.75 / 5.0` | `4.625 / 5.0` | `4.688 / 5.0` | `283.857s` | `Pass` |
+| OpenAI Agents SDK | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-003` | `4.75 / 5.0` | `4.162 / 5.0` | `4.456 / 5.0` | `72.222s` | `Pass` |
+| Google ADK | `gemini-3.1-pro-preview` | `Yes` | `intake-triage` | `stress_v1/run-001` | `3.5 / 5.0` | `4.11 / 5.0` | `3.805 / 5.0` | `117.643s` | `Partial` |
 
 Notes:
 - `Provider-Agnostic?` here means whether the framework is designed to work as a general multi-provider runtime.
@@ -123,8 +123,9 @@ cp .env.example .env
 The root `.env` should contain:
 
 - `ANTHROPIC_API_KEY` for Anthropic framework runs
-- `OPENAI_API_KEY` for OpenAI framework runs and GPT-5.4 evaluation judging
+- `OPENAI_API_KEY` for OpenAI framework runs
 - `GOOGLE_API_KEY` for Google ADK framework runs with Gemini
+- `GEMINI_API_KEY` for Gemini-based framework evaluation judging
 
 ## Usage
 
@@ -235,9 +236,9 @@ Evaluation happens in two layers:
 
 Evaluation model:
 
-- Locked judge target: `GPT-5.4`
-- Provider: `OpenAI`
-- Model ID: `gpt-5.4`
+- Locked judge target: `Gemini 3.1 Pro Preview`
+- Provider: `Google AI Studio`
+- Model ID: `gemini-3.1-pro-preview`
 - Config file: `evaluation/judge-model.yml`
 
 Current scoring implementation:
@@ -245,7 +246,7 @@ Current scoring implementation:
 - `evaluation/run_intake_benchmark.py` runs the full pipeline end to end
 - `evaluation/evaluate_intake_run.py` handles deterministic task scoring
 - `evaluation/evaluate_framework.py` handles framework-quality scoring
-- GPT-5.4-based judging is used for qualitative framework scoring when `OPENAI_API_KEY` is present
+- Gemini-based judging is used for qualitative framework scoring when `GEMINI_API_KEY` is present
 - Deterministic task evaluation remains the hard-gate source of truth
 - When the framework runtime exposes it, per-run cost and duration are captured in the saved run artifacts
 
@@ -253,8 +254,8 @@ Current evaluation status:
 
 - Full end-to-end benchmark execution is now implemented for `intake-triage`
 - `stress_v1` is the default comparison split
-- Framework-quality scoring uses deterministic metrics plus GPT-5.4-assisted judging when configured
-- A heuristic fallback is available when GPT-5.4 judging is skipped or unavailable
+- Framework-quality scoring uses deterministic metrics plus Gemini-assisted judging when configured
+- A heuristic fallback is available when Gemini judging is skipped or unavailable
 
 
 ## Public Release Notes
