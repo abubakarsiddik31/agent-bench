@@ -2,7 +2,7 @@
 
 This directory contains benchmark implementations built with Anthropic's Claude Agent SDK.
 
-Official references used for this starter implementation:
+Official references used for this implementation:
 
 - Agent SDK overview: [platform.claude.com/docs/en/agent-sdk/overview](https://platform.claude.com/docs/en/agent-sdk/overview)
 - Quickstart: [platform.claude.com/docs/en/agent-sdk/quickstart](https://platform.claude.com/docs/en/agent-sdk/quickstart)
@@ -10,4 +10,4 @@ Official references used for this starter implementation:
 
 Current implementation:
 
-- `intake-triage/`: starter benchmark implementation for the `intake_triage` task
+- `intake-triage/`: benchmark implementation for the `intake_triage` task

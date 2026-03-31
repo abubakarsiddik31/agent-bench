@@ -1,48 +1,47 @@
 # Agent Bench
 
-Benchmarking agent frameworks with transparent, reproducible results to help choose the best-fit framework.
+Agent Bench is an open-source benchmark project for comparing agent frameworks with transparent, reproducible results.
 
-## Background
+## What This Repo Is For
 
-This repository exists to compare agent frameworks in a structured way instead of choosing one based on hype, familiarity, or isolated demos. The initial focus is a small, practical benchmark that can grow over time.
+This repository helps answer one question: which agent framework is the best fit for real end-to-end agent workflows when you consider both task performance and developer experience.
 
-## Goals
+The benchmark is framework-first, not model-first. Results are intended to help teams compare:
 
-- Research a longlist of candidate agent frameworks
-- Shortlist three frameworks for hands-on evaluation
-- Benchmark those finalists across five end-to-end agent tasks
-- Produce Markdown and JSON outputs that make results easy to review and reproduce
+- tool-calling reliability and ergonomics
+- orchestration primitives and control
+- human review quality
+- ease of implementation
+- lines of code required
+- readability
+- extensibility
+- observability, tracing, and debugging support
 
-## Benchmark Approach
+## Current Scope
 
-The benchmark will begin with desk research across a longlist of frameworks and then narrow to three finalists. Those finalists will be compared on the same benchmark tasks, with shared success criteria and repeat runs where feasible.
+The current public benchmark focuses on:
 
-The benchmark is intended to evaluate frameworks, not models. Task results are only one part of the decision; the benchmark will also compare tool calling, orchestration, human review quality, ease of use, implementation effort, readability, extensibility, and observability.
-The framework scorecard uses these explicit dimensions: tool-calling reliability and ergonomics, orchestration primitives and control, human review quality, ease of implementation, lines of code required, readability, extensibility, and observability.
-Tool-calling evaluation includes both how easy it is to add a new tool and how confident we are that the model will call that tool correctly in practice.
+- a shared task suite
+- reproducible evaluation scripts
+- side-by-side framework implementations
+- saved result artifacts and score tables
 
-Framework-specific agent code is the primary unit of comparison. Shared helpers should live in a common area and should not dominate framework-level scoring.
+The first implemented benchmark task is `intake-triage`, and `stress_v1` is the default comparison split.
 
-The implementation flow is framework-by-framework and task-by-task: implement one task, evaluate it immediately, record framework implementation notes, and then continue to the next task.
+## Repository Structure
 
-The first concrete benchmark package is `intake-triage`, and `stress_v1` is the default comparison split.
-
-The first framework implementations have started under `frameworks/anthropic-agent-sdk/intake-triage/`, `frameworks/openai-agents-sdk/intake-triage/`, and `frameworks/google-adk/intake-triage/`.
-
-The detailed benchmark plan lives in [.plans/agent-framework-benchmark-prd.md](.plans/agent-framework-benchmark-prd.md).
-
-## Planned Repository Structure
-
-This repo is still early, but the intended structure is:
+The repository is organized like this:
 
 ```text
 .
-├── .plans/
-│   └── agent-framework-benchmark-prd.md
 ├── .env.example
 ├── .gitignore
+├── CONTRIBUTING.md
+├── LICENSE
+├── OPEN_SOURCE_CHECKLIST.md
 ├── pyproject.toml
 ├── README.md
+├── SECURITY.md
 ├── benchmarks/
 │   ├── README.md
 │   └── intake-triage/
@@ -87,10 +86,6 @@ This repo is still early, but the intended structure is:
 ├── results/
 │   └── README.md
 ```
-
-## Status
-
-Project initialized. The benchmark design docs are in place, and the first concrete benchmark package now exists for `intake-triage`. Framework implementations and actual run artifacts are the next step.
 
 ## Install
 
@@ -174,7 +169,7 @@ uv run python evaluation/evaluate_framework.py \
   --framework-dir frameworks/anthropic-agent-sdk/intake-triage
 ```
 
-## Evaluation Flow
+## How Evaluation Works
 
 Evaluation happens in two layers:
 
@@ -232,19 +227,20 @@ This table tracks the detailed tool-calling behavior that sits behind the framew
 | OpenAI Agents SDK | `stress_v1/run-003` | `Pass` | `44` | `44` | `0` | `4` | `7` | `4 / 4` | `1.0` | `0.571` | `1.0` | `0.893` |
 | Google ADK | `stress_v1/run-001` | `Pass` | `25` | `25` | `0` | `4` | `8` | `4 / 4` | `1.0` | `0.5` | `1.0` | `0.875` |
 
-## Next Steps
+## Public Release Notes
 
-- Complete Stage 1 longlist research and scoring
-- Select the final three frameworks for hands-on benchmarking
-- Lock the exact provider and model ID in `evaluation/benchmark-execution.yml`
-- Install dependencies from the repo root with `uv sync`
-- Decide whether to keep normalized contract matching or force canonical output filenames in the runner
-- Run the new `intake-triage` `stress_v1` fixtures
-- Tune the deterministic evaluator against the harder split
-- Improve framework judging prompts and reviewer overrides
-- Lock the execution contract and evaluation policies in `evaluation/`
-- Add final framework rollups across multiple tasks and runs
+- Internal planning files are not part of the public project surface.
+- Result rows should be backed by saved evaluation artifacts in `results/`.
+- Shared logic belongs in `common/` and `evaluation/`.
+- Framework-specific code belongs in `frameworks/<framework>/<task>/`.
+
+## Community Files
+
+- Contribution guide: [CONTRIBUTING.md](/Users/abubakarsiddik/Desktop/OSS/agent-bench/CONTRIBUTING.md)
+- Code of conduct: [CODE_OF_CONDUCT.md](/Users/abubakarsiddik/Desktop/OSS/agent-bench/CODE_OF_CONDUCT.md)
+- Security policy: [SECURITY.md](/Users/abubakarsiddik/Desktop/OSS/agent-bench/SECURITY.md)
+- Release checklist: [OPEN_SOURCE_CHECKLIST.md](/Users/abubakarsiddik/Desktop/OSS/agent-bench/OPEN_SOURCE_CHECKLIST.md)
 
 ## License
 
-Not yet specified.
+This project is released under the [MIT License](/Users/abubakarsiddik/Desktop/OSS/agent-bench/LICENSE).

@@ -18,10 +18,10 @@ results/
 │               └── framework_snapshot.json
 ```
 
-For the starter benchmark, use:
+Current examples use:
 
 - `<task-id>` = `intake-triage`
-- `<dataset-split>` = `starter_v1`
+- `<dataset-split>` = `stress_v1`
 
-Each `run_result.json` should follow the per-run output contract from the PRD.
-Each `framework_snapshot.json` should follow the per-task framework snapshot contract from the PRD.
+Each `run_result.json` should follow the current evaluation output contract used by the scripts in `evaluation/`.
+Each `framework_snapshot.json` should follow the current framework snapshot structure written during evaluation.
