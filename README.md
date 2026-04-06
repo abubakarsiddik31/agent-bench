@@ -21,7 +21,7 @@ The benchmark is framework-first, not model-first. Results are intended to help 
 
 This is the main comparison view for the current public benchmark runs.
 
-| Framework | Runtime Model Used | Provider-Agnostic? | Task | Run | Task Score | Framework Score | Final Score | Duration | Outcome |
+| Framework | Runtime Model Used | Provider-Agnostic? | Task | Run | Task Score | Framework Score | Final Score | Duration | Outcome
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Anthropic Agent SDK | `sonnet-4.6` | `No` | `intake-triage` | `stress_v1/run-001` | `4.75 / 5.0` | `4.625 / 5.0` | `4.688 / 5.0` | `283.857s` | `Pass` |
 | OpenAI Agents SDK | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-003` | `4.75 / 5.0` | `4.162 / 5.0` | `4.456 / 5.0` | `72.222s` | `Pass` |
@@ -51,6 +51,20 @@ The current public benchmark focuses on:
 - reproducible evaluation scripts
 - side-by-side framework implementations
 - saved result artifacts and score tables
+
+### Supported Frameworks
+
+Currently implemented:
+- [Anthropic Agent SDK](https://docs.anthropic.com/en/docs/claude-code/sdk)
+- [Google ADK](https://google.github.io/adk-docs/)
+- [LangGraph](https://docs.langchain.com/oss/python/langgraph/overview)
+- [OpenAI Agents SDK](https://platform.openai.com/docs/guides/agents-sdk/)
+
+Planned:
+- [CrewAI](https://docs.crewai.com/en/introduction)
+- [AutoGen](https://microsoft.github.io/autogen/stable/user-guide/core-user-guide/index.html)
+- [Mastra](https://mastra.ai/)
+- [Pydantic AI](https://github.com/pydantic/pydantic-ai)
 
 The first implemented benchmark task is `intake-triage`, and `stress_v1` is the default comparison split.
 
