@@ -22,7 +22,7 @@ The benchmark is framework-first, not model-first. Results are intended to help 
 This is the main comparison view for the current public benchmark runs.
 
 | Framework | Runtime Model Used | Provider-Agnostic? | Task | Run | Task Score | Framework Score | Final Score | Duration | Outcome |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Anthropic Agent SDK | `sonnet-4.6` | `No` | `intake-triage` | `stress_v1/run-001` | `4.75 / 5.0` | `4.625 / 5.0` | `4.688 / 5.0` | `283.857s` | `Pass` |
 | OpenAI Agents SDK | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-003` | `4.75 / 5.0` | `4.162 / 5.0` | `4.456 / 5.0` | `72.222s` | `Pass` |
 | Google ADK | `gemini-3.1-pro-preview` | `Yes` | `intake-triage` | `stress_v1/run-001` | `3.5 / 5.0` | `4.11 / 5.0` | `3.805 / 5.0` | `117.643s` | `Partial` |
@@ -82,6 +82,9 @@ The repository is organized like this:
 │   │   └── intake-triage/
 │   │       └── agent.py
 │   ├── google-adk/
+│   │   └── intake-triage/
+│   │       └── agent.py
+│   ├── langgraph/
 │   │   └── intake-triage/
 │   │       └── agent.py
 │   └── openai-agents-sdk/
@@ -166,6 +169,20 @@ uv run python evaluation/run_intake_benchmark.py \
 ```
 
 The Google ADK runner defaults to `gemini-3.1-pro-preview` unless `GOOGLE_ADK_MODEL` or `GEMINI_MODEL` is set.
+
+</details>
+
+<details>
+<summary>LangGraph</summary>
+
+```bash
+uv run python evaluation/run_intake_benchmark.py \
+  --agent-script frameworks/langgraph/intake-triage/agent.py \
+  --fixture benchmarks/intake-triage/stress_v1/fixtures/case-101 \
+  --out results/langgraph/intake-triage/stress_v1/run-001
+```
+
+The LangGraph runner defaults to `gpt-5.4` unless `LANGGRAPH_MODEL` or `OPENAI_MODEL` is set.
 
 </details>
 

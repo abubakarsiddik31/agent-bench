@@ -5,6 +5,9 @@ description = "Framework benchmarking workspace"
 requires-python = ">=3.10"
 dependencies = [
   "claude-agent-sdk",
+  "langchain-core",
+  "langchain-openai",
+  "langgraph",
   "google-adk",
   "openai-agents",
   "python-dotenv>=1.0.1",
