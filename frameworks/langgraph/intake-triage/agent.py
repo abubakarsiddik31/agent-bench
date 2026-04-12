@@ -14,6 +14,7 @@ if str(REPO_ROOT) not in sys.path:
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.graph import END, START, MessagesState, StateGraph
 from langgraph.prebuilt import ToolNode
 
@@ -209,10 +210,16 @@ def main() -> None:
         ]
     )
 
-    llm = ChatOpenAI(
-        model=model_name,
-        stream_usage=True,
-    )
+    if model_name.startswith("gemini"):
+        llm = ChatGoogleGenerativeAI(
+            model=model_name,
+            # stream_usage=True is not universally supported across all providers in the exact same way, but LangChain Google GenAI handles usage naturally
+        )
+    else:
+        llm = ChatOpenAI(
+            model=model_name,
+            stream_usage=True,
+        )
     llm_with_tools = llm.bind_tools(tools, strict=False)
     graph = build_graph(llm_with_tools, tools)
 

@@ -26,6 +26,7 @@ This is the main comparison view for the current public benchmark runs.
 | Anthropic Agent SDK | `sonnet-4.6` | `No` | `intake-triage` | `stress_v1/run-001` | `4.75 / 5.0` | `4.625 / 5.0` | `4.688 / 5.0` | `283.857s` | `Pass` |
 | OpenAI Agents SDK | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-003` | `4.75 / 5.0` | `4.162 / 5.0` | `4.456 / 5.0` | `72.222s` | `Pass` |
 | LangGraph | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-001` | `2.475 / 5.0` | `4.2 / 5.0` | `3.338 / 5.0` | `46.232s` | `Partial` |
+| LangGraph | `gemini-3.1-pro-preview` | `Yes` | `intake-triage` | `stress_v1/run-002` | `4.25 / 5.0` | `3.85 / 5.0` | `4.05 / 5.0` | `73.916s` | `Pass` |
 | Google ADK | `gemini-3.1-pro-preview` | `Yes` | `intake-triage` | `stress_v1/run-001` | `3.5 / 5.0` | `4.11 / 5.0` | `3.805 / 5.0` | `117.643s` | `Partial` |
 
 Notes:
@@ -42,6 +43,7 @@ This table tracks the detailed tool-calling behavior that sits behind the framew
 | Anthropic Agent SDK | `stress_v1/run-001` | `Pass` | `39` | `39` | `0` | `4` | `4` | `3 / 4` | `1.0` | `0.75` | `0.75` | `0.875` |
 | OpenAI Agents SDK | `stress_v1/run-003` | `Pass` | `44` | `44` | `0` | `4` | `7` | `4 / 4` | `1.0` | `0.571` | `1.0` | `0.893` |
 | LangGraph | `stress_v1/run-001` | `Pass` | `16` | `16` | `0` | `3` | `4` | `4 / 4` | `1.0` | `1.0` | `1.0` | `1.0` |
+| LangGraph | `stress_v1/run-002` | `Pass` | `16` | `16` | `0` | `3` | `4` | `4 / 4` | `1.0` | `1.0` | `1.0` | `1.0` |
 | Google ADK | `stress_v1/run-001` | `Pass` | `25` | `25` | `0` | `4` | `8` | `4 / 4` | `1.0` | `0.5` | `1.0` | `0.875` |
 
 
