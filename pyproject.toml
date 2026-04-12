@@ -12,6 +12,8 @@ dependencies = [
   "openai-agents",
   "python-dotenv>=1.0.1",
   "langchain-google-genai>=4.2.1",
+  "pydantic-ai>=1.31.0",
+  "logfire>=4.15.1",
 ]
 
 [build-system]
