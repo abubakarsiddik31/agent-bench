@@ -21,13 +21,13 @@ The benchmark is framework-first, not model-first. Results are intended to help 
 
 This is the main comparison view for the current public benchmark runs.
 
-| Framework | Runtime Model Used | Provider-Agnostic? | Task | Run | Task Score | Framework Score | Final Score | Duration | Outcome
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Anthropic Agent SDK | `sonnet-4.6` | `No` | `intake-triage` | `stress_v1/run-001` | `4.75 / 5.0` | `4.625 / 5.0` | `4.688 / 5.0` | `283.857s` | `Pass` |
-| OpenAI Agents SDK | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-003` | `4.75 / 5.0` | `4.162 / 5.0` | `4.456 / 5.0` | `72.222s` | `Pass` |
-| LangGraph | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-001` | `2.475 / 5.0` | `4.2 / 5.0` | `3.338 / 5.0` | `46.232s` | `Partial` |
-| LangGraph | `gemini-3.1-pro-preview` | `Yes` | `intake-triage` | `stress_v1/run-002` | `4.25 / 5.0` | `3.85 / 5.0` | `4.05 / 5.0` | `73.916s` | `Pass` |
-| Google ADK | `gemini-3.1-pro-preview` | `Yes` | `intake-triage` | `stress_v1/run-001` | `3.5 / 5.0` | `4.11 / 5.0` | `3.805 / 5.0` | `117.643s` | `Partial` |
+| Framework | Runtime Model Used | Provider-Agnostic? | Task | Run | Task Score | Framework Score | Final Score | Duration | Outcome | Judge Summary |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Anthropic Agent SDK | `sonnet-4.6` | `No` | `intake-triage` | `stress_v1/run-001` | `4.75 / 5.0` | `4.625 / 5.0` | `4.688 / 5.0` | `283.857s` | `Pass` | Framework score derived from deterministic metrics and heuristics. |
+| OpenAI Agents SDK | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-003` | `4.75 / 5.0` | `4.162 / 5.0` | `4.456 / 5.0` | `72.222s` | `Pass` | Framework score derived from deterministic metrics and heuristics. |
+| LangGraph | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-001` | `2.475 / 5.0` | `4.2 / 5.0` | `3.338 / 5.0` | `46.232s` | `Partial` | LangGraph provides a robust and highly extensible foundation for agent development. The use of `StateGraph` and prebuilt components like `ToolNode` makes constructing a standard ReAct loop relatively clean, though it requires adopting a graph-based mental model. The implementation is readable and handles tool calling exceptionally well, but relies on manual tracing and an external retry loop rather than fully utilizing the framework's native capabilities for observability and complex cyclic routing. |
+| LangGraph | `gemini-3.1-pro-preview` | `Yes` | `intake-triage` | `stress_v1/run-002` | `4.25 / 5.0` | `3.85 / 5.0` | `4.05 / 5.0` | `73.916s` | `Pass` | The LangGraph implementation showcases a robust, highly extensible graph-based architecture for agent orchestration. While tool calling is seamless, the implementation's reliance on manual tracing and external retry logic adds boilerplate and reduces readability. Overall, it offers excellent control for complex workflows at the cost of a slightly steeper learning curve. |
+| Google ADK | `gemini-3.1-pro-preview` | `Yes` | `intake-triage` | `stress_v1/run-001` | `3.5 / 5.0` | `4.11 / 5.0` | `3.805 / 5.0` | `117.643s` | `Partial` | This google-adk implementation is a strong, pragmatic single-agent setup: simple to build, readable, and equipped with enough orchestration and tracing to complete the task reliably. Its biggest strengths are low implementation overhead and good observability for a compact script. Its main limitations are shallow orchestration and low-level tool design, which likely left some quality on the table despite successful artifact generation. |
 
 Notes:
 - `Provider-Agnostic?` here means whether the framework is designed to work as a general multi-provider runtime.
