@@ -39,17 +39,17 @@ Every framework implementation is evaluated on two equally weighted axes (**50% 
 
 Current public benchmark results on `intake-triage` (`stress_v1` split), ranked by **Final Score**:
 
-| Rank | Framework | Runtime Model | Provider-Agnostic? | Split / Run | Framework LOC | Task Score | Framework Score | Final Score | Duration | Outcome |
-| :---: | --- | --- | :---: | --- | :---: | :---: | :---: | :---: | :---: | :---: |
-| 1 | [Anthropic Agent SDK](./frameworks/anthropic-agent-sdk) | `sonnet-4.6` | `No` | `stress_v1/run-001` | `109` | `4.75 / 5.0` | `4.425 / 5.0` | **`4.588 / 5.0`** | `283.857s` | `Pass` |
-| 2 | [OpenAI Agents SDK](./frameworks/openai-agents-sdk) | `gpt-5.4` | `Yes` | `stress_v1/run-003` | `202` | `4.75 / 5.0` | `4.33 / 5.0` | **`4.54 / 5.0`** | `72.222s` | `Pass` |
-| 3 | [LangGraph](./frameworks/langgraph) | `gemini-3.1-pro-preview` | `Yes` | `stress_v1/run-002` | `225` | `4.25 / 5.0` | `4.3 / 5.0` | **`4.275 / 5.0`** | `73.916s` | `Pass` |
-| 4 | [Pydantic AI](./frameworks/pydantic-ai) | `gpt-5.4` | `Yes` | `stress_v1/run-002` | `160` | `3.5 / 5.0` | `4.5 / 5.0` | **`4.0 / 5.0`** | `63.056s` | `Partial` |
-| 5 | [Google ADK](./frameworks/google-adk) | `gemini-3.1-pro-preview` | `Yes` | `stress_v1/run-001` | `176` | `3.5 / 5.0` | `4.25 / 5.0` | **`3.875 / 5.0`** | `117.643s` | `Partial` |
-| 6 | [LangGraph](./frameworks/langgraph) | `gpt-5.4` | `Yes` | `stress_v1/run-001` | `225` | `2.475 / 5.0` | `4.1 / 5.0` | **`3.287 / 5.0`** | `46.232s` | `Partial` |
-| 7 | [Pydantic AI](./frameworks/pydantic-ai) | `gemini-3.1-pro-preview` | `Yes` | `stress_v1/run-001` | `160` | `2.475 / 5.0` | `4.05 / 5.0` | **`3.263 / 5.0`** | `172.726s` | `Partial` |
-| 7 | [CrewAI](./frameworks/crewai) | `gpt-5.4` | `Yes` | `stress_v1/run-001` | `176` | `2.475 / 5.0` | `4.05 / 5.0` | **`3.263 / 5.0`** | `121.142s` | `Partial` |
-| 9 | [AutoGen](./frameworks/autogen) | `gpt-5.4` | `Yes` | `stress_v1/run-001` | `195` | `2.475 / 5.0` | `3.5 / 5.0` | **`2.987 / 5.0`** | `35.261s` | `Partial` |
+| Rank | Framework | Runtime Model | Provider-Agnostic? | Framework LOC | Task Score | Framework Score | Final Score | Duration | Outcome |
+| :---: | --- | --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 1 | [Anthropic Agent SDK](./frameworks/anthropic-agent-sdk) | `sonnet-4.6` | `No` | `109` | `4.75 / 5.0` | `4.425 / 5.0` | **`4.588 / 5.0`** | `283.857s` | `Pass` |
+| 2 | [OpenAI Agents SDK](./frameworks/openai-agents-sdk) | `gpt-5.4` | `Yes` | `202` | `4.75 / 5.0` | `4.33 / 5.0` | **`4.54 / 5.0`** | `72.222s` | `Pass` |
+| 3 | [LangGraph](./frameworks/langgraph) | `gemini-3.1-pro-preview` | `Yes` | `225` | `4.25 / 5.0` | `4.3 / 5.0` | **`4.275 / 5.0`** | `73.916s` | `Pass` |
+| 4 | [Pydantic AI](./frameworks/pydantic-ai) | `gpt-5.4` | `Yes` | `160` | `3.5 / 5.0` | `4.5 / 5.0` | **`4.0 / 5.0`** | `63.056s` | `Partial` |
+| 5 | [Google ADK](./frameworks/google-adk) | `gemini-3.1-pro-preview` | `Yes` | `176` | `3.5 / 5.0` | `4.25 / 5.0` | **`3.875 / 5.0`** | `117.643s` | `Partial` |
+| 6 | [LangGraph](./frameworks/langgraph) | `gpt-5.4` | `Yes` | `225` | `2.475 / 5.0` | `4.1 / 5.0` | **`3.287 / 5.0`** | `46.232s` | `Partial` |
+| 7 | [Pydantic AI](./frameworks/pydantic-ai) | `gemini-3.1-pro-preview` | `Yes` | `160` | `2.475 / 5.0` | `4.05 / 5.0` | **`3.263 / 5.0`** | `172.726s` | `Partial` |
+| 7 | [CrewAI](./frameworks/crewai) | `gpt-5.4` | `Yes` | `176` | `2.475 / 5.0` | `4.05 / 5.0` | **`3.263 / 5.0`** | `121.142s` | `Partial` |
+| 9 | [AutoGen](./frameworks/autogen) | `gpt-5.4` | `Yes` | `195` | `2.475 / 5.0` | `3.5 / 5.0` | **`2.987 / 5.0`** | `35.261s` | `Partial` |
 
 > **Notes:**
 > - **Provider-Agnostic?** indicates whether the framework is designed as a general multi-provider runtime. Anthropic Agent SDK can authenticate through multiple Claude hosting providers (Anthropic API, Bedrock, Vertex), but remains Claude-specific.
