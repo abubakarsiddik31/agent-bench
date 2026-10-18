@@ -1,40 +1,66 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="Agent Bench logo">
   <defs>
-    <linearGradient id="ab-bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0f172a" />
-      <stop offset="100%" stop-color="#1e3a8a" />
-    </linearGradient>
+    <!-- dark navy background gradient -->
+    <radialGradient id="ab-bg" cx="50%" cy="40%" r="75%">
+      <stop offset="0%" stop-color="#1e3a8a" />
+      <stop offset="100%" stop-color="#020617" />
+    </radialGradient>
+    <!-- electric accent gradient -->
     <linearGradient id="ab-accent" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#38bdf8" />
-      <stop offset="100%" stop-color="#818cf8" />
+      <stop offset="0%" stop-color="#22d3ee" />
+      <stop offset="100%" stop-color="#a78bfa" />
     </linearGradient>
+    <!-- glow -->
+    <filter id="ab-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
   </defs>
 
-  <!-- rounded card background -->
-  <rect x="8" y="8" width="240" height="240" rx="48" fill="url(#ab-bg)" />
+  <!-- rounded card -->
+  <rect x="8" y="8" width="240" height="240" rx="52" fill="url(#ab-bg)" stroke="#1e293b" stroke-width="2" />
 
-  <!-- stylized "AB" mark: A as a chart bar cluster, B as a benchmark gauge -->
-  <g transform="translate(48,56)">
-    <!-- A: ascending bars -->
-    <rect x="0" y="96" width="20" height="48" rx="4" fill="url(#ab-accent)" opacity="0.55" />
-    <rect x="28" y="64" width="20" height="80" rx="4" fill="url(#ab-accent)" opacity="0.75" />
-    <rect x="56" y="32" width="20" height="112" rx="4" fill="url(#ab-accent)" />
-    <!-- connector -->
-    <rect x="84" y="72" width="12" height="12" rx="3" fill="#38bdf8" opacity="0.6" />
-
-    <!-- B: benchmark gauge / score ring -->
-    <g transform="translate(108, 40)">
-      <circle cx="48" cy="48" r="44" fill="none" stroke="#1e293b" stroke-width="12" />
-      <path
-        d="M 48 4 A 44 44 0 1 1 4 48"
-        fill="none"
-        stroke="url(#ab-accent)"
-        stroke-width="12"
-        stroke-linecap="round"
-      />
-      <circle cx="48" cy="48" r="10" fill="url(#ab-accent)" />
-      <!-- needle -->
-      <line x1="48" y1="48" x2="78" y2="22" stroke="#f8fafc" stroke-width="4" stroke-linecap="round" />
-    </g>
+  <!-- subtle grid backdrop -->
+  <g opacity="0.12" stroke="#94a3b8" stroke-width="1">
+    <line x1="24" y1="64" x2="232" y2="64" />
+    <line x1="24" y1="128" x2="232" y2="128" />
+    <line x1="24" y1="192" x2="232" y2="192" />
+    <line x1="64" y1="24" x2="64" y2="232" />
+    <line x1="128" y1="24" x2="128" y2="232" />
+    <line x1="192" y1="24" x2="192" y2="232" />
   </g>
+
+  <!-- central mark: a benchmark score ring with an agent node inside -->
+  <g transform="translate(128,128)">
+    <!-- outer score ring (track) -->
+    <circle r="86" fill="none" stroke="#1e293b" stroke-width="14" />
+    <!-- score arc -->
+    <path
+      d="M 0 -86 A 86 86 0 1 1 -60.8 60.8"
+      fill="none"
+      stroke="url(#ab-accent)"
+      stroke-width="14"
+      stroke-linecap="round"
+      filter="url(#ab-glow)"
+    />
+    <!-- inner agent node (hexagon-ish) -->
+    <polygon points="0,-42 36,-21 36,21 0,42 -36,21 -36,-21" fill="url(#ab-accent)" opacity="0.9" />
+    <!-- central dot -->
+    <circle r="9" fill="#f8fafc" />
+    <!-- orbiting satellite nodes (frameworks) -->
+    <circle cx="0" cy="-70" r="6" fill="#22d3ee" />
+    <circle cx="60" cy="-35" r="6" fill="#60a5fa" />
+    <circle cx="60" cy="35" r="6" fill="#818cf8" />
+    <circle cx="0" cy="70" r="6" fill="#a78bfa" />
+    <circle cx="-60" cy="35" r="6" fill="#c084fc" />
+    <circle cx="-60" cy="-35" r="6" fill="#e879f9" />
+  </g>
+
+  <!-- wordmark -->
+  <text x="128" y="236" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="22" font-weight="700" fill="#f8fafc" letter-spacing="4">AGENT BENCH</text>
 </svg>
+EOF
+echo "done"
