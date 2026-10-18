@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/abubakarsiddik31/agent-bench/main/assets/logo.svg" alt="Agent Bench logo" width="120" height="120">
+<img src="assets/logo.svg" alt="Agent Bench" width="132" height="132">
 
 # Agent Bench
 

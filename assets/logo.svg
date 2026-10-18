@@ -1,66 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="Agent Bench logo">
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="Agent Bench">
   <defs>
-    <!-- dark navy background gradient -->
-    <radialGradient id="ab-bg" cx="50%" cy="40%" r="75%">
-      <stop offset="0%" stop-color="#1e3a8a" />
-      <stop offset="100%" stop-color="#020617" />
+    <radialGradient id="ab-bg" cx="50%" cy="32%" r="80%">
+      <stop offset="0%" stop-color="#1e40af"/>
+      <stop offset="55%" stop-color="#0b1220"/>
+      <stop offset="100%" stop-color="#020617"/>
     </radialGradient>
-    <!-- electric accent gradient -->
-    <linearGradient id="ab-accent" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#22d3ee" />
-      <stop offset="100%" stop-color="#a78bfa" />
+    <linearGradient id="ab-arc" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
     </linearGradient>
-    <!-- glow -->
-    <filter id="ab-glow" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="6" result="blur" />
-      <feMerge>
-        <feMergeNode in="blur" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
+    <linearGradient id="ab-core" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#67e8f9"/>
+      <stop offset="100%" stop-color="#c4b5fd"/>
+    </linearGradient>
+    <clipPath id="ab-clip">
+      <rect x="10" y="10" width="236" height="236" rx="54"/>
+    </clipPath>
   </defs>
 
-  <!-- rounded card -->
-  <rect x="8" y="8" width="240" height="240" rx="52" fill="url(#ab-bg)" stroke="#1e293b" stroke-width="2" />
+  <rect x="10" y="10" width="236" height="236" rx="54" fill="url(#ab-bg)"/>
+  <rect x="10" y="10" width="236" height="236" rx="54" fill="none" stroke="#1e293b" stroke-width="2"/>
 
-  <!-- subtle grid backdrop -->
-  <g opacity="0.12" stroke="#94a3b8" stroke-width="1">
-    <line x1="24" y1="64" x2="232" y2="64" />
-    <line x1="24" y1="128" x2="232" y2="128" />
-    <line x1="24" y1="192" x2="232" y2="192" />
-    <line x1="64" y1="24" x2="64" y2="232" />
-    <line x1="128" y1="24" x2="128" y2="232" />
-    <line x1="192" y1="24" x2="192" y2="232" />
+  <g clip-path="url(#ab-clip)">
+    <g stroke="#64748b" stroke-width="1" opacity="0.10">
+      <path d="M10 74 H246 M10 128 H246 M10 182 H246 M74 10 V246 M128 10 V246 M182 10 V246"/>
+    </g>
+    <path d="M10 190 C78 150 178 206 246 150 L246 246 L10 246 Z" fill="#22d3ee" opacity="0.05"/>
   </g>
 
-  <!-- central mark: a benchmark score ring with an agent node inside -->
-  <g transform="translate(128,128)">
-    <!-- outer score ring (track) -->
-    <circle r="86" fill="none" stroke="#1e293b" stroke-width="14" />
-    <!-- score arc -->
-    <path
-      d="M 0 -86 A 86 86 0 1 1 -60.8 60.8"
-      fill="none"
-      stroke="url(#ab-accent)"
-      stroke-width="14"
-      stroke-linecap="round"
-      filter="url(#ab-glow)"
-    />
-    <!-- inner agent node (hexagon-ish) -->
-    <polygon points="0,-42 36,-21 36,21 0,42 -36,21 -36,-21" fill="url(#ab-accent)" opacity="0.9" />
-    <!-- central dot -->
-    <circle r="9" fill="#f8fafc" />
-    <!-- orbiting satellite nodes (frameworks) -->
-    <circle cx="0" cy="-70" r="6" fill="#22d3ee" />
-    <circle cx="60" cy="-35" r="6" fill="#60a5fa" />
-    <circle cx="60" cy="35" r="6" fill="#818cf8" />
-    <circle cx="0" cy="70" r="6" fill="#a78bfa" />
-    <circle cx="-60" cy="35" r="6" fill="#c084fc" />
-    <circle cx="-60" cy="-35" r="6" fill="#e879f9" />
+  <g transform="translate(128 128)">
+    <circle r="82" fill="none" stroke="#1e293b" stroke-width="13"/>
+    <path d="M0 -82 A82 82 0 1 1 -58 58" fill="none" stroke="url(#ab-arc)" stroke-width="13" stroke-linecap="round"/>
+    <polygon points="0,-40 34,-20 34,20 0,40 -34,20 -34,-20" fill="url(#ab-core)"/>
+    <circle r="8" fill="#020617"/>
+    <path d="M0 -66 v-10 M62 -30 l9 -5 M62 30 l9 5 M0 66 v10 M-62 30 l-9 5 M-62 -30 l-9 -5"
+          stroke="#94a3b8" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+    <circle cx="0" cy="-76" r="6" fill="#22d3ee"/>
+    <circle cx="72" cy="-35" r="6" fill="#38bdf8"/>
+    <circle cx="72" cy="35" r="6" fill="#818cf8"/>
+    <circle cx="0" cy="76" r="6" fill="#a78bfa"/>
+    <circle cx="-72" cy="35" r="6" fill="#c084fc"/>
+    <circle cx="-72" cy="-35" r="6" fill="#e879f9"/>
+    <circle r="4" fill="#f8fafc" cx="0" cy="0"/>
   </g>
-
-  <!-- wordmark -->
-  <text x="128" y="236" text-anchor="middle" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="22" font-weight="700" fill="#f8fafc" letter-spacing="4">AGENT BENCH</text>
 </svg>
-EOF
-echo "done"
