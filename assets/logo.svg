@@ -1,46 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-label="Agent Bench">
-  <defs>
-    <radialGradient id="ab-bg" cx="50%" cy="32%" r="80%">
-      <stop offset="0%" stop-color="#1e40af"/>
-      <stop offset="55%" stop-color="#0b1220"/>
-      <stop offset="100%" stop-color="#020617"/>
-    </radialGradient>
-    <linearGradient id="ab-arc" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#22d3ee"/>
-      <stop offset="100%" stop-color="#a78bfa"/>
-    </linearGradient>
-    <linearGradient id="ab-core" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#67e8f9"/>
-      <stop offset="100%" stop-color="#c4b5fd"/>
-    </linearGradient>
-    <clipPath id="ab-clip">
-      <rect x="10" y="10" width="236" height="236" rx="54"/>
-    </clipPath>
-  </defs>
-
-  <rect x="10" y="10" width="236" height="236" rx="54" fill="url(#ab-bg)"/>
-  <rect x="10" y="10" width="236" height="236" rx="54" fill="none" stroke="#1e293b" stroke-width="2"/>
-
-  <g clip-path="url(#ab-clip)">
-    <g stroke="#64748b" stroke-width="1" opacity="0.10">
-      <path d="M10 74 H246 M10 128 H246 M10 182 H246 M74 10 V246 M128 10 V246 M182 10 V246"/>
-    </g>
-    <path d="M10 190 C78 150 178 206 246 150 L246 246 L10 246 Z" fill="#22d3ee" opacity="0.05"/>
-  </g>
-
-  <g transform="translate(128 128)">
-    <circle r="82" fill="none" stroke="#1e293b" stroke-width="13"/>
-    <path d="M0 -82 A82 82 0 1 1 -58 58" fill="none" stroke="url(#ab-arc)" stroke-width="13" stroke-linecap="round"/>
-    <polygon points="0,-40 34,-20 34,20 0,40 -34,20 -34,-20" fill="url(#ab-core)"/>
-    <circle r="8" fill="#020617"/>
-    <path d="M0 -66 v-10 M62 -30 l9 -5 M62 30 l9 5 M0 66 v10 M-62 30 l-9 5 M-62 -30 l-9 -5"
-          stroke="#94a3b8" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
-    <circle cx="0" cy="-76" r="6" fill="#22d3ee"/>
-    <circle cx="72" cy="-35" r="6" fill="#38bdf8"/>
-    <circle cx="72" cy="35" r="6" fill="#818cf8"/>
-    <circle cx="0" cy="76" r="6" fill="#a78bfa"/>
-    <circle cx="-72" cy="35" r="6" fill="#c084fc"/>
-    <circle cx="-72" cy="-35" r="6" fill="#e879f9"/>
-    <circle r="4" fill="#f8fafc" cx="0" cy="0"/>
+  <rect x="16" y="16" width="224" height="224" rx="48" fill="#0A0E1A" stroke="#1E293B" stroke-width="2"/>
+  <g transform="translate(0 8)">
+    <rect x="52" y="176" width="152" height="16" rx="8" fill="#1E293B"/>
+    <path d="M52 176 L52 136 Q52 120 68 120 L72 120 Q88 120 88 136 L88 176 Z" fill="#334155"/>
+    <path d="M110 176 L110 100 Q110 84 126 84 L130 84 Q146 84 146 100 L146 176 Z" fill="#64748B"/>
+    <path d="M168 176 L168 64 Q168 48 184 48 L188 48 Q204 48 204 64 L204 176 Z" fill="#3B82F6"/>
   </g>
 </svg>
