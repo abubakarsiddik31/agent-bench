@@ -1,10 +1,23 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/abubakarsiddik31/agent-bench/main/assets/logo.svg" alt="Agent Bench logo" width="120" height="120">
+
 # Agent Bench
+
+### Framework-First Benchmarking for AI Agents
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![GitHub stars](https://img.shields.io/github/stars/abubakarsiddik31/agent-bench?style=social)](https://github.com/abubakarsiddik31/agent-bench/stargazers)
 
 **Agent Bench** is an open-source benchmark suite for comparing AI agent frameworks side by side across **task performance** and **developer experience**.
+
+[**Scoreboard**](#scoreboard) • [**Getting Started**](#getting-started) • [**Run a Benchmark**](#running-the-benchmark) • [**Contributing**](./CONTRIBUTING.md)
+
+</div>
+
+---
 
 ---
 
