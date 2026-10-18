@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/logo.svg" alt="Agent Bench" width="132" height="132">
+<img src="assets/agent-bench-logo.svg" alt="Agent Bench" width="132" height="132">
 
 # Agent Bench
 
@@ -16,8 +16,6 @@
 [**Scoreboard**](#scoreboard) • [**Getting Started**](#getting-started) • [**Run a Benchmark**](#running-the-benchmark) • [**Contributing**](./CONTRIBUTING.md)
 
 </div>
-
----
 
 ---
 
