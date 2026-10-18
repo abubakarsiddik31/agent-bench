@@ -1,179 +1,181 @@
 # Agent Bench
 
-Agent Bench is an open-source benchmark project for comparing agent frameworks with transparent, reproducible results.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 
-## What This Repo Is For
+**Agent Bench** is an open-source benchmark suite for comparing AI agent frameworks side by side across **task performance** and **developer experience**.
 
-This repository helps answer one question: which agent framework is the best fit for real end-to-end agent workflows when you consider both task performance and developer experience.
+---
 
-The benchmark is framework-first, not model-first. Results are intended to help teams compare:
+## Table of Contents
 
-- tool-calling reliability and ergonomics
-- orchestration primitives and control
-- human review quality
-- ease of implementation
-- lines of code required
-- readability
-- extensibility
-- observability, tracing, and debugging support
+- [Why Agent Bench?](#why-agent-bench)
+- [Scoreboard](#scoreboard)
+- [Tool Metrics](#tool-metrics)
+- [Framework Evaluation Notes](#framework-evaluation-notes)
+- [Supported Frameworks](#supported-frameworks)
+- [How Evaluation Works](#how-evaluation-works)
+- [Getting Started](#getting-started)
+- [Running the Benchmark](#running-the-benchmark)
+- [Repository Structure](#repository-structure)
+- [Community & Governance](#community--governance)
+- [License](#license)
+
+---
+
+## Why Agent Bench?
+
+Most AI benchmarks evaluate *models* in isolation. **Agent Bench is framework-first**: it helps engineering teams answer which agent framework is the best fit for real, multi-step production workflows when weighing both runtime reliability and engineering ergonomics.
+
+Every framework implementation is evaluated on two equally weighted axes (**50% Task Score / 50% Framework Score**):
+
+1. **Task Performance (50%)** — Can the agent reconcile noisy structured and unstructured evidence, follow operational guardrails, and produce contract-compliant artifacts?
+2. **Framework & Developer Experience (50%)** — How ergonomic is tool definition, orchestration control flow, code volume (LOC), readability, extensibility, and trace observability?
+
+---
 
 ## Scoreboard
 
-This is the main comparison view for the current public benchmark runs.
+Current public benchmark results on `intake-triage` (`stress_v1` split), ranked by **Final Score**:
 
-| Framework | Runtime Model Used | Provider-Agnostic? | Task | Run | Task Score | Framework Score | Final Score | Duration | Outcome
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Anthropic Agent SDK | `sonnet-4.6` | `No` | `intake-triage` | `stress_v1/run-001` | `4.75 / 5.0` | `4.625 / 5.0` | `4.688 / 5.0` | `283.857s` | `Pass` |
-| OpenAI Agents SDK | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-003` | `4.75 / 5.0` | `4.162 / 5.0` | `4.456 / 5.0` | `72.222s` | `Pass` |
-| LangGraph | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-001` | `2.475 / 5.0` | `4.2 / 5.0` | `3.338 / 5.0` | `46.232s` | `Partial` |
-| LangGraph | `gemini-3.1-pro-preview` | `Yes` | `intake-triage` | `stress_v1/run-002` | `4.25 / 5.0` | `3.85 / 5.0` | `4.05 / 5.0` | `73.916s` | `Pass` |
-| CrewAI | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-001` | `2.475 / 5.0` | `3.8 / 5.0` | `3.138 / 5.0` | `121.142s` | `Partial` |
-| AutoGen | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-001` | `2.475 / 5.0` | `3.8 / 5.0` | `3.138 / 5.0` | `35.261s` | `Partial` |
-| Pydantic AI | `gemini-3.1-pro-preview` | `Yes` | `intake-triage` | `stress_v1/run-001` | `2.475 / 5.0` | `4.2 / 5.0` | `3.338 / 5.0` | `172.726s` | `Partial` |
-| Pydantic AI | `gpt-5.4` | `Yes` | `intake-triage` | `stress_v1/run-002` | `3.5 / 5.0` | `4.43 / 5.0` | `3.965 / 5.0` | `63.056s` | `Partial` |
-| Google ADK | `gemini-3.1-pro-preview` | `Yes` | `intake-triage` | `stress_v1/run-001` | `3.5 / 5.0` | `4.11 / 5.0` | `3.805 / 5.0` | `117.643s` | `Partial` |
+| Rank | Framework | Runtime Model | Provider-Agnostic? | Split / Run | Framework LOC | Task Score | Framework Score | Final Score | Duration | Outcome |
+| :---: | --- | --- | :---: | --- | :---: | :---: | :---: | :---: | :---: | :---: |
+| 1 | [Anthropic Agent SDK](./frameworks/anthropic-agent-sdk) | `sonnet-4.6` | `No` | `stress_v1/run-001` | `109` | `4.75 / 5.0` | `4.425 / 5.0` | **`4.588 / 5.0`** | `283.857s` | `Pass` |
+| 2 | [OpenAI Agents SDK](./frameworks/openai-agents-sdk) | `gpt-5.4` | `Yes` | `stress_v1/run-003` | `202` | `4.75 / 5.0` | `4.33 / 5.0` | **`4.54 / 5.0`** | `72.222s` | `Pass` |
+| 3 | [LangGraph](./frameworks/langgraph) | `gemini-3.1-pro-preview` | `Yes` | `stress_v1/run-002` | `225` | `4.25 / 5.0` | `4.3 / 5.0` | **`4.275 / 5.0`** | `73.916s` | `Pass` |
+| 4 | [Pydantic AI](./frameworks/pydantic-ai) | `gpt-5.4` | `Yes` | `stress_v1/run-002` | `160` | `3.5 / 5.0` | `4.5 / 5.0` | **`4.0 / 5.0`** | `63.056s` | `Partial` |
+| 5 | [Google ADK](./frameworks/google-adk) | `gemini-3.1-pro-preview` | `Yes` | `stress_v1/run-001` | `176` | `3.5 / 5.0` | `4.25 / 5.0` | **`3.875 / 5.0`** | `117.643s` | `Partial` |
+| 6 | [LangGraph](./frameworks/langgraph) | `gpt-5.4` | `Yes` | `stress_v1/run-001` | `225` | `2.475 / 5.0` | `4.1 / 5.0` | **`3.287 / 5.0`** | `46.232s` | `Partial` |
+| 7 | [Pydantic AI](./frameworks/pydantic-ai) | `gemini-3.1-pro-preview` | `Yes` | `stress_v1/run-001` | `160` | `2.475 / 5.0` | `4.05 / 5.0` | **`3.263 / 5.0`** | `172.726s` | `Partial` |
+| 7 | [CrewAI](./frameworks/crewai) | `gpt-5.4` | `Yes` | `stress_v1/run-001` | `176` | `2.475 / 5.0` | `4.05 / 5.0` | **`3.263 / 5.0`** | `121.142s` | `Partial` |
+| 9 | [AutoGen](./frameworks/autogen) | `gpt-5.4` | `Yes` | `stress_v1/run-001` | `195` | `2.475 / 5.0` | `3.5 / 5.0` | **`2.987 / 5.0`** | `35.261s` | `Partial` |
 
-Notes:
-- `Provider-Agnostic?` here means whether the framework is designed to work as a general multi-provider runtime.
-- Anthropic Agent SDK can authenticate through multiple hosting paths for Claude, but it is still Claude-specific rather than provider-agnostic.
-- The current recorded runtime models are `sonnet-4.6`, `gpt-5.4`, and `gemini-3.1-pro-preview`.
+> **Notes:**
+> - **Provider-Agnostic?** indicates whether the framework is designed as a general multi-provider runtime. Anthropic Agent SDK can authenticate through multiple Claude hosting providers (Anthropic API, Bedrock, Vertex), but remains Claude-specific.
+> - **Framework LOC** counts non-empty, non-comment lines in `frameworks/<framework>/<task>/` excluding shared benchmark utilities in `common/` (per [`evaluation/metric-counting-policy.yml`](./evaluation/metric-counting-policy.yml)).
+> - All runs above are evaluated with the locked `gemini-3.1-pro-preview` framework judge ([`evaluation/judge-model.yml`](./evaluation/judge-model.yml)) plus deterministic task scoring.
+
+---
 
 ## Tool Metrics
 
-This table tracks the detailed tool-calling behavior that sits behind the framework score.
+Detailed tool-calling telemetry captured during each benchmark run:
 
 | Framework | Run | Tool Pass | Total Calls | Passed Calls | Failed Calls | Unique Tools | Write Calls | Artifacts Produced | Success Rate | Write Completion | Output Coverage | Custom Tool Efficiency |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| --- | --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | Anthropic Agent SDK | `stress_v1/run-001` | `Pass` | `39` | `39` | `0` | `4` | `4` | `3 / 4` | `1.0` | `0.75` | `0.75` | `0.875` |
 | OpenAI Agents SDK | `stress_v1/run-003` | `Pass` | `44` | `44` | `0` | `4` | `7` | `4 / 4` | `1.0` | `0.571` | `1.0` | `0.893` |
-| LangGraph | `stress_v1/run-001` | `Pass` | `16` | `16` | `0` | `3` | `4` | `4 / 4` | `1.0` | `1.0` | `1.0` | `1.0` |
 | LangGraph | `stress_v1/run-002` | `Pass` | `16` | `16` | `0` | `3` | `4` | `4 / 4` | `1.0` | `1.0` | `1.0` | `1.0` |
-| CrewAI | `stress_v1/run-001` | `Pass` | `16` | `16` | `0` | `3` | `4` | `4 / 4` | `1.0` | `1.0` | `1.0` | `1.0` |
-| AutoGen | `stress_v1/run-001` | `Pass` | `21` | `21` | `0` | `4` | `4` | `4 / 4` | `1.0` | `1.0` | `1.0` | `1.0` |
-| Pydantic AI | `stress_v1/run-001` | `Pass` | `37` | `37` | `0` | `4` | `8` | `4 / 4` | `1.0` | `0.5` | `1.0` | `0.875` |
 | Pydantic AI | `stress_v1/run-002` | `Pass` | `26` | `26` | `0` | `4` | `5` | `4 / 4` | `1.0` | `0.8` | `1.0` | `0.95` |
 | Google ADK | `stress_v1/run-001` | `Pass` | `25` | `25` | `0` | `4` | `8` | `4 / 4` | `1.0` | `0.5` | `1.0` | `0.875` |
+| LangGraph | `stress_v1/run-001` | `Pass` | `16` | `16` | `0` | `3` | `4` | `4 / 4` | `1.0` | `1.0` | `1.0` | `1.0` |
+| Pydantic AI | `stress_v1/run-001` | `Pass` | `37` | `37` | `0` | `4` | `8` | `4 / 4` | `1.0` | `0.5` | `1.0` | `0.875` |
+| CrewAI | `stress_v1/run-001` | `Pass` | `16` | `16` | `0` | `3` | `4` | `4 / 4` | `1.0` | `1.0` | `1.0` | `1.0` |
+| AutoGen | `stress_v1/run-001` | `Pass` | `21` | `21` | `0` | `4` | `4` | `4 / 4` | `1.0` | `1.0` | `1.0` | `1.0` |
+
+---
 
 ## Framework Evaluation Notes
 
-This section provides qualitative insights into the developer experience and framework design based on the benchmark runs.
+Qualitative developer-experience takeaways synthesized from the benchmark implementations and judge evaluations:
 
-- **Anthropic Agent SDK (`run-001`)**: Framework score derived from deterministic metrics and heuristics.
-- **OpenAI Agents SDK (`run-003`)**: Framework score derived from deterministic metrics and heuristics.
-- **LangGraph (`run-001`)**: LangGraph provides a robust and highly extensible foundation for agent development. The use of `StateGraph` and prebuilt components like `ToolNode` makes constructing a standard ReAct loop relatively clean, though it requires adopting a graph-based mental model. The implementation is readable and handles tool calling exceptionally well, but relies on manual tracing and an external retry loop rather than fully utilizing the framework's native capabilities for observability and complex cyclic routing.
-- **LangGraph (`run-002`)**: The LangGraph implementation showcases a robust, highly extensible graph-based architecture for agent orchestration. While tool calling is seamless, the implementation's reliance on manual tracing and external retry logic adds boilerplate and reduces readability. Overall, it offers excellent control for complex workflows at the cost of a slightly steeper learning curve.
-- **CrewAI (`run-001`)**: CrewAI provides a highly readable and easy-to-implement declarative framework for building agents. Its tool calling is reliable, and the abstractions for agents and tasks are intuitive. However, the framework lacks built-in output validation (requiring custom retry loops) and required manual instrumentation for detailed observability. Despite successfully generating all required outputs, the agent struggled with the complex reasoning required for the task, resulting in a partial success.
-- **AutoGen (`run-001`)**: Autogen provides a robust, multi-agent paradigm that handles tool execution effectively through its UserProxyAgent. While tool definition is elegantly Pythonic, the dual-agent setup can feel slightly over-engineered for a single-agent task. The framework's biggest drawback in this implementation is the lack of accessible, built-in tracing, which forces developers to manually instrument tool functions to capture observability data.
-- **Pydantic AI (`run-001`, `run-002`)**: Pydantic AI offers a highly ergonomic, type-safe, and Pythonic approach to building agents. Its tool-calling and dependency injection mechanisms (`RunContext`) are standout features that make the code clean and maintainable. However, the need for manual tracing inside each tool highlights a gap in out-of-the-box observability hooks for custom logging. When running `gpt-5.4` (`run-002`), the framework executed much faster and with fewer, more efficient tool calls (26 vs 37), but both models still struggled to perfectly match the gold-standard qualitative rubrics for the complex triage reasoning, resulting in partial successes.
-- **Google ADK (`run-001`)**: This google-adk implementation is a strong, pragmatic single-agent setup: simple to build, readable, and equipped with enough orchestration and tracing to complete the task reliably. Its biggest strengths are low implementation overhead and good observability for a compact script. Its main limitations are shallow orchestration and low-level tool design, which likely left some quality on the table despite successful artifact generation.
+- **Anthropic Agent SDK (`run-001`)**: Offers a remarkably concise developer experience (`109` LOC), particularly when leveraging its built-in file system and search tools (`Read`, `Write`, `Edit`, `Glob`, `Grep`). Orchestration is cleanly abstracted behind an async generator (`query` + `ClaudeAgentOptions`), though persistent custom trace formatting still requires manual message serialization.
+- **OpenAI Agents SDK (`run-003`)**: Provides a clean, Pythonic approach to agent construction. Tool definition via `@function_tool` decorators, type hints, and docstrings is frictionless, and `Runner.run_sync` keeps turn management simple. While it exposes rich `new_items` and token usage on the result object, exporting custom JSONL traces requires light serialization glue.
+- **LangGraph (`run-001`, `run-002`)**: Provides a structured, highly extensible state-graph architecture (`StateGraph`, `MessagesState`, `ToolNode`). Tool execution is rock-solid (`16/16` calls with `1.0` tool efficiency across both OpenAI and Gemini runs), and the graph mental model scales well to complex cyclic workflows, though manual message/usage extraction adds boilerplate when not using LangSmith.
+- **Pydantic AI (`run-001`, `run-002`)**: Standout developer ergonomics (`160` LOC) thanks to type-safe `@agent.tool` decorators and `RunContext[AgentDeps]` dependency injection, which eliminates global state in tools. Switching between OpenAI and Gemini models is clean, and multi-turn continuation via `message_history` is straightforward.
+- **Google ADK (`run-001`)**: Delivers a pragmatic single-agent setup (`LlmAgent` + `Runner` + `InMemorySessionService`) that converts plain typed Python functions directly into tools. Setup is compact (`176` LOC), with minor boilerplate around async session creation and iterating through runner events for final responses.
+- **CrewAI (`run-001`)**: Features an intuitive declarative mental model (`Agent`, `Task`, `Crew`, `Process.sequential`) and clean `@tool` decorators (`176` LOC). However, enforcing strict multi-artifact output completion requires an external retry loop, and granular tool-call tracing requires manual instrumentation inside tools.
+- **AutoGen (`run-001`)**: Uses a conversational dual-agent pattern (`AssistantAgent` + `UserProxyAgent`) with `Annotated` type hints for tool schemas (`195` LOC). While effective for multi-agent chat, registering each function across both a caller and executor feels heavier for single-agent artifact workflows, and structured tracing requires manual instrumentation.
 
-## Current Scope
+---
 
-The current public benchmark focuses on:
+## Supported Frameworks
 
-- a shared task suite
-- reproducible evaluation scripts
-- side-by-side framework implementations
-- saved result artifacts and score tables
+### Implemented
+| Framework | Package | Directory | Multi-Provider |
+| --- | --- | --- | :---: |
+| [Anthropic Agent SDK](https://docs.anthropic.com/en/docs/claude-code/sdk) | `claude-agent-sdk` | [`frameworks/anthropic-agent-sdk/`](./frameworks/anthropic-agent-sdk) | No (Claude) |
+| [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/) | `openai-agents` | [`frameworks/openai-agents-sdk/`](./frameworks/openai-agents-sdk) | Yes |
+| [LangGraph](https://docs.langchain.com/oss/python/langgraph/overview) | `langgraph` | [`frameworks/langgraph/`](./frameworks/langgraph) | Yes |
+| [Pydantic AI](https://ai.pydantic.dev/) | `pydantic-ai` | [`frameworks/pydantic-ai/`](./frameworks/pydantic-ai) | Yes |
+| [Google ADK](https://google.github.io/adk-docs/) | `google-adk` | [`frameworks/google-adk/`](./frameworks/google-adk) | Yes |
+| [CrewAI](https://docs.crewai.com/en/introduction) | `crewai` | [`frameworks/crewai/`](./frameworks/crewai) | Yes |
+| [AutoGen](https://microsoft.github.io/autogen/stable/user-guide/core-user-guide/index.html) | `pyautogen` | [`frameworks/autogen/`](./frameworks/autogen) | Yes |
 
-### Supported Frameworks
+### Planned
+- [Mastra](https://mastra.ai/) (TypeScript)
+- Additional tasks from [`tasks/`](./tasks) (`archive-review`, `packet-drafting`, `portfolio-investigation`, `verification-sweep`)
 
-Currently implemented:
-- [Anthropic Agent SDK](https://docs.anthropic.com/en/docs/claude-code/sdk)
-- [Google ADK](https://google.github.io/adk-docs/)
-- [LangGraph](https://docs.langchain.com/oss/python/langgraph/overview)
-- [OpenAI Agents SDK](https://platform.openai.com/docs/guides/agents-sdk/)
+---
 
-Planned:
-- [CrewAI](https://docs.crewai.com/en/introduction)
-- [AutoGen](https://microsoft.github.io/autogen/stable/user-guide/core-user-guide/index.html)
-- [Mastra](https://mastra.ai/)
-- [Pydantic AI](https://github.com/pydantic/pydantic-ai)
+## How Evaluation Works
 
-The first implemented benchmark task is `intake-triage`, and `stress_v1` is the default comparison split.
+Evaluation runs in two automated stages via [`evaluation/run_intake_benchmark.py`](./evaluation/run_intake_benchmark.py):
 
-## Repository Structure
+### 1. Deterministic Task Evaluation (`50%` of Final Score)
+Handled by [`evaluation/evaluate_intake_run.py`](./evaluation/evaluate_intake_run.py) against [`rubrics/intake-triage.yml`](./rubrics/intake-triage.yml):
+- **Hard Gates**: Verifies execution completion and presence of critical decision artifacts (`triage_decision.json`, `candidate_match_table.json`). Missing critical artifacts result in an automatic `fail` (`0.0`).
+- **Quality Criteria & Weights**:
+  - `matching_accuracy` (`25%`) — Exact disposition, best-match record ID, and top-ranked candidate accuracy against `gold-expected.json`.
+  - `policy_application` (`20%`) — Explicit handling of contradictory signals, stale/reused references, and review guardrails.
+  - `explanation_quality` (`20%`) — Evidence coverage and multi-point rationale clarity.
+  - `gap_prioritization` (`15%`) — Accuracy of `must_have`, `later_required`, and `optional` missing field classifications.
+  - `actionability` (`10%`) — Concrete immediate operational actions and review notes.
+  - `confidence_calibration` (`10%`) — Alignment between stated confidence (`low`, `medium`, `high`) and evidence ambiguity.
+- **Outcome Cap**: If any core semantic check (disposition, best match, or top candidate) misses the gold expectation, the task outcome is capped at `partial` (max `3.5 / 5.0`).
 
-The repository is organized like this:
+### 2. Framework Quality Evaluation (`50%` of Final Score)
+Handled by [`evaluation/evaluate_framework.py`](./evaluation/evaluate_framework.py) against [`rubrics/framework-evaluation.yml`](./rubrics/framework-evaluation.yml):
+- Combines deterministic code/trace metrics with qualitative assessment by the locked LLM judge (`gemini-3.1-pro-preview`, configured in [`evaluation/judge-model.yml`](./evaluation/judge-model.yml)).
+- **Criteria & Weights**:
+  - `tool_calling` (`20%`) — Ergonomics of tool definition/registration and runtime call reliability.
+  - `orchestration` (`20%`) — Clarity and control of multi-step execution, state, and retry loops.
+  - `human_review_quality` (`10%`) — Ease of inspecting outputs, traces, and agent behavior.
+  - `ease_of_implementation` (`10%`) — Onboarding speed, setup steps, and API ergonomics.
+  - `lines_of_code_required` (`10%`) — Deterministic score from non-comment LOC in framework-specific files (`<=120`: `5.0`, `<=200`: `4.0`, `<=300`: `3.0`, `<=450`: `2.0`).
+  - `readability` (`10%`) — Clarity and maintainability of the framework implementation.
+  - `extensibility` (`10%`) — Ease of adding new tools, tasks, or multi-agent steps.
+  - `observability` (`10%`) — Built-in support for tracing, usage accounting, and debugging.
 
-```text
-.
-├── .env.example
-├── .gitignore
-├── CONTRIBUTING.md
-├── LICENSE
-├── OPEN_SOURCE_CHECKLIST.md
-├── pyproject.toml
-├── README.md
-├── SECURITY.md
-├── benchmarks/
-│   ├── README.md
-│   └── intake-triage/
-│       ├── prompt-pack.yml
-│       ├── fixtures/
-│       └── stress_v1/
-├── common/
-│   ├── benchmark_utils.py
-│   └── evaluation_utils.py
-├── frameworks/
-│   ├── anthropic-agent-sdk/
-│   │   └── intake-triage/
-│   │       └── agent.py
-│   ├── google-adk/
-│   │   └── intake-triage/
-│   │       └── agent.py
-│   ├── langgraph/
-│   │   └── intake-triage/
-│   │       └── agent.py
-│   └── openai-agents-sdk/
-│       └── intake-triage/
-│           └── agent.py
-├── tasks/
-│   ├── archive-review.yml
-│   ├── intake-triage.yml
-│   ├── packet-drafting.yml
-│   ├── portfolio-investigation.yml
-│   └── verification-sweep.yml
-├── rubrics/
-│   ├── shared-evaluation.yml
-│   ├── framework-evaluation.yml
-│   ├── archive-review.yml
-│   ├── intake-triage.yml
-│   ├── packet-drafting.yml
-│   ├── portfolio-investigation.yml
-│   └── verification-sweep.yml
-├── evaluation/
-│   ├── benchmark-execution.yml
-│   ├── evaluate_intake_run.py
-│   ├── evaluate_framework.py
-│   ├── judge-model.yml
-│   ├── metric-counting-policy.yml
-│   ├── review-form.yml
-│   └── run_intake_benchmark.py
-├── results/
-│   └── README.md
-```
+---
 
-## Install
+## Getting Started
+
+### Prerequisites
+- Python `3.10+`
+- [`uv`](https://docs.astral.sh/uv/) package manager
+
+### Installation
 
 ```bash
+git clone https://github.com/abubakarsiddik31/agent-bench.git
+cd agent-bench
 uv sync
 cp .env.example .env
 ```
 
-The root `.env` should contain:
+Configure the relevant API keys in `.env`:
 
-- `ANTHROPIC_API_KEY` for Anthropic framework runs
-- `OPENAI_API_KEY` for OpenAI framework runs
-- `GOOGLE_API_KEY` for Google ADK framework runs with Gemini
-- `GEMINI_API_KEY` for Gemini-based framework evaluation judging
+```dotenv
+ANTHROPIC_API_KEY=your-anthropic-api-key
+OPENAI_API_KEY=your-openai-api-key
+GOOGLE_API_KEY=your-google-ai-studio-key
+GEMINI_API_KEY=your-google-ai-studio-key
+```
 
-## Usage
+- `ANTHROPIC_API_KEY` — required for Anthropic Agent SDK runs
+- `OPENAI_API_KEY` — required for OpenAI Agents SDK, and default OpenAI runs in LangGraph, Pydantic AI, CrewAI, and AutoGen
+- `GOOGLE_API_KEY` / `GEMINI_API_KEY` — required for Google ADK runs, Gemini runs in LangGraph/Pydantic AI, and the `gemini-3.1-pro-preview` evaluation judge
 
-Run commands are grouped by framework below.
+---
+
+## Running the Benchmark
+
+All benchmark commands run from the repository root.
 
 <details>
-<summary>Anthropic Agent SDK</summary>
+<summary><strong>Anthropic Agent SDK</strong></summary>
 
 ```bash
 uv run python evaluation/run_intake_benchmark.py \
@@ -185,7 +187,7 @@ uv run python evaluation/run_intake_benchmark.py \
 </details>
 
 <details>
-<summary>OpenAI Agents SDK</summary>
+<summary><strong>OpenAI Agents SDK</strong></summary>
 
 ```bash
 uv run python evaluation/run_intake_benchmark.py \
@@ -194,24 +196,12 @@ uv run python evaluation/run_intake_benchmark.py \
   --out results/openai-agents-sdk/intake-triage/stress_v1/run-003
 ```
 
-</details>
-
-<details>
-<summary>Google ADK</summary>
-
-```bash
-uv run python evaluation/run_intake_benchmark.py \
-  --agent-script frameworks/google-adk/intake-triage/agent.py \
-  --fixture benchmarks/intake-triage/stress_v1/fixtures/case-101 \
-  --out results/google-adk/intake-triage/stress_v1/run-001
-```
-
-The Google ADK runner defaults to `gemini-3.1-pro-preview` unless `GOOGLE_ADK_MODEL` or `GEMINI_MODEL` is set.
+Defaults to `gpt-5.4` unless `OPENAI_AGENT_MODEL` or `OPENAI_MODEL` is set.
 
 </details>
 
 <details>
-<summary>LangGraph</summary>
+<summary><strong>LangGraph</strong></summary>
 
 ```bash
 uv run python evaluation/run_intake_benchmark.py \
@@ -220,12 +210,68 @@ uv run python evaluation/run_intake_benchmark.py \
   --out results/langgraph/intake-triage/stress_v1/run-001
 ```
 
-The LangGraph runner defaults to `gpt-5.4` unless `LANGGRAPH_MODEL` or `OPENAI_MODEL` is set.
+Defaults to `gpt-5.4` unless `LANGGRAPH_MODEL` or `OPENAI_MODEL` is set (supports `gemini-*` models via `LANGGRAPH_MODEL=gemini-3.1-pro-preview`).
 
 </details>
 
 <details>
-<summary>Re-score Existing Run</summary>
+<summary><strong>Pydantic AI</strong></summary>
+
+```bash
+uv run python evaluation/run_intake_benchmark.py \
+  --agent-script frameworks/pydantic-ai/intake-triage/agent.py \
+  --fixture benchmarks/intake-triage/stress_v1/fixtures/case-101 \
+  --out results/pydantic-ai/intake-triage/stress_v1/run-002
+```
+
+Defaults to `gpt-5.4` unless `PYDANTIC_AI_MODEL` or `OPENAI_MODEL` is set (supports `gemini-*` models via `PYDANTIC_AI_MODEL=gemini-3.1-pro-preview`).
+
+</details>
+
+<details>
+<summary><strong>Google ADK</strong></summary>
+
+```bash
+uv run python evaluation/run_intake_benchmark.py \
+  --agent-script frameworks/google-adk/intake-triage/agent.py \
+  --fixture benchmarks/intake-triage/stress_v1/fixtures/case-101 \
+  --out results/google-adk/intake-triage/stress_v1/run-001
+```
+
+Defaults to `gemini-3.1-pro-preview` unless `GOOGLE_ADK_MODEL` or `GEMINI_MODEL` is set.
+
+</details>
+
+<details>
+<summary><strong>CrewAI</strong></summary>
+
+```bash
+uv run python evaluation/run_intake_benchmark.py \
+  --agent-script frameworks/crewai/intake-triage/agent.py \
+  --fixture benchmarks/intake-triage/stress_v1/fixtures/case-101 \
+  --out results/crewai/intake-triage/stress_v1/run-001
+```
+
+Defaults to `gpt-5.4` unless `CREWAI_MODEL` or `OPENAI_MODEL` is set.
+
+</details>
+
+<details>
+<summary><strong>AutoGen</strong></summary>
+
+```bash
+uv run python evaluation/run_intake_benchmark.py \
+  --agent-script frameworks/autogen/intake-triage/agent.py \
+  --fixture benchmarks/intake-triage/stress_v1/fixtures/case-101 \
+  --out results/autogen/intake-triage/stress_v1/run-001
+```
+
+Defaults to `gpt-5.4` unless `AUTOGEN_MODEL` or `OPENAI_MODEL` is set.
+
+</details>
+
+<details>
+<summary><strong>Re-score an Existing Run (Skip Agent Execution)</strong></summary>
 
 ```bash
 uv run python evaluation/run_intake_benchmark.py \
@@ -235,37 +281,20 @@ uv run python evaluation/run_intake_benchmark.py \
   --skip-agent
 ```
 
-</details>
-
-<details>
-<summary>Skip Judge</summary>
-
-```bash
-uv run python evaluation/run_intake_benchmark.py \
-  --agent-script frameworks/anthropic-agent-sdk/intake-triage/agent.py \
-  --fixture benchmarks/intake-triage/stress_v1/fixtures/case-101 \
-  --out results/anthropic-agent-sdk/intake-triage/stress_v1/run-001 \
-  --skip-agent \
-  --skip-judge
-```
+Add `--skip-judge` to use the deterministic heuristic fallback without calling the Gemini judge API.
 
 </details>
 
 <details>
-<summary>Task-Only Evaluation</summary>
+<summary><strong>Run Task-Only or Framework-Only Evaluators</strong></summary>
 
 ```bash
+# Task-only deterministic evaluation
 uv run python evaluation/evaluate_intake_run.py \
   --run-dir results/anthropic-agent-sdk/intake-triage/stress_v1/run-001 \
   --fixture-dir benchmarks/intake-triage/stress_v1/fixtures/case-101
-```
 
-</details>
-
-<details>
-<summary>Framework-Only Evaluation</summary>
-
-```bash
+# Framework-only evaluation
 uv run python evaluation/evaluate_framework.py \
   --run-dir results/anthropic-agent-sdk/intake-triage/stress_v1/run-001 \
   --fixture-dir benchmarks/intake-triage/stress_v1/fixtures/case-101 \
@@ -274,59 +303,89 @@ uv run python evaluation/evaluate_framework.py \
 
 </details>
 
-## How Evaluation Works
+---
 
-Evaluation happens in two layers:
+## Repository Structure
 
-1. Task evaluation
-   - The agent runs against a fixed prompt pack and fixture set.
-   - We inspect the produced artifacts against the task contract and rubric.
-   - Hard gates check whether required files, formats, and core outputs are present.
-   - If the contract is violated, the run can fail even if the agent produced something useful.
+```text
+.
+├── .env.example
+├── .gitignore
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── pyproject.toml
+├── README.md
+├── SECURITY.md
+├── benchmarks/
+│   ├── README.md
+│   └── intake-triage/
+│       ├── prompt-pack.yml
+│       ├── fixtures/
+│       └── stress_v1/
+│           ├── prompt-pack.yml
+│           └── fixtures/
+├── common/
+│   ├── benchmark_utils.py
+│   └── evaluation_utils.py
+├── evaluation/
+│   ├── benchmark-execution.yml
+│   ├── evaluate_framework.py
+│   ├── evaluate_intake_run.py
+│   ├── judge-model.yml
+│   ├── metric-counting-policy.yml
+│   ├── review-form.yml
+│   └── run_intake_benchmark.py
+├── frameworks/
+│   ├── anthropic-agent-sdk/
+│   │   ├── README.md
+│   │   └── intake-triage/agent.py
+│   ├── autogen/
+│   │   ├── README.md
+│   │   └── intake-triage/agent.py
+│   ├── crewai/
+│   │   ├── README.md
+│   │   └── intake-triage/agent.py
+│   ├── google-adk/
+│   │   ├── README.md
+│   │   └── intake-triage/agent.py
+│   ├── langgraph/
+│   │   ├── README.md
+│   │   └── intake-triage/agent.py
+│   ├── openai-agents-sdk/
+│   │   ├── README.md
+│   │   └── intake-triage/agent.py
+│   └── pydantic-ai/
+│       ├── README.md
+│       └── intake-triage/agent.py
+├── results/
+│   └── README.md
+├── rubrics/
+│   ├── archive-review.yml
+│   ├── framework-evaluation.yml
+│   ├── intake-triage.yml
+│   ├── packet-drafting.yml
+│   ├── portfolio-investigation.yml
+│   ├── shared-evaluation.yml
+│   └── verification-sweep.yml
+└── tasks/
+    ├── archive-review.yml
+    ├── intake-triage.yml
+    ├── packet-drafting.yml
+    ├── portfolio-investigation.yml
+    └── verification-sweep.yml
+```
 
-2. Framework evaluation
-   - After task execution, we record implementation and operator experience.
-   - This includes tool-calling reliability and ergonomics, ease of adding new tools, confidence in correct tool invocation, orchestration primitives and control, human review quality, ease of implementation, lines of code required, readability, extensibility, and observability.
-   - Final framework ranking uses both the task-performance score and the framework-quality score.
+---
 
-Evaluation model:
+## Community & Governance
 
-- Locked judge target: `Gemini 3.1 Pro Preview`
-- Provider: `Google AI Studio`
-- Model ID: `gemini-3.1-pro-preview`
-- Config file: `evaluation/judge-model.yml`
+- **Contributing Guide**: [CONTRIBUTING.md](./CONTRIBUTING.md)
+- **Code of Conduct**: [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+- **Security Policy**: [SECURITY.md](./SECURITY.md)
 
-Current scoring implementation:
-
-- `evaluation/run_intake_benchmark.py` runs the full pipeline end to end
-- `evaluation/evaluate_intake_run.py` handles deterministic task scoring
-- `evaluation/evaluate_framework.py` handles framework-quality scoring
-- Gemini-based judging is used for qualitative framework scoring when `GEMINI_API_KEY` is present
-- Deterministic task evaluation remains the hard-gate source of truth
-- When the framework runtime exposes it, per-run cost and duration are captured in the saved run artifacts
-
-Current evaluation status:
-
-- Full end-to-end benchmark execution is now implemented for `intake-triage`
-- `stress_v1` is the default comparison split
-- Framework-quality scoring uses deterministic metrics plus Gemini-assisted judging when configured
-- A heuristic fallback is available when Gemini judging is skipped or unavailable
-
-
-## Public Release Notes
-
-- Internal planning files are not part of the public project surface.
-- Result rows should be backed by saved evaluation artifacts in `results/`.
-- Shared logic belongs in `common/` and `evaluation/`.
-- Framework-specific code belongs in `frameworks/<framework>/<task>/`.
-
-## Community Files
-
-- Contribution guide: [CONTRIBUTING.md](/Users/abubakarsiddik/Desktop/OSS/agent-bench/CONTRIBUTING.md)
-- Code of conduct: [CODE_OF_CONDUCT.md](/Users/abubakarsiddik/Desktop/OSS/agent-bench/CODE_OF_CONDUCT.md)
-- Security policy: [SECURITY.md](/Users/abubakarsiddik/Desktop/OSS/agent-bench/SECURITY.md)
-- Release checklist: [OPEN_SOURCE_CHECKLIST.md](/Users/abubakarsiddik/Desktop/OSS/agent-bench/OPEN_SOURCE_CHECKLIST.md)
+---
 
 ## License
 
-This project is released under the [MIT License](/Users/abubakarsiddik/Desktop/OSS/agent-bench/LICENSE).
+This project is released under the [MIT License](./LICENSE).

@@ -41,4 +41,4 @@ cp .env.example .env
 ## License
 
 By contributing, you agree that your contributions will be licensed under the
-terms in [LICENSE](/Users/abubakarsiddik/Desktop/OSS/agent-bench/LICENSE).
+terms in [LICENSE](./LICENSE).

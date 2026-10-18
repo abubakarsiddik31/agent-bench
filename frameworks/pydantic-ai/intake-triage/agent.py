@@ -20,98 +20,61 @@ from common.benchmark_utils import (
     build_prompt,
     collect_output_presence,
     infer_prompt_pack_path,
+    list_files_in_workspace,
+    missing_required_outputs,
     parse_args,
     prepare_workspace,
+    read_file_in_workspace,
     read_prompt_pack,
     repo_root,
+    search_text_in_workspace,
     to_json_safe,
+    write_file_in_workspace,
     write_framework_snapshot,
     write_run_result,
 )
+
 
 class AgentDeps:
     def __init__(self, workspace_dir: Path, trace_lines: list[str]):
         self.workspace_dir = workspace_dir
         self.trace_lines = trace_lines
 
-def safe_path(workspace_dir: Path, relative_path: str) -> Path:
-    path = (workspace_dir / relative_path).resolve()
-    if workspace_dir.resolve() not in path.parents and path != workspace_dir.resolve():
-        raise ValueError(f"Path must stay inside workspace: {relative_path}")
-    return path
-
-def append_tool_trace(trace_lines: list[str], tool_name: str, payload: object) -> None:
-    trace_lines.append(
-        json.dumps(
-            {
-                "type": "assistant",
-                "content": [{"kind": "tool", "value": tool_name}],
-                "payload": to_json_safe(payload),
-            }
-        )
-    )
-
-def missing_required_outputs(workspace_dir: Path) -> list[str]:
-    presence = collect_output_presence(workspace_dir)
-    return [file_name for file_name, exists in presence.items() if not exists]
 
 # Initialize Agent
 agent = Agent(
-    'openai:gpt-4o', # Default, will be overridden
+    'openai:gpt-4o',  # Default, will be overridden
     deps_type=AgentDeps,
 )
+
 
 @agent.tool
 def list_workspace_files(ctx: RunContext[AgentDeps]) -> str:
     """List files available in the current workspace."""
-    append_tool_trace(ctx.deps.trace_lines, "list_workspace_files", {})
-    files = []
-    for path in sorted(ctx.deps.workspace_dir.rglob("*")):
-        if path.is_file():
-            files.append(str(path.relative_to(ctx.deps.workspace_dir)))
-    return "\n".join(files)
+    return list_files_in_workspace(ctx.deps.workspace_dir, ctx.deps.trace_lines)
+
 
 @agent.tool
 def read_workspace_file(ctx: RunContext[AgentDeps], path: str) -> str:
     """Read a file from the workspace using a relative path."""
-    append_tool_trace(ctx.deps.trace_lines, "read_workspace_file", {"path": path})
-    return safe_path(ctx.deps.workspace_dir, path).read_text(encoding="utf-8")
+    return read_file_in_workspace(ctx.deps.workspace_dir, path, ctx.deps.trace_lines)
+
 
 @agent.tool
 def search_workspace(ctx: RunContext[AgentDeps], query: str) -> str:
     """Search the workspace for a text query and return matching lines with file references."""
-    append_tool_trace(ctx.deps.trace_lines, "search_workspace", {"query": query})
-    matches: list[str] = []
-    lowered_query = query.lower()
-    for path in sorted(ctx.deps.workspace_dir.rglob("*")):
-        if not path.is_file():
-            continue
-        try:
-            text = path.read_text(encoding="utf-8")
-        except UnicodeDecodeError:
-            continue
-        for index, line in enumerate(text.splitlines(), start=1):
-            if lowered_query in line.lower():
-                matches.append(f"{path.relative_to(ctx.deps.workspace_dir)}:{index}: {line}")
-    return "\n".join(matches[:200]) if matches else "No matches found."
+    return search_text_in_workspace(ctx.deps.workspace_dir, query, ctx.deps.trace_lines)
+
 
 @agent.tool
 def write_workspace_file(ctx: RunContext[AgentDeps], path: str, content: str) -> str:
     """Write a file in the workspace using a relative path."""
-    append_tool_trace(
-        ctx.deps.trace_lines,
-        "write_workspace_file",
-        {"path": path, "content_preview": content[:200]},
-    )
-    target = safe_path(ctx.deps.workspace_dir, path)
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(content, encoding="utf-8")
-    return f"Wrote {target.relative_to(ctx.deps.workspace_dir)}"
+    return write_file_in_workspace(ctx.deps.workspace_dir, path, content, ctx.deps.trace_lines)
 
-def estimate_cost_from_usage(usage, model_name: str) -> Optional[float]:
-    # Pydantic AI usage object attributes
-    input_tokens = getattr(usage, 'input_tokens', 0) or 0
-    output_tokens = getattr(usage, 'output_tokens', 0) or 0
+
+def estimate_cost_from_usage(totals: dict[str, int | float], model_name: str) -> Optional[float]:
+    input_tokens = float(totals.get("input_tokens", 0) or 0)
+    output_tokens = float(totals.get("output_tokens", 0) or 0)
     
     input_cost = os.getenv("OPENAI_INPUT_COST_PER_1M")
     output_cost = os.getenv("OPENAI_OUTPUT_COST_PER_1M")
@@ -218,7 +181,7 @@ def main() -> None:
 
     output_presence = collect_output_presence(workspace_dir)
     runtime_metadata = {
-        "total_cost_usd": estimate_cost_from_usage(result.usage(), model_name), # Simple estimate from last run for now
+        "total_cost_usd": estimate_cost_from_usage(accumulated_usage, model_name),
         "duration_seconds": duration_seconds,
         "usage": {
             "provider": "pydantic-ai",

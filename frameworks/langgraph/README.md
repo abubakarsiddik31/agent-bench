@@ -11,4 +11,4 @@ Official references used for this implementation:
 
 Current implementation:
 
-- `intake-triage/`: benchmark implementation for the `intake_triage` task using `gpt-5.4`
+- `intake-triage/`: benchmark implementation for the `intake_triage` task (supports OpenAI and Gemini models)

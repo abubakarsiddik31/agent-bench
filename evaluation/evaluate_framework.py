@@ -67,7 +67,6 @@ def analyze_trace(trace_path: Path) -> dict:
     failed_tool_calls_detected = 0
     write_calls = 0
     read_like_calls = 0
-    error_markers = ("error", "failed", "exception", "traceback")
 
     for line in trace_path.read_text(encoding="utf-8").splitlines():
         if not line.strip():
@@ -103,9 +102,8 @@ def analyze_trace(trace_path: Path) -> dict:
                 failed_tool_calls_detected += 1
         elif payload_type == "MessageOutputItem":
             assistant_messages += 1
-        for value in payload.values():
-            if isinstance(value, str) and any(marker in value.lower() for marker in error_markers):
-                failed_tool_calls_detected += 1
+        elif payload_type in {"tool_error", "error"}:
+            failed_tool_calls_detected += 1
 
     failed_tool_calls_detected = min(failed_tool_calls_detected, tool_messages)
     passed_tool_calls_detected = max(tool_messages - failed_tool_calls_detected, 0)

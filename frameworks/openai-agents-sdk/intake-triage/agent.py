@@ -12,66 +12,45 @@ if str(REPO_ROOT) not in sys.path:
 
 from agents import Agent, ModelSettings, Runner, function_tool
 from common.benchmark_utils import (
+    REQUIRED_OUTPUTS,
     build_prompt,
     collect_output_presence,
     infer_prompt_pack_path,
+    list_files_in_workspace,
+    missing_required_outputs,
     parse_args,
     prepare_workspace,
+    read_file_in_workspace,
     read_prompt_pack,
     repo_root,
+    search_text_in_workspace,
     to_json_safe,
-    REQUIRED_OUTPUTS,
+    write_file_in_workspace,
     write_framework_snapshot,
     write_run_result,
 )
-
-
-def safe_path(workspace_dir: Path, relative_path: str) -> Path:
-    path = (workspace_dir / relative_path).resolve()
-    if workspace_dir.resolve() not in path.parents and path != workspace_dir.resolve():
-        raise ValueError(f"Path must stay inside workspace: {relative_path}")
-    return path
 
 
 def build_tools(workspace_dir: Path) -> list:
     @function_tool
     def list_workspace_files() -> str:
         """List files available in the current workspace."""
-        files = []
-        for path in sorted(workspace_dir.rglob("*")):
-            if path.is_file():
-                files.append(str(path.relative_to(workspace_dir)))
-        return "\n".join(files)
+        return list_files_in_workspace(workspace_dir)
 
     @function_tool
     def read_workspace_file(path: str) -> str:
         """Read a file from the workspace using a relative path."""
-        return safe_path(workspace_dir, path).read_text(encoding="utf-8")
+        return read_file_in_workspace(workspace_dir, path)
 
     @function_tool
     def search_workspace(query: str) -> str:
         """Search the workspace for a text query and return matching lines with file references."""
-        matches: list[str] = []
-        lowered_query = query.lower()
-        for path in sorted(workspace_dir.rglob("*")):
-            if not path.is_file():
-                continue
-            try:
-                text = path.read_text(encoding="utf-8")
-            except UnicodeDecodeError:
-                continue
-            for index, line in enumerate(text.splitlines(), start=1):
-                if lowered_query in line.lower():
-                    matches.append(f"{path.relative_to(workspace_dir)}:{index}: {line}")
-        return "\n".join(matches[:200]) if matches else "No matches found."
+        return search_text_in_workspace(workspace_dir, query)
 
     @function_tool
     def write_workspace_file(path: str, content: str) -> str:
         """Write a file in the workspace using a relative path."""
-        target = safe_path(workspace_dir, path)
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text(content, encoding="utf-8")
-        return f"Wrote {target.relative_to(workspace_dir)}"
+        return write_file_in_workspace(workspace_dir, path, content)
 
     return [
         list_workspace_files,
@@ -151,11 +130,6 @@ def estimate_cost_from_totals(totals: dict[str, float]) -> float | None:
     return round(total, 8)
 
 
-def missing_required_outputs(workspace_dir: Path) -> list[str]:
-    presence = collect_output_presence(workspace_dir)
-    return [file_name for file_name, exists in presence.items() if not exists]
-
-
 def run_once(agent: Agent, prompt: str, trace_lines: list[str]) -> object:
     result = Runner.run_sync(agent, prompt, max_turns=25)
     usage = getattr(result.context_wrapper, "usage", None)
@@ -186,7 +160,7 @@ def main() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     prepare_workspace(repo_root_path, fixture_dir, workspace_dir)
 
-    model_name = os.getenv("OPENAI_AGENT_MODEL") or os.getenv("OPENAI_MODEL") or "gpt-4.1-mini"
+    model_name = os.getenv("OPENAI_AGENT_MODEL") or os.getenv("OPENAI_MODEL") or "gpt-5.4"
     tools = build_tools(workspace_dir)
     instructions = "\n\n".join(
         [

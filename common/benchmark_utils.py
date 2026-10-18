@@ -10,6 +10,10 @@ REQUIRED_OUTPUTS = [
     "next_actions.md",
 ]
 
+EXCLUDED_FIXTURE_FILES = {
+    "gold-expected.json",
+}
+
 
 def parse_args(argv: list[str]) -> tuple[Path, Path]:
     if "--fixture" not in argv or "--out" not in argv:
@@ -77,7 +81,14 @@ def prepare_workspace(repo_root_path: Path, fixture_dir: Path, workspace_dir: Pa
     shared_dir = fixture_dir.parent / "shared"
     workspace_dir.mkdir(parents=True, exist_ok=True)
 
+    for excluded in EXCLUDED_FIXTURE_FILES:
+        stale_path = workspace_dir / excluded
+        if stale_path.exists():
+            stale_path.unlink()
+
     for item in fixture_dir.iterdir():
+        if item.name in EXCLUDED_FIXTURE_FILES:
+            continue
         destination = workspace_dir / item.name
         if item.is_dir():
             shutil.copytree(item, destination, dirs_exist_ok=True)
@@ -85,6 +96,91 @@ def prepare_workspace(repo_root_path: Path, fixture_dir: Path, workspace_dir: Pa
             shutil.copy2(item, destination)
 
     shutil.copytree(shared_dir, workspace_dir / "shared", dirs_exist_ok=True)
+
+
+def safe_path(workspace_dir: Path, relative_path: str) -> Path:
+    path = (workspace_dir / relative_path).resolve()
+    if workspace_dir.resolve() not in path.parents and path != workspace_dir.resolve():
+        raise ValueError(f"Path must stay inside workspace: {relative_path}")
+    return path
+
+
+def missing_required_outputs(workspace_dir: Path) -> list[str]:
+    presence = collect_output_presence(workspace_dir)
+    return [file_name for file_name, exists in presence.items() if not exists]
+
+
+def append_tool_trace(trace_lines: list[str], tool_name: str, payload: object) -> None:
+    trace_lines.append(
+        json.dumps(
+            {
+                "type": "assistant",
+                "content": [{"kind": "tool", "value": tool_name}],
+                "payload": to_json_safe(payload),
+            }
+        )
+    )
+
+
+def list_files_in_workspace(workspace_dir: Path, trace_lines: list[str] | None = None) -> str:
+    if trace_lines is not None:
+        append_tool_trace(trace_lines, "list_workspace_files", {})
+    files = [
+        str(path.relative_to(workspace_dir))
+        for path in sorted(workspace_dir.rglob("*"))
+        if path.is_file()
+    ]
+    return "\n".join(files)
+
+
+def read_file_in_workspace(
+    workspace_dir: Path,
+    path: str,
+    trace_lines: list[str] | None = None,
+) -> str:
+    if trace_lines is not None:
+        append_tool_trace(trace_lines, "read_workspace_file", {"path": path})
+    return safe_path(workspace_dir, path).read_text(encoding="utf-8")
+
+
+def search_text_in_workspace(
+    workspace_dir: Path,
+    query: str,
+    trace_lines: list[str] | None = None,
+) -> str:
+    if trace_lines is not None:
+        append_tool_trace(trace_lines, "search_workspace", {"query": query})
+    matches: list[str] = []
+    lowered_query = query.lower()
+    for path in sorted(workspace_dir.rglob("*")):
+        if not path.is_file():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+        for index, line in enumerate(text.splitlines(), start=1):
+            if lowered_query in line.lower():
+                matches.append(f"{path.relative_to(workspace_dir)}:{index}: {line}")
+    return "\n".join(matches[:200]) if matches else "No matches found."
+
+
+def write_file_in_workspace(
+    workspace_dir: Path,
+    path: str,
+    content: str,
+    trace_lines: list[str] | None = None,
+) -> str:
+    if trace_lines is not None:
+        append_tool_trace(
+            trace_lines,
+            "write_workspace_file",
+            {"path": path, "content_preview": content[:200]},
+        )
+    target = safe_path(workspace_dir, path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(content, encoding="utf-8")
+    return f"Wrote {target.relative_to(workspace_dir)}"
 
 
 def build_prompt(prompt_pack: dict[str, str]) -> str:
