@@ -2,7 +2,7 @@
 name = "agent-bench"
 version = "0.1.0"
 description = "Framework benchmarking workspace"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
   "claude-agent-sdk",
   "langchain-core",
@@ -11,6 +11,7 @@ dependencies = [
   "google-adk",
   "openai-agents",
   "python-dotenv>=1.0.1",
+  "pyyaml>=6.0",
   "langchain-google-genai>=4.2.1",
   "pydantic-ai>=1.31.0",
   "crewai>=1.6.1",

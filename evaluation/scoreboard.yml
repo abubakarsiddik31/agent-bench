@@ -1,0 +1,60 @@
+id: public_scoreboard
+version: 1
+task_id: intake_triage
+dataset_split: stress_v1
+description: >
+  Canonical list of benchmark runs that back the public scoreboard in
+  README.md. Adding an entry here is what promotes a run to the published
+  ranking; the artifacts referenced below must exist under results/.
+notes:
+  - Every entry must point at a run directory containing benchmark_summary.json,
+    evaluation_summary.json, and framework_evaluation.json.
+  - Rankings are sorted by combined_score at render time, not by list order.
+  - Runs using different model values are informational, not authoritative
+    (see evaluation/benchmark-execution.yml).
+entries:
+  - framework: anthropic-agent-sdk
+    display_name: Anthropic Agent SDK
+    model: sonnet-4.6
+    provider_agnostic: false
+    run: results/anthropic-agent-sdk/intake-triage/stress_v1/run-001
+  - framework: openai-agents-sdk
+    display_name: OpenAI Agents SDK
+    model: gpt-5.4
+    provider_agnostic: true
+    run: results/openai-agents-sdk/intake-triage/stress_v1/run-003
+  - framework: langgraph
+    display_name: LangGraph
+    model: gemini-3.1-pro-preview
+    provider_agnostic: true
+    run: results/langgraph/intake-triage/stress_v1/run-002
+  - framework: pydantic-ai
+    display_name: Pydantic AI
+    model: gpt-5.4
+    provider_agnostic: true
+    run: results/pydantic-ai/intake-triage/stress_v1/run-002
+  - framework: google-adk
+    display_name: Google ADK
+    model: gemini-3.1-pro-preview
+    provider_agnostic: true
+    run: results/google-adk/intake-triage/stress_v1/run-001
+  - framework: langgraph
+    display_name: LangGraph
+    model: gpt-5.4
+    provider_agnostic: true
+    run: results/langgraph/intake-triage/stress_v1/run-001
+  - framework: pydantic-ai
+    display_name: Pydantic AI
+    model: gemini-3.1-pro-preview
+    provider_agnostic: true
+    run: results/pydantic-ai/intake-triage/stress_v1/run-001
+  - framework: crewai
+    display_name: CrewAI
+    model: gpt-5.4
+    provider_agnostic: true
+    run: results/crewai/intake-triage/stress_v1/run-001
+  - framework: autogen
+    display_name: AutoGen
+    model: gpt-5.4
+    provider_agnostic: true
+    run: results/autogen/intake-triage/stress_v1/run-001

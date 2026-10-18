@@ -4,14 +4,38 @@ purpose: >
   Locks the execution environment so framework differences remain visible and
   model or run-setting drift does not contaminate the benchmark.
 model_control:
-  provider: TBD_before_first_run
-  model_id: TBD_before_first_run
+  status: locked
+  # Framework rankings are only directly comparable within the same model_id.
+  locked_models:
+    - provider: anthropic
+      model_id: sonnet-4.6
+      used_by:
+        - anthropic-agent-sdk
+    - provider: openai
+      model_id: gpt-5.4
+      used_by:
+        - openai-agents-sdk
+        - langgraph
+        - pydantic-ai
+        - crewai
+        - autogen
+    - provider: google_ai_studio
+      model_id: gemini-3.1-pro-preview
+      used_by:
+        - google-adk
+        - langgraph
+        - pydantic-ai
   temperature: 0
   top_p: 1
   reasoning_effort: medium
   notes:
-    - The exact provider and model ID must be locked before the first benchmark run.
-    - Once locked, they cannot change across finalist frameworks without restarting the comparison.
+    - The locked models above are the only runtime models permitted in the
+      current benchmark series.
+    - Comparisons across frameworks that ran on different model_ids are
+      informational, not authoritative; same-model comparisons are required
+      before drawing a ranking conclusion.
+    - framework-evaluation judging uses a separate locked judge
+      (see evaluation/judge-model.yml), not one of the runtime models.
 turn_and_timeout_limits:
   max_turns_per_run: 25
   max_tool_calls_per_run: 50

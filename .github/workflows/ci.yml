@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    env:
+      # The suite is hermetic: no agent runs, no judge calls, no API keys.
+      UV_PYTHON: ${{ matrix.python-version }}
+      UV_LOCKED: "1"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies (from lockfile)
+        run: uv sync --locked --python ${{ matrix.python-version }}
+
+      - name: Byte-compile all Python sources
+        run: uv run --python ${{ matrix.python-version }} python -m compileall -q common evaluation frameworks scripts tests
+
+      - name: Run unit tests
+        run: uv run --python ${{ matrix.python-version }} python -m unittest discover -s tests -t . -v
+
+      - name: Verify README scoreboard generator imports cleanly
+        run: uv run --python ${{ matrix.python-version }} python scripts/build_scoreboard.py --help > /dev/null

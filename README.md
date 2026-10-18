@@ -6,8 +6,9 @@
 
 ### Framework-First Benchmarking for AI Agents
 
+[![CI](https://github.com/abubakarsiddik31/agent-bench/actions/workflows/ci.yml/badge.svg)](https://github.com/abubakarsiddik31/agent-bench/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![GitHub stars](https://img.shields.io/github/stars/abubakarsiddik31/agent-bench?style=social)](https://github.com/abubakarsiddik31/agent-bench/stargazers)
 
@@ -30,7 +31,9 @@
 - [Getting Started](#getting-started)
 - [Running the Benchmark](#running-the-benchmark)
 - [Repository Structure](#repository-structure)
+- [Reproducibility](#reproducibility)
 - [Community & Governance](#community--governance)
+- [Citation](#citation)
 - [License](#license)
 
 ---
@@ -50,6 +53,7 @@ Every framework implementation is evaluated on two equally weighted axes (**50% 
 
 Current public benchmark results on `intake-triage` (`stress_v1` split), ranked by **Final Score**:
 
+<!-- SCOREBOARD:START -->
 | Rank | Framework | Runtime Model | Provider-Agnostic? | Framework LOC | Task Score | Framework Score | Final Score | Duration | Outcome |
 | :---: | --- | --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 1 | [Anthropic Agent SDK](./frameworks/anthropic-agent-sdk) | `sonnet-4.6` | `No` | `109` | `4.75 / 5.0` | `4.425 / 5.0` | **`4.588 / 5.0`** | `283.857s` | `Pass` |
@@ -61,6 +65,7 @@ Current public benchmark results on `intake-triage` (`stress_v1` split), ranked 
 | 7 | [Pydantic AI](./frameworks/pydantic-ai) | `gemini-3.1-pro-preview` | `Yes` | `160` | `2.475 / 5.0` | `4.05 / 5.0` | **`3.263 / 5.0`** | `172.726s` | `Partial` |
 | 7 | [CrewAI](./frameworks/crewai) | `gpt-5.4` | `Yes` | `176` | `2.475 / 5.0` | `4.05 / 5.0` | **`3.263 / 5.0`** | `121.142s` | `Partial` |
 | 9 | [AutoGen](./frameworks/autogen) | `gpt-5.4` | `Yes` | `195` | `2.475 / 5.0` | `3.5 / 5.0` | **`2.987 / 5.0`** | `35.261s` | `Partial` |
+<!-- SCOREBOARD:END -->
 
 > **Notes:**
 > - **Provider-Agnostic?** indicates whether the framework is designed as a general multi-provider runtime. Anthropic Agent SDK can authenticate through multiple Claude hosting providers (Anthropic API, Bedrock, Vertex), but remains Claude-specific.
@@ -73,6 +78,7 @@ Current public benchmark results on `intake-triage` (`stress_v1` split), ranked 
 
 Detailed tool-calling telemetry captured during each benchmark run:
 
+<!-- TOOL-METRICS:START -->
 | Framework | Run | Tool Pass | Total Calls | Passed Calls | Failed Calls | Unique Tools | Write Calls | Artifacts Produced | Success Rate | Write Completion | Output Coverage | Custom Tool Efficiency |
 | --- | --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | Anthropic Agent SDK | `stress_v1/run-001` | `Pass` | `39` | `39` | `0` | `4` | `4` | `3 / 4` | `1.0` | `0.75` | `0.75` | `0.875` |
@@ -84,6 +90,7 @@ Detailed tool-calling telemetry captured during each benchmark run:
 | Pydantic AI | `stress_v1/run-001` | `Pass` | `37` | `37` | `0` | `4` | `8` | `4 / 4` | `1.0` | `0.5` | `1.0` | `0.875` |
 | CrewAI | `stress_v1/run-001` | `Pass` | `16` | `16` | `0` | `3` | `4` | `4 / 4` | `1.0` | `1.0` | `1.0` | `1.0` |
 | AutoGen | `stress_v1/run-001` | `Pass` | `21` | `21` | `0` | `4` | `4` | `4 / 4` | `1.0` | `1.0` | `1.0` | `1.0` |
+<!-- TOOL-METRICS:END -->
 
 ---
 
@@ -154,7 +161,7 @@ Handled by [`evaluation/evaluate_framework.py`](./evaluation/evaluate_framework.
 ## Getting Started
 
 ### Prerequisites
-- Python `3.10+`
+- Python `3.11+`
 - [`uv`](https://docs.astral.sh/uv/) package manager
 
 ### Installation
@@ -321,13 +328,20 @@ uv run python evaluation/evaluate_framework.py \
 ```text
 .
 ├── .env.example
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── .gitignore
+├── CITATION.cff
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
 ├── LICENSE
-├── pyproject.toml
 ├── README.md
 ├── SECURITY.md
+├── pyproject.toml
+├── uv.lock
+├── assets/
+│   └── agent-bench-logo.svg
 ├── benchmarks/
 │   ├── README.md
 │   └── intake-triage/
@@ -346,7 +360,8 @@ uv run python evaluation/evaluate_framework.py \
 │   ├── judge-model.yml
 │   ├── metric-counting-policy.yml
 │   ├── review-form.yml
-│   └── run_intake_benchmark.py
+│   ├── run_intake_benchmark.py
+│   └── scoreboard.yml
 ├── frameworks/
 │   ├── anthropic-agent-sdk/
 │   │   ├── README.md
@@ -379,13 +394,45 @@ uv run python evaluation/evaluate_framework.py \
 │   ├── portfolio-investigation.yml
 │   ├── shared-evaluation.yml
 │   └── verification-sweep.yml
-└── tasks/
-    ├── archive-review.yml
-    ├── intake-triage.yml
-    ├── packet-drafting.yml
-    ├── portfolio-investigation.yml
-    └── verification-sweep.yml
+├── scripts/
+│   └── build_scoreboard.py
+├── tasks/
+│   ├── archive-review.yml
+│   ├── intake-triage.yml
+│   ├── packet-drafting.yml
+│   ├── portfolio-investigation.yml
+│   └── verification-sweep.yml
+└── tests/
+    ├── test_benchmark_utils.py
+    ├── test_evaluation_utils.py
+    ├── test_repo_integrity.py
+    ├── test_scoreboard_generator.py
+    └── test_trace_analysis.py
 ```
+
+---
+
+## Reproducibility
+
+Agent Bench is built so that every published number can be traced back to the run that produced it.
+
+- **Locked dependencies.** `uv.lock` is committed. Reproduce the exact environment with `uv sync --locked` (Python `3.11+`).
+- **Keyless test suite.** `uv run python -m unittest discover -s tests -t .` runs the full unit suite with no API keys and no network access. It covers answer-key isolation, workspace path safety, deterministic scoring, trace analysis, repository hygiene, and the scoreboard renderer.
+- **CI.** Every push and pull request runs byte-compilation, the full test suite, and a generator smoke check on Python 3.11 and 3.12 (see [`.github/workflows/ci.yml`](./.github/workflows/ci.yml)).
+- **Locked execution contract.** Runtime models are pinned in [`evaluation/benchmark-execution.yml`](./evaluation/benchmark-execution.yml) and the judge is pinned in [`evaluation/judge-model.yml`](./evaluation/judge-model.yml).
+- **Generated scoreboard.** The tables above are rendered from saved run artifacts, never hand-edited:
+
+  ```bash
+  uv run python scripts/build_scoreboard.py            # print tables to stdout
+  uv run python scripts/build_scoreboard.py --check    # fail if README.md is stale
+  uv run python scripts/build_scoreboard.py --write    # regenerate README.md in place
+  ```
+
+  Which runs count as canonical is declared in [`evaluation/scoreboard.yml`](./evaluation/scoreboard.yml).
+
+- **Answer key is never shipped to agents.** `gold-expected.json` exists only under fixture directories and is explicitly excluded when a fixture workspace is prepared, so framework implementations cannot read the expected outputs. This is enforced by a test.
+
+Run artifacts under `results/` are intentionally gitignored, so `--check` is only meaningful on a machine that has actually executed the benchmark.
 
 ---
 
@@ -394,6 +441,23 @@ uv run python evaluation/evaluate_framework.py \
 - **Contributing Guide**: [CONTRIBUTING.md](./CONTRIBUTING.md)
 - **Code of Conduct**: [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
 - **Security Policy**: [SECURITY.md](./SECURITY.md)
+
+---
+
+## Citation
+
+If you use Agent Bench in research, teaching, or internal framework selection, please cite it. Machine-readable metadata lives in [`CITATION.cff`](./CITATION.cff).
+
+```bibtex
+@software{siddik_agent_bench_2026,
+  author  = {Siddik, Abu Bakar},
+  title   = {Agent Bench},
+  year    = {2026},
+  version = {0.1.0},
+  license = {MIT},
+  url     = {https://github.com/abubakarsiddik31/agent-bench}
+}
+```
 
 ---
 

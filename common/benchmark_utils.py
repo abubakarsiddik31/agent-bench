@@ -177,10 +177,13 @@ def write_file_in_workspace(
             "write_workspace_file",
             {"path": path, "content_preview": content[:200]},
         )
-    target = safe_path(workspace_dir, path)
+    # Resolve once so the returned relative path is correct even when callers
+    # pass a workspace path that traverses a symlink (e.g. /var -> /private/var).
+    workspace_root = workspace_dir.resolve()
+    target = safe_path(workspace_root, path)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(content, encoding="utf-8")
-    return f"Wrote {target.relative_to(workspace_dir)}"
+    return f"Wrote {target.relative_to(workspace_root)}"
 
 
 def build_prompt(prompt_pack: dict[str, str]) -> str:
